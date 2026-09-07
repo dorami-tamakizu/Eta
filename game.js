@@ -98,7 +98,76 @@ function lx(l,z){let p=C(1-z/34,0,1),sp=W*.055+(W*.25-W*.055)*p;return W/2+(l-1)
 function playerX(){return lx(S.l,S.pd)}
 function playerHeight(){return Math.min(H*.285,238)*(1-.22*S.pd/MAX_DEPTH)}
 
-function bg(){let g=c.createLinearGradient(0,0,0,H);g.addColorStop(0,'#263e73');g.addColorStop(.34,'#c77967');g.addColorStop(.52,'#e3a15e');g.addColorStop(1,'#302a27');c.fillStyle=g;c.fillRect(0,0,W,H);c.fillStyle='#f8d68c';c.beginPath();c.arc(W*.5,H*.24,W*.07,0,7);c.fill();c.fillStyle='#2c2a2b';for(const s of [-1,1]){let x=s<0?0:W*.78;c.fillRect(x,H*.22,W*.22,H*.38);for(let i=0;i<3;i++){c.fillRect(x+i*W*.075,H*(.14+i*.025),W*.045,H*.16)}}c.fillStyle='#4a3b31';c.beginPath();c.moveTo(W*.4,H*.18);c.lineTo(W*.6,H*.18);c.lineTo(W,H);c.lineTo(0,H);c.closePath();c.fill();c.strokeStyle='#786556';for(let z=2;z<34;z+=2.5){c.beginPath();c.moveTo(lx(0,z)-W*.1,yy(z));c.lineTo(lx(2,z)+W*.1,yy(z));c.stroke()}c.strokeStyle='#ffffff20';for(let i=-1;i<=1;i++){c.beginPath();c.moveTo(W/2+i*W*.055,H*.18);c.lineTo(W/2+i*W*.25,H);c.stroke()}}
+// One vanishing point, shared with the enemy ground horizon. Cache the painted
+// scenery at device resolution so foliage does not add work to each game frame.
+let forestLayer=null,forestKey='';
+function bg(){
+  const d=Math.min(devicePixelRatio||1,2),key=W+':'+H+':'+d;
+  if(forestKey!==key){
+    forestLayer=document.createElement('canvas');forestLayer.width=Math.round(W*d);forestLayer.height=Math.round(H*d);
+    const f=forestLayer.getContext('2d');f.setTransform(d,0,0,d,0,0);
+    const vx=W*.5,vy=H*.18;
+    // Local deterministic texture: never consume the combat RNG.
+    const noise=n=>{let x=Math.imul(n+71,374761393);x=Math.imul(x^(x>>>13),1274126177);return ((x^(x>>>16))>>>0)/4294967296};
+    const ground=p=>vy+H*.54*p;
+    function shape(points,color){f.fillStyle=color;f.beginPath();points.forEach((a,i)=>i?f.lineTo(...a):f.moveTo(...a));f.closePath();f.fill()}
+    function oval(x,y,rx,ry,color){f.fillStyle=color;f.beginPath();f.ellipse(x,y,Math.max(.1,rx),Math.max(.1,ry),0,0,Math.PI*2);f.fill()}
+    let g=f.createLinearGradient(0,0,0,H);g.addColorStop(0,'#254c46');g.addColorStop(.18,'#bdd2b0');g.addColorStop(.34,'#71916d');g.addColorStop(1,'#172e23');f.fillStyle=g;f.fillRect(0,0,W,H);
+    // Pale distant trunks and opening through the forest.
+    for(let i=0;i<46;i++){
+      const x=noise(i)*W,w=2+noise(i+50)*4,h=H*(.13+noise(i+80)*.17);
+      f.fillStyle='rgba(49,84,67,.22)';f.fillRect(x,vy-h,w,h+H*.10);
+    }
+    g=f.createRadialGradient(vx,vy,0,vx,vy,W*.40);g.addColorStop(0,'rgba(229,240,194,.82)');g.addColorStop(1,'rgba(195,218,169,0)');f.fillStyle=g;f.fillRect(0,0,W,H*.48);
+    // Road and two faint wheel tracks converge at exactly (vx, vy).
+    g=f.createLinearGradient(0,vy,0,H);g.addColorStop(0,'#adb493');g.addColorStop(.45,'#8f906c');g.addColorStop(1,'#69654a');
+    const bottomP=(H-vy)/(H*.54),edge=W*.30;
+    shape([[vx,vy],[vx+edge*bottomP,H],[vx-edge*bottomP,H]],g);
+    for(const side of [-1,1]){
+      shape([[vx,vy],[vx+side*W*.135*bottomP,H],[vx+side*W*.110*bottomP,H]],'rgba(213,206,163,.10)');
+      shape([[vx,vy],[vx+side*edge*bottomP,H],[vx+side*(edge+W*.025)*bottomP,H]],'rgba(145,164,82,.5)');
+    }
+    for(let i=0;i<150;i++){
+      const p=.07+noise(i+150)*1.45,x=vx+(noise(i+340)*2-1)*edge*p*.91,y=ground(p);
+      oval(x,y,(.7+noise(i+540)*2.8)*p,.55*p,i%3?'rgba(224,210,163,.12)':'rgba(33,47,31,.16)');
+    }
+    // Draw trees from far to near. Their bases, height and width all use p.
+    for(let row=0;row<14;row++)for(const side of [-1,1]){
+      const seed=row*31+(side+1)*19,p=.09+row*.093;
+      const x=vx+side*W*(.39+noise(seed)*.13)*p,y=ground(p);
+      const h=H*(.61+noise(seed+1)*.13)*p,w=W*(.031+noise(seed+2)*.026)*p,lean=-side*w*.7;
+      const fade=C(p,0,1),trunk=`rgb(${Math.round(57-28*fade)},${Math.round(76-32*fade)},${Math.round(56-26*fade)})`;
+      oval(x,y+3*p,w*2.5,5*p,'rgba(14,34,22,.30)');
+      shape([[x-w*.6,y],[x-w*.36+lean,y-h],[x+w*.24+lean,y-h],[x+w*.6,y]],trunk);
+      shape([[x-w*.26,y],[x-w*.12+lean,y-h],[x+w*.08+lean,y-h],[x+w*.05,y]],'rgba(175,175,110,.18)');
+      for(let branch=0;branch<3;branch++){
+        const by=y-h*(.51+branch*.16),bx=x+lean*(.5+branch*.15),dir=branch%2?side:-side;
+        f.strokeStyle=trunk;f.lineWidth=Math.max(1,w*(.32-branch*.065));f.lineCap='round';f.beginPath();f.moveTo(bx,by);f.quadraticCurveTo(bx+dir*w*1.6,by-h*.05,bx+dir*w*3,by-h*.18);f.stroke();
+      }
+      // Interlocking leaf masses create a canopy, keeping the central road open.
+      for(let leaf=0;leaf<9;leaf++){
+        const a=noise(seed+leaf+70)*Math.PI*2,cx=x+lean+Math.cos(a)*w*3.4,cy=y-h+Math.sin(a)*h*.075;
+        const colors=['#254e36','#315e3c','#3e6c43','#4d7950'];
+        oval(cx,cy,w*(2.2+noise(seed+leaf+100)*1.4),h*.105,colors[(leaf+row)%4]);
+      }
+      for(let root=0;root<3;root++){
+        shape([[x-w*.4,y-2*p],[x+(root-1)*w*2.3,y+7*p],[x+w*.5,y]],trunk);
+      }
+      // Roadside ferns and grass, outside the three playable lanes.
+      for(let tuft=0;tuft<5;tuft++){
+        const tx=x+(tuft-2)*w*.7,ty=y+noise(seed+tuft+210)*8*p;
+        f.strokeStyle=tuft%2?'#70904a':'#42673b';f.lineWidth=Math.max(.7,1.2*p);
+        for(let blade=-1;blade<=1;blade++){f.beginPath();f.moveTo(tx,ty);f.quadraticCurveTo(tx+blade*5*p,ty-8*p,tx+blade*9*p,ty-12*p);f.stroke()}
+      }
+    }
+    // Gentle shafts of light and far haze add depth without covering combat.
+    shape([[W*.20,0],[W*.26,0],[W*.73,H*.70],[W*.53,H*.70]],'rgba(230,239,171,.045)');
+    shape([[W*.62,0],[W*.64,0],[W*.35,H*.51],[W*.27,H*.51]],'rgba(230,239,171,.035)');
+    forestKey=key;
+  }
+  c.drawImage(forestLayer,0,0,forestLayer.width,forestLayer.height,0,0,W,H);
+}
+
 function frontline(){let fl=front();if(fl>=999)return;let r=fl-S.z,y=yy(r),p=C(1-r/34,0,1),half=W*(.08+.34*p);c.save();c.strokeStyle='rgba(255,225,125,.95)';c.shadowColor='rgba(255,170,50,.9)';c.shadowBlur=10;c.lineWidth=3;c.beginPath();c.moveTo(W/2-half,y);c.lineTo(W/2+half,y);c.stroke();c.restore()}
 // Source coordinates are measured on the uploaded sheets, not image centres.
 // Keep original files intact; the cached body layer masks only the old arms.
