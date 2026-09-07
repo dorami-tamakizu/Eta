@@ -108,7 +108,7 @@ function makeBodyLayer(){
   ctx.save();polygon(ctx,[[699,423],[843,423],[857,507],[905,591],[968,626],[1100,677],[1180,754],[1180,800],[1100,766],[1122,829],[1180,908],[1157,965],[1070,1005],[970,1050],[980,994],[1029,918],[1029,851],[958,766],[886,701],[837,653],[777,595],[737,509]]);ctx.clip();ctx.drawImage(im.body,0,0);ctx.restore();
   bodyLayer=layer;return layer;
 }
-const REST={upper:-.14,fore:-.12,wrist:.45,flat:1,left:.16};
+const REST={upper:-.14,fore:-.12,wrist:Math.PI,flat:1,left:.16};
 function rigPose(progress){
   if(!S.skill)return REST;
   const p=progress===undefined?C(S.skill.t/S.skill.d,0,1):progress,water=S.skill.k===1;
@@ -143,14 +143,23 @@ function arm(right,pose){
   }
   segment(im.hand,right?[974,509,277,596]:[347,509,277,596],right?[1082,565]:[518,565],right?[1160,1061]:[440,1061],68);
   c.restore();
-  // Shoulder armour shares the torso joint and overlaps the upper-arm seam.
+}
+function shoulder(right,pose){
+  const upper=right?pose.upper:pose.left;
+  // Shoulder caps stay attached on the camera-facing side of the torso.
   c.save();c.translate(right?866:650,478);c.rotate(upper*.3);
   const rect=right?[929,521,398,560]:[275,521,398,560],px=right?1040:560,s=.20;
   c.drawImage(im.shoulder,...rect,(rect[0]-px)*s,(rect[1]-620)*s,rect[2]*s,rect[3]*s);c.restore();
 }
 function drawRig(h){
-  const pose=rigPose();c.save();c.scale(h/1104,h/1104);c.translate(-750,-1344);
-  c.drawImage(makeBodyLayer(),0,0);arm(false,pose);arm(true,pose);c.restore();
+  const pose=rigPose();
+  // Both attacks take place on the enemy-facing side. Render their blades,
+  // hands, arms AND trails before the opaque body/cape, never over the back.
+  // Keep the wrist at a stable grip angle; the shoulder/elbow drive the cut.
+  skillEffect(h,h/Math.min(H*.285,238));
+  c.save();c.scale(h/1104,h/1104);c.translate(-750,-1344);
+  arm(false,pose);arm(true,pose);c.drawImage(makeBodyLayer(),0,0);
+  shoulder(false,pose);shoulder(true,pose);c.restore();
 }
 function swordPoints(pose,h){
   const rot=(x,y,a)=>[x*Math.cos(a)-y*Math.sin(a),x*Math.sin(a)+y*Math.cos(a)];
@@ -173,7 +182,7 @@ function skillEffect(h,sc){
   if(!water&&p>.59){c.globalAlpha=(end-p)/(end-.59)*.5;c.lineWidth=2*sc;c.beginPath();c.ellipse(now.tip[0],Math.min(0,now.tip[1]),h*.2*(p-.59)/.11,h*.04,0,0,Math.PI*2);c.stroke()}
   c.restore();
 }
-function draw(){placeNotice();c.clearRect(0,0,W,H);bg();for(const e of S.en.filter(e=>!e.dead&&e.z-S.z>-2&&e.z-S.z<38).sort((a,b)=>b.z-a.z)){let r=e.z-S.z,p=C(1-r/38,.25,1.12),h=D[e.t].h*p,img=im[e.t],w=h*img.naturalWidth/Math.max(1,img.naturalHeight),x=lx(e.l,r),y=yy(r);c.save();c.translate(x,y);if(e.tell>0){let q=.5+.5*Math.sin(performance.now()/70);c.globalAlpha=.2+.18*q;c.fillStyle=D[e.t].r?'#9d6cff':'#ffb096';c.beginPath();c.ellipse(0,-h*.45,35*p,48*p,0,0,7);c.fill();c.globalAlpha=1}if(e.fl)c.globalAlpha=.55;if(img.complete)c.drawImage(img,-w/2,-h,w,h);c.restore();c.fillStyle='#000b';c.fillRect(x-w*.3,y-h-7,w*.6,4);c.fillStyle='#fff';c.fillRect(x-w*.3,y-h-7,w*.6*e.hp/e.max,4)}frontline();for(const p of S.shots){let r=p.z-S.z,x=lx(p.l,r),y=yy(r);c.fillStyle=p.t==='mage'?'#bd79ff':'#ff873d';c.shadowColor=c.fillStyle;c.shadowBlur=18;c.beginPath();c.arc(x,y,10,0,7);c.fill();c.shadowBlur=0}let x=playerX(),y=playerY(),img=im.hero,sc=1-.22*S.pd/MAX_DEPTH,h=playerHeight(),w=h*img.naturalWidth/Math.max(1,img.naturalHeight);c.save();c.translate(x,y);if(S.guard){c.strokeStyle='#dff7ff';c.lineWidth=5;c.beginPath();c.arc(-h*.12,-h*.42,h*.25,-2.2,2.2);c.stroke()}if(rigReady())drawRig(h);else if(img.complete&&img.naturalWidth)c.drawImage(img,-w/2,-h,w,h);skillEffect(h,sc);c.restore();if(S.hit){c.fillStyle='rgba(255,80,60,.12)';c.fillRect(0,0,W,H)}}function end(ok){S.run=0;S.ptr=null;S.guard=0;hideNotice();if(window.GameBGM)window.GameBGM.pause();$('#resultTitle').textContent=ok?'STAGE CLEAR':'GAME OVER';$('#resultText').innerHTML='TIME '+S.t.toFixed(2)+' s<br>DAMAGE '+S.dmg.toFixed(1)+'<br>SKILL FINISH '+S.fin+' / 30';$('#result').classList.remove('hide');if(window.bgm)bgm.pause()}function start(){reset();S.run=1;last=performance.now();$('#intro').classList.add('hide');if(window.bgm){bgm.currentTime=0;bgm.play().catch(()=>{})}}$('#start').onclick=start;$('#retry').onclick=()=>{reset();S.run=1;last=performance.now();$('#result').classList.add('hide');if(window.bgm)bgm.play().catch(()=>{})};// Own each gesture by pointerId; button fingers cannot finish a canvas swipe.
+function draw(){placeNotice();c.clearRect(0,0,W,H);bg();for(const e of S.en.filter(e=>!e.dead&&e.z-S.z>-2&&e.z-S.z<38).sort((a,b)=>b.z-a.z)){let r=e.z-S.z,p=C(1-r/38,.25,1.12),h=D[e.t].h*p,img=im[e.t],w=h*img.naturalWidth/Math.max(1,img.naturalHeight),x=lx(e.l,r),y=yy(r);c.save();c.translate(x,y);if(e.tell>0){let q=.5+.5*Math.sin(performance.now()/70);c.globalAlpha=.2+.18*q;c.fillStyle=D[e.t].r?'#9d6cff':'#ffb096';c.beginPath();c.ellipse(0,-h*.45,35*p,48*p,0,0,7);c.fill();c.globalAlpha=1}if(e.fl)c.globalAlpha=.55;if(img.complete)c.drawImage(img,-w/2,-h,w,h);c.restore();c.fillStyle='#000b';c.fillRect(x-w*.3,y-h-7,w*.6,4);c.fillStyle='#fff';c.fillRect(x-w*.3,y-h-7,w*.6*e.hp/e.max,4)}frontline();for(const p of S.shots){let r=p.z-S.z,x=lx(p.l,r),y=yy(r);c.fillStyle=p.t==='mage'?'#bd79ff':'#ff873d';c.shadowColor=c.fillStyle;c.shadowBlur=18;c.beginPath();c.arc(x,y,10,0,7);c.fill();c.shadowBlur=0}let x=playerX(),y=playerY(),img=im.hero,sc=1-.22*S.pd/MAX_DEPTH,h=playerHeight(),w=h*img.naturalWidth/Math.max(1,img.naturalHeight);c.save();c.translate(x,y);if(S.guard){c.strokeStyle='#dff7ff';c.lineWidth=5;c.beginPath();c.arc(-h*.12,-h*.42,h*.25,-2.2,2.2);c.stroke()}if(rigReady())drawRig(h);else if(img.complete&&img.naturalWidth){skillEffect(h,sc);c.drawImage(img,-w/2,-h,w,h);}c.restore();if(S.hit){c.fillStyle='rgba(255,80,60,.12)';c.fillRect(0,0,W,H)}}function end(ok){S.run=0;S.ptr=null;S.guard=0;hideNotice();if(window.GameBGM)window.GameBGM.pause();$('#resultTitle').textContent=ok?'STAGE CLEAR':'GAME OVER';$('#resultText').innerHTML='TIME '+S.t.toFixed(2)+' s<br>DAMAGE '+S.dmg.toFixed(1)+'<br>SKILL FINISH '+S.fin+' / 30';$('#result').classList.remove('hide');if(window.bgm)bgm.pause()}function start(){reset();S.run=1;last=performance.now();$('#intro').classList.add('hide');if(window.bgm){bgm.currentTime=0;bgm.play().catch(()=>{})}}$('#start').onclick=start;$('#retry').onclick=()=>{reset();S.run=1;last=performance.now();$('#result').classList.add('hide');if(window.bgm)bgm.play().catch(()=>{})};// Own each gesture by pointerId; button fingers cannot finish a canvas swipe.
 for(const id of ['#guard','#s1','#s2']){
   const button=$(id);
   button.addEventListener('contextmenu',e=>e.preventDefault());
