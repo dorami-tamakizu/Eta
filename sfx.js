@@ -5,6 +5,7 @@
   const durations={waterStart:.18,waterSwing:.24,continentStart:.23,continentSwing:.34,hit:.12,down:.43,shot:.23,hurt:.24};
   function synth(kind,type,rate){
     const duration=durations[kind],out=new Float32Array(Math.ceil(duration*rate));
+    const level=['waterStart','waterSwing','continentStart','continentSwing'].includes(kind)?.5:1;
     let seed=17319,low=0,phase=0;
     for(let i=0;i<out.length;i++){
       const t=i/rate,u=t/duration;
@@ -26,7 +27,7 @@
         case 'shot':f=type==='dragon'?170-95*u:420+1700*u;phase+=2*Math.PI*f/rate;value=type==='dragon'?.65*low+.25*noise:.32*Math.sin(phase)+.18*Math.sin(phase*2)+.12*noise;break;
         case 'hurt':f=95-48*u;phase+=2*Math.PI*f/rate;value=.55*Math.sin(phase)+.4*noise*Math.exp(-9*u);break;
       }
-      out[i]=Math.tanh(value*1.3)*env*.65;
+      out[i]=Math.tanh(value*1.3)*env*.65*level;
     }
     return out;
   }
