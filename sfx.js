@@ -5,7 +5,7 @@
   const durations={waterStart:.18,waterSwing:.24,continentStart:.23,continentSwing:.34,hit:.12,down:.43,shot:.23,hurt:.24};
   function synth(kind,type,rate){
     const duration=durations[kind],out=new Float32Array(Math.ceil(duration*rate));
-    const level=['waterStart','waterSwing','continentStart','continentSwing'].includes(kind)?.5:1;
+    const level=['waterStart','waterSwing','continentStart','continentSwing'].includes(kind)?.25:1;
     let seed=17319,low=0,phase=0;
     for(let i=0;i<out.length;i++){
       const t=i/rate,u=t/duration;

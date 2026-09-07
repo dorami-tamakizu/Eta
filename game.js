@@ -1,4 +1,4 @@
-(()=>{const $=s=>document.querySelector(s),cv=$('#game'),c=cv.getContext('2d');let W,H,last=0,S;const C=(v,a,b)=>Math.max(a,Math.min(b,v)),R=(a,b)=>a+Math.random()*(b-a),RI=(a,b)=>Math.floor(R(a,b+1)),E=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;const D={slime:{hp:2,d:1,r:0,h:205},skeleton:{hp:3,d:2,r:0,h:220},mage:{hp:3,d:2,r:1,h:228},bonobo:{hp:4,d:4,r:0,h:245},dragon:{hp:4,d:3,r:1,h:215}},im={};const src={hero:'assets/hero.webp',slime:'assets/suraimu.png',skeleton:'assets/がいこつ.png',mage:'assets/mahoutukai.png',bonobo:'assets/bonobo.png',dragon:'assets/minidoragonn.png',body:'hero_body.png.png',upper:'hero_arm1.png',fore:'hero_arm2.png',hand:'hero_hand.png',shoulder:'hero_shoulder.png',sword:'assets/hero_sword_motion.png'};for(const k in src){im[k]=new Image;im[k].src=src[k]}
+(()=>{const $=s=>document.querySelector(s),cv=$('#game'),c=cv.getContext('2d');let W,H,last=0,S;const C=(v,a,b)=>Math.max(a,Math.min(b,v)),R=(a,b)=>a+Math.random()*(b-a),RI=(a,b)=>Math.floor(R(a,b+1)),E=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;const D={slime:{hp:2,d:1,r:0,h:205},skeleton:{hp:3,d:2,r:0,h:220},mage:{hp:3,d:2,r:1,h:228},bonobo:{hp:4,d:4,r:0,h:245},dragon:{hp:4,d:3,r:1,h:215}},im={};const src={hero:'assets/hero.webp',slime:'assets/suraimu.png',skeleton:'assets/がいこつ.png',mage:'assets/mahoutukai.png',bonobo:'assets/bonobo.png',dragon:'assets/minidoragonn.png',body:'hero_body.png.png',upper:'hero_arm1.png',fore:'hero_arm2.png',hand:'hero_hand.png',shoulder:'hero_shoulder.png',sword:'assets/hero_sword_motion.png',forest:'assets/forest-background.webp'};for(const k in src){im[k]=new Image;im[k].src=src[k]}
 function size(){W=innerWidth;H=innerHeight;let d=Math.min(devicePixelRatio||1,2);cv.width=W*d;cv.height=H*d;c.setTransform(d,0,0,d,0,0)}addEventListener('resize',size);size();function sh(a){for(let i=a.length-1;i;i--){let j=RI(0,i);[a[i],a[j]]=[a[j],a[i]]}return a}function mk(t,z){return{t,z,l:RI(0,2),hp:D[t].hp,max:D[t].hp,dead:0,cd:R(1.8,3.8),tell:0,mv:R(.7,2),fl:0}}function roster(){let a=[],e=sh([...Array(3).fill('slime'),...Array(3).fill('skeleton')]),r=sh([...Array(6).fill('slime'),...Array(6).fill('skeleton'),...Array(6).fill('mage'),...Array(3).fill('bonobo'),...Array(3).fill('dragon')]);e.forEach((t,i)=>a.push(mk(t,18+i*6+R(-1,1))));r.forEach((t,i)=>a.push(mk(t,46+i*145/23+R(-2,2))));return a}function reset(){S={run:0,pause:0,t:0,hp:20,dmg:0,z:0,l:1,guard:0,ch:[5,5],fr:[0,0],skill:null,fin:0,win:0,dash:null,norm:0,en:roster(),shots:[],ptr:null,hit:0,pd:0,pt:0,notice:null};hideNotice();ui()}function ui(){const hpRatio=C(S.hp/20,0,1),hpColor='hsl('+(120*hpRatio)+',100%,50%)';$('#hp').textContent=Math.ceil(C(S.hp,0,20))+'/20';$('#hpf').style.width=(hpRatio*100)+'%';$('#hpf').style.background=hpColor;$('#hpbar').style.background=hpRatio===0?'#ff0000':'#17212b';$('#hpbar').style.borderColor=hpColor;$('#time').textContent=S.t.toFixed(1);$('#fin').textContent=S.fin;for(let i=0;i<2;i++){
   // The original five charges remain unchanged; show partial recharge too.
   const fill=C((S.ch[i]+(S.ch[i]<5?S.fr[i]:0))/5,0,1);
@@ -102,6 +102,16 @@ function playerHeight(){return Math.min(H*.285,238)*(1-.22*S.pd/MAX_DEPTH)}
 // scenery at device resolution so foliage does not add work to each game frame.
 let forestLayer=null,forestKey='';
 function bg(){
+  const image=im.forest;
+  if(image.complete&&image.naturalWidth>0){
+    // Uniform scaling keeps the painting's perspective intact. Anchor its
+    // vanishing point (50%,18%) to the same point used by the game horizon.
+    const scale=Math.max(W/image.naturalWidth,H/image.naturalHeight);
+    const width=image.naturalWidth*scale,height=image.naturalHeight*scale;
+    c.drawImage(image,W*.5-width*.5,H*.18-height*.18,width,height);
+    return;
+  }
+  // Keep the existing forest as a fallback while the painting loads.
   const d=Math.min(devicePixelRatio||1,2),key=W+':'+H+':'+d;
   if(forestKey!==key){
     forestLayer=document.createElement('canvas');forestLayer.width=Math.round(W*d);forestLayer.height=Math.round(H*d);
