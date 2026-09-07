@@ -22,13 +22,14 @@ function updateDepth(dt){
   // the distance the front actually moved this frame, without crossing it.
   S.pd=C(S.pd,0,limit);
 }
-function adv(n){let v=Math.min(n,Math.max(0,front()-S.z-S.pd-FRONT_GAP));S.z+=v;return v}function hurt(n){n=S.guard?n/2:n;S.hp-=n;S.dmg+=n;S.hit=.15;if(S.hp<=0)end(0)}function hit(e,n,sk){e.hp-=n;e.fl=.12;if(e.tell>0){e.tell=0;e.cd=R(1.8,3.8)}if(e.hp<=0){e.dead=1;if(sk){S.fin++;S.win=.3}}}function hideNotice(){const n=$('#actionName');n.style.opacity='0';n.classList.remove('moveArrow');if(S)S.notice=null}
+function adv(n){let v=Math.min(n,Math.max(0,front()-S.z-S.pd-FRONT_GAP));S.z+=v;return v}function sound(kind,type){if(window.GameSFX)window.GameSFX.play(kind,type)}function hurt(n){sound('hurt');n=S.guard?n/2:n;S.hp-=n;S.dmg+=n;S.hit=.15;if(S.hp<=0)end(0)}function hit(e,n,sk){if(e.dead)return;sound('hit',e.t);e.hp-=n;e.fl=.12;if(e.tell>0){e.tell=0;e.cd=R(1.8,3.8)}if(e.hp<=0){e.dead=1;sound('down',e.t);if(sk){S.fin++;S.win=.3}}}function hideNotice(){const n=$('#actionName');n.style.opacity='0';n.classList.remove('moveArrow');if(S)S.notice=null}
 function notice(text,seconds,arrow=false){S.notice={text,left:seconds,arrow};const n=$('#actionName');n.textContent=text;n.classList.toggle('moveArrow',arrow);n.style.opacity='1'}
 function placeNotice(){if(!S.notice)return;const n=$('#actionName');n.style.left=playerX()+'px';n.style.top=Math.max(42,playerY()-playerHeight()-22)+'px'}
 function flash(button){button.classList.remove('flash');void button.offsetWidth;button.classList.add('flash')}
 function fire(k){
   if(!S.run||S.pause||S.ch[k-1]<1)return;
   S.guard=0;S.ch[k-1]--;S.skill={k,t:0,d:k===1?.68:.82,done:0};
+  sound(k===1?'waterStart':'continentStart');
   notice(k===1?'水波斬':'大陸斬',k===1?.68:.82);
 }
 function lane(d){
@@ -61,7 +62,7 @@ function step(dt){
   if(S.skill){
     S.skill.t+=dt;let p=S.skill.t/S.skill.d;
     if(!S.skill.done&&p>(S.skill.k===1?.48:.54)){
-      S.skill.done=1;
+      S.skill.done=1;sound(S.skill.k===1?'waterSwing':'continentSwing');
       for(const e of S.en){
         let r=distance(e);if(e.dead||r<0||r>(S.skill.k===1?1.2:2.2))continue;
         if(S.skill.k===1){if(S.l===1||e.l===S.l||e.l===1)hit(e,2,1)}
@@ -78,7 +79,7 @@ function step(dt){
     if(e.tell>0){
       e.tell-=dt;
       if(e.tell<=0){
-        if(D[e.t].r)S.shots.push({l:e.l,z:e.z,d:D[e.t].d,t:e.t});
+        if(D[e.t].r){S.shots.push({l:e.l,z:e.z,d:D[e.t].d,t:e.t});sound('shot',e.t)}
         else if(distance(e)<=1.25&&distance(e)>=0&&e.l===S.l)hurt(D[e.t].d);
         e.cd=R(1.8,3.8);if(!S.run){ui();return}
       }
@@ -192,7 +193,7 @@ function skillEffect(h,sc){
   if(!water&&p>.59){c.globalAlpha=(end-p)/(end-.59)*.5;c.lineWidth=2*sc;c.beginPath();c.ellipse(now.tip[0],Math.min(0,now.tip[1]),h*.2*(p-.59)/.11,h*.04,0,0,Math.PI*2);c.stroke()}
   c.restore();
 }
-function draw(){placeNotice();c.clearRect(0,0,W,H);bg();for(const e of S.en.filter(e=>!e.dead&&e.z-S.z>-2&&e.z-S.z<38).sort((a,b)=>b.z-a.z)){let r=e.z-S.z,p=C(1-r/38,.25,1.12),h=D[e.t].h*p,img=im[e.t],w=h*img.naturalWidth/Math.max(1,img.naturalHeight),x=lx(e.l,r),y=yy(r);c.save();c.translate(x,y);if(e.tell>0){let q=.5+.5*Math.sin(performance.now()/70);c.globalAlpha=.2+.18*q;c.fillStyle=D[e.t].r?'#9d6cff':'#ffb096';c.beginPath();c.ellipse(0,-h*.45,35*p,48*p,0,0,7);c.fill();c.globalAlpha=1}if(e.fl)c.globalAlpha=.55;if(img.complete)c.drawImage(img,-w/2,-h,w,h);c.restore();c.fillStyle='#000b';c.fillRect(x-w*.3,y-h-7,w*.6,4);c.fillStyle='#fff';c.fillRect(x-w*.3,y-h-7,w*.6*e.hp/e.max,4)}frontline();for(const p of S.shots){let r=p.z-S.z,x=lx(p.l,r),y=yy(r);c.fillStyle=p.t==='mage'?'#bd79ff':'#ff873d';c.shadowColor=c.fillStyle;c.shadowBlur=18;c.beginPath();c.arc(x,y,10,0,7);c.fill();c.shadowBlur=0}let x=playerX(),y=playerY(),img=im.hero,sc=1-.22*S.pd/MAX_DEPTH,h=playerHeight(),w=h*img.naturalWidth/Math.max(1,img.naturalHeight);c.save();c.translate(x,y);if(S.guard){c.strokeStyle='#dff7ff';c.lineWidth=5;c.beginPath();c.arc(-h*.12,-h*.42,h*.25,-2.2,2.2);c.stroke()}if(rigReady())drawRig(h);else if(img.complete&&img.naturalWidth){skillEffect(h,sc);c.drawImage(img,-w/2,-h,w,h);}c.restore();if(S.hit){c.fillStyle='rgba(255,80,60,.12)';c.fillRect(0,0,W,H)}}function end(ok){S.run=0;S.ptr=null;S.guard=0;hideNotice();if(window.GameBGM)window.GameBGM.pause();$('#resultTitle').textContent=ok?'STAGE CLEAR':'GAME OVER';$('#resultText').innerHTML='TIME '+S.t.toFixed(2)+' s<br>DAMAGE '+S.dmg.toFixed(1)+'<br>SKILL FINISH '+S.fin+' / 30';$('#result').classList.remove('hide');if(window.bgm)bgm.pause()}function start(){reset();S.run=1;last=performance.now();$('#intro').classList.add('hide');if(window.bgm){bgm.currentTime=0;bgm.play().catch(()=>{})}}$('#start').onclick=start;$('#retry').onclick=()=>{reset();S.run=1;last=performance.now();$('#result').classList.add('hide');if(window.bgm)bgm.play().catch(()=>{})};// Own each gesture by pointerId; button fingers cannot finish a canvas swipe.
+function draw(){placeNotice();c.clearRect(0,0,W,H);bg();for(const e of S.en.filter(e=>!e.dead&&e.z-S.z>-2&&e.z-S.z<38).sort((a,b)=>b.z-a.z)){let r=e.z-S.z,p=C(1-r/38,.25,1.12),h=D[e.t].h*p,img=im[e.t],w=h*img.naturalWidth/Math.max(1,img.naturalHeight),x=lx(e.l,r),y=yy(r);c.save();c.translate(x,y);if(e.tell>0){let q=.5+.5*Math.sin(performance.now()/70);c.globalAlpha=.2+.18*q;c.fillStyle=D[e.t].r?'#9d6cff':'#ffb096';c.beginPath();c.ellipse(0,-h*.45,35*p,48*p,0,0,7);c.fill();c.globalAlpha=1}if(e.fl)c.globalAlpha=.55;if(img.complete)c.drawImage(img,-w/2,-h,w,h);c.restore();c.fillStyle='#000b';c.fillRect(x-w*.3,y-h-7,w*.6,4);c.fillStyle='#fff';c.fillRect(x-w*.3,y-h-7,w*.6*e.hp/e.max,4)}frontline();for(const p of S.shots){let r=p.z-S.z,x=lx(p.l,r),y=yy(r);c.fillStyle=p.t==='mage'?'#bd79ff':'#ff873d';c.shadowColor=c.fillStyle;c.shadowBlur=18;c.beginPath();c.arc(x,y,10,0,7);c.fill();c.shadowBlur=0}let x=playerX(),y=playerY(),img=im.hero,sc=1-.22*S.pd/MAX_DEPTH,h=playerHeight(),w=h*img.naturalWidth/Math.max(1,img.naturalHeight);c.save();c.translate(x,y);if(S.guard){c.strokeStyle='#dff7ff';c.lineWidth=5;c.beginPath();c.arc(-h*.12,-h*.42,h*.25,-2.2,2.2);c.stroke()}if(rigReady())drawRig(h);else if(img.complete&&img.naturalWidth){skillEffect(h,sc);c.drawImage(img,-w/2,-h,w,h);}c.restore();if(S.hit){c.fillStyle='rgba(255,80,60,.12)';c.fillRect(0,0,W,H)}}function end(ok){if(window.GameSFX)window.GameSFX.finish();S.run=0;S.ptr=null;S.guard=0;hideNotice();if(window.GameBGM)window.GameBGM.pause();$('#resultTitle').textContent=ok?'STAGE CLEAR':'GAME OVER';$('#resultText').innerHTML='TIME '+S.t.toFixed(2)+' s<br>DAMAGE '+S.dmg.toFixed(1)+'<br>SKILL FINISH '+S.fin+' / 30';$('#result').classList.remove('hide');if(window.bgm)bgm.pause()}function start(){if(window.GameSFX)window.GameSFX.start();reset();S.run=1;last=performance.now();$('#intro').classList.add('hide');if(window.bgm){bgm.currentTime=0;bgm.play().catch(()=>{})}}$('#start').onclick=start;$('#retry').onclick=()=>{if(window.GameSFX)window.GameSFX.start();reset();S.run=1;last=performance.now();$('#result').classList.add('hide');if(window.bgm)bgm.play().catch(()=>{})};// Own each gesture by pointerId; button fingers cannot finish a canvas swipe.
 for(const id of ['#guard','#s1','#s2']){
   const button=$(id);
   button.addEventListener('contextmenu',e=>e.preventDefault());
@@ -200,6 +201,7 @@ for(const id of ['#guard','#s1','#s2']){
   button.addEventListener('animationend',()=>button.classList.remove('flash'));
   button.onpointerdown=e=>{
     e.preventDefault();e.stopPropagation();flash(button);
+    if(S.run&&!S.pause&&window.GameSFX)window.GameSFX.wake();
     if(id==='#guard'){
       if(S.run&&!S.pause){S.guard=1;button.setPointerCapture(e.pointerId);notice('防御',.5)}
     }else fire(id==='#s1'?1:2);
@@ -207,13 +209,13 @@ for(const id of ['#guard','#s1','#s2']){
 }
 ['pointerup','pointercancel','lostpointercapture'].forEach(v=>$('#guard').addEventListener(v,()=>S.guard=0));
 $('#stop').onclick=()=>{
-  if(!S.run)return;S.pause=1;S.guard=0;S.ptr=null;hideNotice();
+  if(!S.run)return;if(window.GameSFX)window.GameSFX.pause();S.pause=1;S.guard=0;S.ptr=null;hideNotice();
   $('#pause').classList.remove('hide');if(window.bgm)bgm.pause();
 };
-$('#resume').onclick=()=>{S.pause=0;last=performance.now();$('#pause').classList.add('hide');if(window.bgm)bgm.play().catch(()=>{})};
+$('#resume').onclick=()=>{if(window.GameSFX)window.GameSFX.start();S.pause=0;last=performance.now();$('#pause').classList.add('hide');if(window.bgm)bgm.play().catch(()=>{})};
 cv.onpointerdown=e=>{
   if(!S.run||S.pause||S.ptr)return;
-  e.preventDefault();cv.setPointerCapture(e.pointerId);
+  e.preventDefault();if(window.GameSFX)window.GameSFX.wake();cv.setPointerCapture(e.pointerId);
   S.ptr={id:e.pointerId,x:e.clientX,y:e.clientY};
 };
 cv.onpointerup=e=>{
