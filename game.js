@@ -1,5 +1,15 @@
 (()=>{const $=s=>document.querySelector(s),cv=$('#game'),c=cv.getContext('2d');let W,H,last=0,S;const C=(v,a,b)=>Math.max(a,Math.min(b,v)),R=(a,b)=>a+Math.random()*(b-a),RI=(a,b)=>Math.floor(R(a,b+1)),E=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;const D={slime:{hp:2,d:1,r:0,h:205},skeleton:{hp:3,d:2,r:0,h:220},mage:{hp:3,d:2,r:1,h:228},bonobo:{hp:4,d:4,r:0,h:245},dragon:{hp:4,d:3,r:1,h:215}},im={};const src={hero:'assets/hero.webp',slime:'assets/suraimu.png',skeleton:'assets/がいこつ.png',mage:'assets/mahoutukai.png',bonobo:'assets/bonobo.png',dragon:'assets/minidoragonn.png',body:'hero_body.png.png',upper:'hero_arm1.png',fore:'hero_arm2.png',hand:'hero_hand.png',shoulder:'hero_shoulder.png',sword:'assets/hero_sword_motion.png'};for(const k in src){im[k]=new Image;im[k].src=src[k]}
-function size(){W=innerWidth;H=innerHeight;let d=Math.min(devicePixelRatio||1,2);cv.width=W*d;cv.height=H*d;c.setTransform(d,0,0,d,0,0)}addEventListener('resize',size);size();function sh(a){for(let i=a.length-1;i;i--){let j=RI(0,i);[a[i],a[j]]=[a[j],a[i]]}return a}function mk(t,z){return{t,z,l:RI(0,2),hp:D[t].hp,max:D[t].hp,dead:0,cd:R(1.8,3.8),tell:0,mv:R(.7,2),fl:0}}function roster(){let a=[],e=sh([...Array(3).fill('slime'),...Array(3).fill('skeleton')]),r=sh([...Array(6).fill('slime'),...Array(6).fill('skeleton'),...Array(6).fill('mage'),...Array(3).fill('bonobo'),...Array(3).fill('dragon')]);e.forEach((t,i)=>a.push(mk(t,18+i*6+R(-1,1))));r.forEach((t,i)=>a.push(mk(t,46+i*145/23+R(-2,2))));return a}function reset(){S={run:0,pause:0,t:0,hp:20,dmg:0,z:0,l:1,guard:0,ch:[5,5],fr:[0,0],skill:null,fin:0,win:0,dash:null,norm:0,en:roster(),shots:[],ptr:null,hit:0,pd:0,pt:0,notice:null};hideNotice();ui()}function ui(){$('#hp').textContent=Math.ceil(S.hp)+'/20';$('#hpf').style.width=C(S.hp*5,0,100)+'%';$('#time').textContent=S.t.toFixed(1);$('#fin').textContent=S.fin;$('#g1').style.width=S.ch[0]*20+'%';$('#g2').style.width=S.ch[1]*20+'%'}// pd/pt are player depth in the same world units as enemy.z and stage S.z.
+function size(){W=innerWidth;H=innerHeight;let d=Math.min(devicePixelRatio||1,2);cv.width=W*d;cv.height=H*d;c.setTransform(d,0,0,d,0,0)}addEventListener('resize',size);size();function sh(a){for(let i=a.length-1;i;i--){let j=RI(0,i);[a[i],a[j]]=[a[j],a[i]]}return a}function mk(t,z){return{t,z,l:RI(0,2),hp:D[t].hp,max:D[t].hp,dead:0,cd:R(1.8,3.8),tell:0,mv:R(.7,2),fl:0}}function roster(){let a=[],e=sh([...Array(3).fill('slime'),...Array(3).fill('skeleton')]),r=sh([...Array(6).fill('slime'),...Array(6).fill('skeleton'),...Array(6).fill('mage'),...Array(3).fill('bonobo'),...Array(3).fill('dragon')]);e.forEach((t,i)=>a.push(mk(t,18+i*6+R(-1,1))));r.forEach((t,i)=>a.push(mk(t,46+i*145/23+R(-2,2))));return a}function reset(){S={run:0,pause:0,t:0,hp:20,dmg:0,z:0,l:1,guard:0,ch:[5,5],fr:[0,0],skill:null,fin:0,win:0,dash:null,norm:0,en:roster(),shots:[],ptr:null,hit:0,pd:0,pt:0,notice:null};hideNotice();ui()}function ui(){$('#hp').textContent=Math.ceil(S.hp)+'/20';$('#hpf').style.width=C(S.hp*5,0,100)+'%';$('#time').textContent=S.t.toFixed(1);$('#fin').textContent=S.fin;for(let i=0;i<2;i++){
+  // The original five charges remain unchanged; show partial recharge too.
+  const fill=C((S.ch[i]+(S.ch[i]<5?S.fr[i]:0))/5,0,1);
+  $('#g'+(i+1)).style.strokeDashoffset=String(100*(1-fill));
+  const button=$('#s'+(i+1));
+  if(button._charges!==S.ch[i]){
+    button._charges=S.ch[i];
+    button.setAttribute('aria-label',(i===0?'水波斬':'大陸斬')+'：残り'+S.ch[i]+'回');
+    button.setAttribute('aria-disabled',String(S.ch[i]<1));
+  }
+}}// pd/pt are player depth in the same world units as enemy.z and stage S.z.
 const MAX_DEPTH=(.75-.46)*34/.54, FRONT_GAP=.7;
 function distance(e){return e.z-S.z-S.pd}
 function front(){let z=Infinity;for(const e of S.en)if(!e.dead)z=Math.min(z,e.z);return z}
@@ -217,6 +227,9 @@ cv.onpointerup=e=>{
   }
 };
 ['pointercancel','lostpointercapture'].forEach(v=>cv.addEventListener(v,e=>{if(S.ptr&&S.ptr.id===e.pointerId)S.ptr=null}));
+// iOS rubber-band scrolling needs a non-passive touchmove cancellation.
+// Do not cancel touchstart/end: START, STOP and skill taps must stay native.
+document.addEventListener('touchmove',e=>{if(e.cancelable)e.preventDefault()},{passive:false});
 cv.addEventListener('contextmenu',e=>e.preventDefault());
 cv.addEventListener('dragstart',e=>e.preventDefault());
 reset();function loop(t){let dt=last?Math.min(.033,(t-last)/1000):0;last=t;step(dt);draw();requestAnimationFrame(loop)}requestAnimationFrame(loop)})();
