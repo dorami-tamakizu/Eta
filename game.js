@@ -121,17 +121,23 @@ function makeBodyLayer(){
 }
 const REST={upper:-.14,fore:-.12,wrist:Math.PI,flat:1,left:.16};
 function rigPose(progress){
-  if(!S.skill)return REST;
+  if(!S.skill)return {...REST,behind:false};
   const p=progress===undefined?C(S.skill.t/S.skill.d,0,1):progress,water=S.skill.k===1;
-  const wind=water?{upper:-1.8,fore:.25,wrist:Math.PI,flat:.48,left:.5}:{upper:-2.5,fore:-.55,wrist:Math.PI,flat:1,left:.05};
+  // Fold the elbow with the sword on the camera-facing/back side first.
+  // Then lift it clear of the torso at the right shoulder before cutting forward.
+  const wind=water?{upper:-.85,fore:2.2,wrist:Math.PI,flat:.75,left:.5}:{upper:-2.2,fore:2.6,wrist:Math.PI,flat:1,left:.05};
+  const ready=water?{upper:-1.8,fore:.25,wrist:Math.PI,flat:.48,left:.5}:{upper:-2.5,fore:-.55,wrist:Math.PI,flat:1,left:.05};
   const follow=water?{upper:1.3,fore:.2,wrist:Math.PI,flat:.48,left:-.15}:{upper:-.1,fore:.1,wrist:Math.PI,flat:1,left:.3};
-  const windEnd=water?.32:.36,cutEnd=water?.56:.60,holdEnd=water?.67:.70;
+  const windEnd=water?.22:.24,frontStart=water?.34:.38,cutEnd=water?.56:.60,holdEnd=water?.67:.70;
   let from,to,q;
   if(p<windEnd){from=REST;to=wind;q=E(p/windEnd)}
-  else if(p<cutEnd){from=wind;to=follow;q=E((p-windEnd)/(cutEnd-windEnd))}
+  else if(p<frontStart){from=wind;to=ready;q=E((p-windEnd)/(frontStart-windEnd))}
+  else if(p<cutEnd){from=ready;to=follow;q=E((p-frontStart)/(cutEnd-frontStart))}
   else if(p<holdEnd){from=follow;to=follow;q=0}
   else{from=follow;to=REST;q=E((p-holdEnd)/(1-holdEnd))}
-  const pose={};for(const key in REST)pose[key]=from[key]+(to[key]-from[key])*q;return pose;
+  const pose={behind:p<frontStart};
+  for(const key in REST)pose[key]=from[key]+(to[key]-from[key])*q;
+  return pose;
 }
 function segment(img,rect,pivot,end,length){
   const dx=end[0]-pivot[0],dy=end[1]-pivot[1],s=length/Math.hypot(dx,dy);
@@ -164,12 +170,14 @@ function shoulder(right,pose){
 }
 function drawRig(h){
   const pose=rigPose();
-  // Both attacks take place on the enemy-facing side. Render their blades,
-  // hands, arms AND trails before the opaque body/cape, never over the back.
-  // Keep the wrist at a stable grip angle; the shoulder/elbow drive the cut.
   skillEffect(h,h/Math.min(H*.285,238));
   c.save();c.scale(h/1104,h/1104);c.translate(-750,-1344);
-  arm(false,pose);arm(true,pose);c.drawImage(makeBodyLayer(),0,0);
+  arm(false,pose);
+  if(!pose.behind)arm(true,pose);
+  c.drawImage(makeBodyLayer(),0,0);
+  // During windup the right arm/blade is behind the character, facing us.
+  // Switch to the enemy-facing layer only once the raised blade clears the body.
+  if(pose.behind)arm(true,pose);
   shoulder(false,pose);shoulder(true,pose);c.restore();
 }
 function swordPoints(pose,h){
@@ -183,7 +191,7 @@ function swordPoints(pose,h){
 function skillEffect(h,sc){
   if(!S.skill)return;
   const p=S.skill.t/S.skill.d,water=S.skill.k===1;
-  const begin=water?.33:.37,end=water?.67:.70;if(p<begin||p>end)return;
+  const begin=water?.35:.39,end=water?.67:.70;if(p<begin||p>end)return;
   const q=(p-begin)/(end-begin),now=swordPoints(rigPose(p),h),before=swordPoints(rigPose(Math.max(begin,p-.09)),h);
   c.save();c.globalAlpha=Math.sin(q*Math.PI)*.6;
   c.strokeStyle=water?'#d7f8ff':'#fff5cf';c.fillStyle=water?'#b6edff':'#ffe8ae';
