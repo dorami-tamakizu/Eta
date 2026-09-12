@@ -23,23 +23,31 @@ function updateDepth(dt){
   S.pd=C(S.pd,0,limit);
 }
 function adv(n){let v=Math.min(n,Math.max(0,front()-S.z-S.pd-FRONT_GAP));S.z+=v;return v}function sound(kind,type){if(window.GameSFX)window.GameSFX.play(kind,type)}function hurt(n){S.combo=0;S.shake=.18;burst(S.l,S.z+S.pd,'#ff7563',12);sound('hurt');n=S.guard?n/2:n;S.hp-=n;S.dmg+=n;S.hit=.15;if(S.hp<=0)end(0)}function hit(e,n,sk){if(e.dead)return;sound('hit',e.t);e.hp-=n;e.fl=.12;S.combo++;S.comboTime=2;S.fx.push({kind:'number',l:e.l,z:e.z,n:n,t:0,life:.8,color:sk?'#fff079':'#ffffff'});burst(e.l,e.z,sk?'#b5f7ff':'#ffffff',9);S.shake=sk?.08:.035;if(e.tell>0){e.tell=0;e.cd=R(1.8,3.8)}if(e.hp<=0){e.dead=1;e.fade=.4;burst(e.l,e.z,'#ffdfa0',18);sound('down',e.t);if(sk){S.fin++;S.win=.3}}}function hideNotice(){const n=$('#actionName');n.style.opacity='0';n.classList.remove('moveArrow');if(S)S.notice=null}
+// Direct video frame crops: native 30 fps, including the original pop/settle frames.
+const NAME_FRAMES={
+  water:[[42,59,91,45],[19,53,135,72],[5,49,157,89],[25,67,111,59],[51,79,61,40],[32,74,101,55],[43,83,78,41],[45,62,81,42],[49,49,78,42],[47,50,81,44],[44,69,80,40],[35,71,80,44]],
+  earth:[[27,67,103,53],[14,61,143,84],[1,58,166,93],[27,60,117,70],[52,66,69,42],[32,51,106,66],[43,58,85,51],[44,65,85,46],[41,70,85,51],[41,80,83,47],[42,83,82,50],[41,85,82,50]]
+};
 function notice(text,seconds,arrow=false){
-  S.notice={text,left:seconds,total:seconds,arrow};const n=$('#actionName');
-  const plate=text==='水波斬'?'assets/name-water.png':text==='大陸斬'?'assets/name-earth.png':null;
+  const plate=text==='水波斬'?'water':text==='大陸斬'?'earth':null;
+  S.notice={text,left:seconds,total:seconds,arrow,plate,frame:-1};const n=$('#actionName');
   n.classList.toggle('nameplate',Boolean(plate));n.classList.toggle('moveArrow',arrow);
-  if(plate){n.innerHTML='<img src="'+plate+'" alt="'+(text==='水波斬'?'海波斬':'大地斬')+'" draggable="false">'}else n.textContent=text;
+  n.style.width='';n.style.height='';if(!plate)n.textContent=text;
   n.style.opacity='1';placeNotice();
 }
 function noticePosition(){return {x:playerX(),y:Math.max(88,playerY()-playerHeight()*1.36-36)}}
 function placeNotice(){
-  if(!S.notice)return;const n=$('#actionName'),pos=noticePosition(),age=S.notice.total-S.notice.left;
+  if(!S.notice)return;const state=S.notice,n=$('#actionName'),pos=noticePosition(),age=state.total-state.left;
   n.style.left=pos.x+'px';n.style.top=pos.y+'px';
-  // The video plate pops large, undershoots, then settles. Game time freezes it on STOP.
-  const keys=[[0,.60],[.067,1.42],[.10,1.05],[.133,.66],[.167,1],[.233,.83],[.30,.86]];
-  let scale=.86;
-  for(let i=1;i<keys.length;i++)if(age<keys[i][0]){const a=keys[i-1],b=keys[i];scale=a[1]+(b[1]-a[1])*C((age-a[0])/(b[0]-a[0]),0,1);break}
-  n.style.transform='translate(-50%,-100%) scale('+(S.notice.arrow?1:scale)+')';n.style.transformOrigin='50% 100%';
-  n.style.opacity=String(Math.min(1,age/.035,S.notice.left/.09));
+  if(state.plate){
+    const frame=Math.min(11,Math.floor(age*30));
+    if(frame!==state.frame){state.frame=frame;const [x,y,w,h]=NAME_FRAMES[state.plate][frame];
+      n.style.width=w+'px';n.style.height=h+'px';
+      n.innerHTML='<span class="extracted-plate" role="img" aria-label="'+(state.plate==='water'?'海波斬':'大地斬')+'" style="width:'+w+'px;height:'+h+'px;background-image:url(assets/name-'+state.plate+'-animation.png);background-position:'+(-frame%6*180-x)+'px '+(-Math.floor(frame/6)*180-y)+'px"></span>';
+    }
+  }
+  n.style.transform='translate(-50%,-100%)';n.style.transformOrigin='50% 100%';
+  n.style.opacity=String(Math.min(1,state.left/.09));
 }
 function flash(button){button.classList.remove('flash');void button.offsetWidth;button.classList.add('flash')}
 function fire(k){
