@@ -1,4 +1,4 @@
-(()=>{const $=s=>document.querySelector(s),cv=$('#game'),c=cv.getContext('2d');let W,H,last=0,S,combatSeed=17319;function random(){combatSeed=(Math.imul(combatSeed,1664525)+1013904223)>>>0;return combatSeed/4294967296}const C=(v,a,b)=>Math.max(a,Math.min(b,v)),R=(a,b)=>a+random()*(b-a),RI=(a,b)=>Math.floor(R(a,b+1)),E=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;const D={slime:{hp:2,d:1,r:0,h:205},skeleton:{hp:3,d:2,r:0,h:220},mage:{hp:3,d:2,r:1,h:228},bonobo:{hp:4,d:4,r:0,h:245},dragon:{hp:4,d:3,r:1,h:215}},im={};const src={hero:'assets/hero.webp',slime:'assets/suraimu.png',skeleton:'assets/がいこつ.png',mage:'assets/mahoutukai.png',bonobo:'assets/bonobo.png',dragon:'assets/minidoragonn.png',body:'hero_body.png.png',upper:'hero_arm1.png',fore:'hero_arm2.png',hand:'hero_hand.png',shoulder:'hero_shoulder.png',sword:'assets/hero_sword_motion.png',forest:'assets/forest-background.webp'};for(const k in src){im[k]=new Image;im[k].src=src[k]}
+(()=>{const $=s=>document.querySelector(s),cv=$('#game'),c=cv.getContext('2d');let W,H,last=0,S,combatSeed=17319;function random(){combatSeed=(Math.imul(combatSeed,1664525)+1013904223)>>>0;return combatSeed/4294967296}const C=(v,a,b)=>Math.max(a,Math.min(b,v)),R=(a,b)=>a+random()*(b-a),RI=(a,b)=>Math.floor(R(a,b+1)),E=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;const D={slime:{hp:2,d:1,r:0,h:205},skeleton:{hp:3,d:2,r:0,h:220},mage:{hp:3,d:2,r:1,h:228},bonobo:{hp:4,d:4,r:0,h:245},dragon:{hp:4,d:3,r:1,h:215}},im={};const src={hero:'assets/hero.webp',slime:'assets/suraimu.png',skeleton:'assets/がいこつ.png',mage:'assets/mahoutukai.png',bonobo:'assets/bonobo.png',dragon:'assets/minidoragonn.png',body:'hero_body.png.png',upper:'hero_arm1.png',fore:'hero_arm2.png',hand:'hero_hand.png',shoulder:'hero_shoulder.png',sword:'assets/hero_sword_motion.png',forest:'assets/forest-background.webp',poses:'assets/hero-motion-sheet.png'};for(const k in src){im[k]=new Image;im[k].src=src[k]}
 function size(){W=innerWidth;H=innerHeight;let d=Math.min(devicePixelRatio||1,2);cv.width=W*d;cv.height=H*d;c.setTransform(d,0,0,d,0,0)}addEventListener('resize',size);size();function sh(a){for(let i=a.length-1;i;i--){let j=RI(0,i);[a[i],a[j]]=[a[j],a[i]]}return a}function mk(t,z){return{t,z,l:RI(0,2),hp:D[t].hp,max:D[t].hp,dead:0,cd:R(1.8,3.8),tell:0,mv:R(.7,2),fl:0}}function roster(){let a=[],e=sh([...Array(3).fill('slime'),...Array(3).fill('skeleton')]),r=sh([...Array(6).fill('slime'),...Array(6).fill('skeleton'),...Array(6).fill('mage'),...Array(3).fill('bonobo'),...Array(3).fill('dragon')]);e.forEach((t,i)=>a.push(mk(t,18+i*6+R(-1,1))));r.forEach((t,i)=>a.push(mk(t,56+i*135/23+R(-1,1))));return a}function reset(){combatSeed=17319;S={run:0,pause:0,t:0,hp:20,dmg:0,z:0,l:1,guard:0,ch:[5,5],fr:[0,0],skill:null,fin:0,win:0,dash:null,norm:0,en:roster(),shots:[],ptr:null,hit:0,pd:0,pt:0,notice:null,ll:1,fx:[],waves:[],combo:0,comboTime:0,shake:0};hideNotice();ui()}function ui(){const hpRatio=C(S.hp/20,0,1),hpColor='hsl('+(120*hpRatio)+',100%,50%)';$('#hp').textContent=Math.ceil(C(S.hp,0,20))+'/20';$('#hpf').style.width=(hpRatio*100)+'%';$('#hpf').style.background=hpColor;$('#hpbar').style.background=hpRatio===0?'#ff0000':'#17212b';$('#hpbar').style.borderColor=hpColor;$('#time').textContent=S.t.toFixed(1);$('#fin').textContent=S.fin;$('#kills').textContent=S.en.filter(e=>e.dead).length;for(let i=0;i<2;i++){
   // The original five charges remain unchanged; show partial recharge too.
   const fill=C((S.ch[i]+(S.ch[i]<5?S.fr[i]:0))/5,0,1);
@@ -291,6 +291,51 @@ function shoulder(right,pose){
   const rect=right?[929,521,398,560]:[275,521,398,560],px=right?1040:560,s=.20;
   c.drawImage(im.shoulder,...rect,(rect[0]-px)*s,(rect[1]-620)*s,rect[2]*s,rect[3]*s);c.restore();
 }
+// The supplied PNG is preserved intact. Rectangles select its 16 poses at runtime.
+// Anchor is the midpoint of the planted feet, independent of sword bounds.
+const POSES=[
+  {r:[46,39,244,273],a:[122,309]},
+  {r:[314,47,192,265],a:[395,309]},
+  {r:[547,20,194,292],a:[649,309]},
+  {r:[774,59,235,253],a:[936,309]},
+  {r:[26,382,266,253],a:[138,632]},
+  {r:[288,377,245,257],a:[401,631]},
+  {r:[555,380,204,259],a:[643,636]},
+  {r:[782,374,238,268],a:[873,639]},
+  {r:[39,952,242,264],a:[125,1213]},
+  {r:[297,880,187,334],a:[395,1213]},
+  {r:[523,901,215,313],a:[651,1213]},
+  {r:[806,868,190,348],a:[913,1213]},
+  {r:[46,1269,179,238],a:[141,1505]},
+  {r:[294,1296,204,208],a:[397,1503]},
+  {r:[521,1244,248,264],a:[619,1505]},
+  {r:[782,1248,221,260],a:[866,1505]}
+];
+function poseFrame(k,p){
+  const beats=k===1?[0,.13,.27,.39,.48,.59,.73,.88]:[0,.13,.28,.43,.54,.64,.77,.90];
+  let frame=0;for(let i=1;i<beats.length;i++)if(p>=beats[i])frame=i;
+  return (k===2?8:0)+frame;
+}
+function posesReady(){return im.poses.complete&&im.poses.naturalWidth>0}
+function drawPoseFrame(index,h){
+  const pose=POSES[index],r=pose.r,a=pose.a,scale=h/268;
+  c.drawImage(im.poses,...r,(r[0]-a[0])*scale,(r[1]-a[1])*scale,r[2]*scale,r[3]*scale);
+}
+function drawPoseHero(h){
+  const skill=S.skill,p=skill?C(skill.t/skill.d,0,1):0;
+  drawPoseFrame(skill?poseFrame(skill.k,p):0,h);
+  if(!skill)return;
+  const cut=skill.k===1?.48:.54,q=(p-cut)/.16;
+  if(q<0||q>1)return;
+  // Mask the intentionally skipped fast sword passage at frame 4 -> 5.
+  c.save();c.globalAlpha=Math.sin(q*Math.PI)*.85;c.lineCap='round';
+  c.shadowColor='#4bdfff';c.shadowBlur=16;
+  for(let i=0;i<3;i++){
+    c.strokeStyle=['#159de775','#8cf1ff','#f4ffff'][i];c.lineWidth=h*[.075,.025,.008][i];c.beginPath();
+    if(skill.k===1)c.ellipse(0,-h*.55,h*.60,h*.12,-.16,Math.PI*.05,Math.PI*.95);
+    else{c.moveTo(h*.12,-h*1.22);c.bezierCurveTo(h*.47,-h*.94,h*.32,-h*.45,h*.16,-h*.02)}c.stroke();
+  }c.restore();
+}
 function drawRig(h){
   const pose=rigPose();
   skillEffect(h,h/Math.min(H*.285,238));
@@ -344,7 +389,7 @@ function draw(){
   const x=playerX(),y=playerY(),h=playerHeight(),img=im.hero;c.save();c.translate(x,y);
   c.fillStyle='#06111b66';c.beginPath();c.ellipse(0,0,h*.25,h*.04,0,0,7);c.fill();
   if(S.guard){c.strokeStyle='#b3f2ff';c.fillStyle='#53baff25';c.lineWidth=3;c.beginPath();c.ellipse(0,-h*.45,h*.34,h*.52,0,0,7);c.fill();c.stroke()}
-  if(rigReady())drawRig(h);else if(img.complete&&img.naturalWidth){const rect=crop(img),w=h*rect[2]/rect[3];c.drawImage(img,...rect,-w/2,-h,w,h)}c.restore();drawEffects();c.restore();
+  if(posesReady())drawPoseHero(h);else if(rigReady())drawRig(h);else if(img.complete&&img.naturalWidth){const rect=crop(img),w=h*rect[2]/rect[3];c.drawImage(img,...rect,-w/2,-h,w,h)}c.restore();drawEffects();c.restore();
   if(S.hit){c.fillStyle='rgba(255,80,60,.12)';c.fillRect(0,0,W,H)}
 }
 function end(ok){if(window.GameSFX)window.GameSFX.finish();S.run=0;S.ptr=null;S.guard=0;hideNotice();if(window.GameBGM)window.GameBGM.pause();$('#resultTitle').textContent=ok?'STAGE CLEAR '+(S.dmg<=5?'SS':S.dmg<=12?'S':'A'):'GAME OVER';$('#resultText').innerHTML='TIME '+S.t.toFixed(2)+' s<br>DAMAGE '+S.dmg.toFixed(1)+'<br>SKILL FINISH '+S.fin+' / 30';$('#result').classList.remove('hide');if(window.bgm)bgm.pause()}function start(){if(window.GameSFX)window.GameSFX.start();reset();S.run=1;last=performance.now();$('#intro').classList.add('hide');if(window.bgm){bgm.currentTime=0;bgm.play().catch(()=>{})}}$('#start').onclick=start;$('#retry').onclick=()=>{if(window.GameSFX)window.GameSFX.start();reset();S.run=1;last=performance.now();$('#result').classList.add('hide');if(window.bgm)bgm.play().catch(()=>{})};// Own each gesture by pointerId; button fingers cannot finish a canvas swipe.
