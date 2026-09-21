@@ -1,0 +1,1 @@
+Source: user attached X_holiday2daidai_1530708880355098625_1.mp4, QuestStart opening section 2.55–3.70 seconds. Audio extracted with short anti-click fades. Original mixed music remains in this segment. Played through effect bus at start instead of synthesized effect.
