@@ -3,7 +3,7 @@ const noop=()=>{},canvas=new Proxy({},{get:()=>noop}),nodes=new Map();
 const node=()=>({style:{},classList:{add:noop,remove:noop,toggle:noop},setAttribute:noop,addEventListener:noop,getContext:()=>canvas,setPointerCapture:noop});
 const context={console,Math,Set,Image:class{},innerWidth:390,innerHeight:844,devicePixelRatio:1,addEventListener:noop,requestAnimationFrame:noop,performance:{now:()=>0},document:{querySelector:s=>{if(!nodes.has(s))nodes.set(s,node());return nodes.get(s)},addEventListener:noop},window:{}};
 let code=fs.readFileSync(path.join(__dirname,'../game.js'),'utf8');
-code=code.replace('reset();function loop(t)','globalThis.test={reset,step,hit,accelerate,fire,score,end,highScore,drawPoseHero,playerY,playerHeight,waterState,groundZ,groundPhase,get state(){return S}};reset();function loop(t)');
+code=code.replace('reset();function loop(t)','globalThis.test={reset,step,hurt,hit,accelerate,fire,score,end,highScore,drawPoseHero,playerY,playerHeight,waterState,groundZ,groundPhase,get state(){return S}};reset();function loop(t)');
 vm.runInNewContext(code,context);const g=context.test;
 function setup(){g.reset();const s=g.state;s.run=1;s.en=[{t:'slime',hp:2,max:2,l:1,z:100,dead:0,cd:100,mv:100,tell:0,fl:0}];return s}
 function tick(n){for(let i=0;i<n;i++)g.step(.01)}
@@ -51,7 +51,7 @@ vv.height=650;viewportEvents.resize();assert.equal(nodes.get('#gameViewport').st
 vv.offsetTop=8;viewportEvents.scroll();assert.equal(nodes.get('#gameViewport').style.top,'8px');
 console.log('PASS: visible viewport resize and offset updates');
 
-s=setup();g.fire(1);tick(32);assert.equal(s.waterFx.length,0);tick(2);assert.equal(s.waterFx.length,1);
+s=setup();g.fire(1);tick(18);assert.equal(s.waterFx.length,0);tick(2);assert.equal(s.waterFx.length,1);
 const age=s.waterFx[0].age;s.pause=1;tick(40);assert.equal(s.waterFx[0].age,age);s.pause=0;
 tick(30);assert.equal(s.waterFx.length,1);tick(32);assert.equal(s.waterFx.length,0);
 assert(g.waterState(.05).spread>.8);assert(g.waterState(.15).lift>g.waterState(.05).lift);
@@ -104,3 +104,5 @@ s.pause=0;tick(20);assert.equal(s.guardPose,0);
 s.guard=1;tick(5);assert(s.guardPose>0&&s.guardPose<1);
 g.reset();assert.equal(g.state.guardPose,0);
 console.log('PASS: guard raises, holds, pauses, releases and resets');
+
+s=setup();g.hurt(2);assert.equal(s.guardImpact,0);s.guard=1;g.hurt(2);assert.equal(s.guardImpact,.38);assert.equal(s.hp,17);s.pause=1;tick(40);assert.equal(s.guardImpact,.38);s.pause=0;tick(40);assert.equal(s.guardImpact,0);
