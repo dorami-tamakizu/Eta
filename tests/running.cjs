@@ -113,6 +113,6 @@ s=setup();const worldTree=35;const treeBefore=g.sceneryDepth(worldTree);tick(50)
 console.log("PASS: trees share stage coordinates, advance with acceleration and freeze on pause");
 g.reset();s=g.state;assert.equal(s.en.length,60);for(let group=0;group<10;group++){const pack=s.en.filter(e=>e.group===group);assert.equal(pack.length,6);assert.equal(new Set(pack.map(e=>e.l)).size,3);assert.equal(Math.max(...pack.map(e=>e.z))-Math.min(...pack.map(e=>e.z)),3);if(group<9)assert.equal(s.en[(group+1)*6].z-pack[5].z,29)}
 s.run=1;s.z=19;s.pd=1;for(const e of s.en.filter(e=>e.group===0))g.hit(e,20,1);g.accelerate();assert(s.dash.n>10);const limit=s.en[6].z-1.2;tick(100);assert(s.z+s.pd<=limit+.6);console.log('PASS: ten three-lane packs and longer clear-pack dash stops before next enemies');
-s=setup();s.ch=[2,4];s.fr=[.3,.8];s.dashUntil=s.t+.5;g.accelerate();assert.deepEqual(Array.from(s.ch),[2,4]);tick(1);assert.deepEqual(Array.from(s.ch),[3,5]);assert.equal(s.fr[1],0);tick(10);assert.deepEqual(Array.from(s.ch),[3,5]);g.accelerate();tick(2);assert.deepEqual(Array.from(s.ch),[3,5]);
+s=setup();s.ch=[2,4];s.fr=[.3,.8];s.dashUntil=s.t+.5;g.accelerate();assert.deepEqual(Array.from(s.ch),[2,4]);tick(1);assert.deepEqual(Array.from(s.ch),[3,4]);assert.equal(s.fr[1],0);tick(10);assert.deepEqual(Array.from(s.ch),[3,4]);g.accelerate();tick(2);assert.deepEqual(Array.from(s.ch),[3,4]);
 s=setup();s.ch=[1,1];s.guard=1;s.dashUntil=s.t+.5;g.accelerate();tick(10);assert.deepEqual(Array.from(s.ch),[1,1]);
-console.log('PASS: successful moving dash restores each skill once, capped at five; blocked dash gives no charge');
+console.log('PASS: successful moving dash restores each skill once, capped at four; blocked dash gives no charge');
