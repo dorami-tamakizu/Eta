@@ -3,7 +3,7 @@ const noop=()=>{},canvas=new Proxy({},{get:()=>noop}),nodes=new Map();
 const node=()=>({style:{},classList:{add:noop,remove:noop,toggle:noop},setAttribute:noop,addEventListener:noop,getContext:()=>canvas,setPointerCapture:noop});
 const context={console,Math,Set,Image:class{},innerWidth:390,innerHeight:844,devicePixelRatio:1,addEventListener:noop,requestAnimationFrame:noop,performance:{now:()=>0},document:{querySelector:s=>{if(!nodes.has(s))nodes.set(s,node());return nodes.get(s)},addEventListener:noop},window:{}};
 let code=fs.readFileSync(path.join(__dirname,'../game.js'),'utf8');
-code=code.replace('reset();function loop(t)','globalThis.test={reset,beginRun,step,hurt,hit,accelerate,fire,score,end,highScore,drawPoseHero,playerY,playerHeight,waterState,groundZ,groundPhase,get state(){return S}};reset();function loop(t)');
+code=code.replace('reset();function loop(t)','globalThis.test={reset,beginRun,step,hurt,hit,accelerate,fire,score,end,highScore,drawPoseHero,playerY,playerHeight,waterState,groundZ,groundPhase,sceneryDepth,yy,get state(){return S}};reset();function loop(t)');
 vm.runInNewContext(code,context);const g=context.test;
 function setup(){g.reset();const s=g.state;s.run=1;s.en=[{t:'slime',hp:2,max:2,l:1,z:100,dead:0,cd:100,mv:100,tell:0,fl:0}];return s}
 function tick(n){for(let i=0;i<n;i++)g.step(.01)}
@@ -108,3 +108,6 @@ console.log('PASS: guard raises, holds, pauses, releases and resets');
 s=setup();g.hurt(2);assert.equal(s.guardImpact,0);s.guard=1;g.hurt(2);assert.equal(s.guardImpact,.38);assert.equal(s.hp,18);s.pause=1;tick(40);assert.equal(s.guardImpact,.38);s.pause=0;tick(40);assert.equal(s.guardImpact,0);
 
 g.beginRun();s=g.state;tick(299);assert.equal(s.en.length,0);assert.equal(s.run,1);assert(s.z+s.pd>20);tick(2);assert.equal(s.en.length,30);assert(s.en.every(e=>e.z>s.z+s.pd+35));
+
+s=setup();const worldTree=35;const treeBefore=g.sceneryDepth(worldTree);tick(50);assert(Math.abs(treeBefore-g.sceneryDepth(worldTree)-s.z)<1e-8);const projected=g.yy(g.sceneryDepth(worldTree));s.pause=1;tick(30);assert.equal(g.yy(g.sceneryDepth(worldTree)),projected);s.pause=0;g.accelerate();tick(30);assert(g.yy(g.sceneryDepth(worldTree))>projected);
+console.log("PASS: trees share stage coordinates, advance with acceleration and freeze on pause");
