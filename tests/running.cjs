@@ -111,3 +111,5 @@ g.beginRun();s=g.state;tick(199);assert.equal(s.en.length,0);assert.equal(s.run,
 
 s=setup();const worldTree=35;const treeBefore=g.sceneryDepth(worldTree);tick(50);assert(Math.abs(treeBefore-g.sceneryDepth(worldTree)-s.z)<1e-8);const projected=g.yy(g.sceneryDepth(worldTree));s.pause=1;tick(30);assert.equal(g.yy(g.sceneryDepth(worldTree)),projected);s.pause=0;g.accelerate();tick(30);assert(g.yy(g.sceneryDepth(worldTree))>projected);
 console.log("PASS: trees share stage coordinates, advance with acceleration and freeze on pause");
+g.reset();s=g.state;assert.equal(s.en.length,30);for(let group=0;group<5;group++){const pack=s.en.filter(e=>e.group===group);assert.equal(pack.length,6);assert.equal(new Set(pack.map(e=>e.l)).size,3);assert.equal(Math.max(...pack.map(e=>e.z))-Math.min(...pack.map(e=>e.z)),3);if(group<4)assert.equal(s.en[(group+1)*6].z-pack[5].z,29)}
+s.run=1;s.z=19;s.pd=1;for(const e of s.en.filter(e=>e.group===0))g.hit(e,20,1);g.accelerate();assert(s.dash.n>10);const limit=s.en[6].z-1.2;tick(100);assert(s.z+s.pd<=limit+.6);console.log('PASS: five three-lane packs and longer clear-pack dash stops before next enemies');
