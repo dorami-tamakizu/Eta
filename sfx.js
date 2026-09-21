@@ -1,6 +1,5 @@
 // Original procedural effects. No downloads, microphone, or external audio service.
 (()=>{
-  const battleAudio=new Audio('assets/battle-start-reference.mp3');battleAudio.preload='auto';
   let context=null,bus=null,enabled=false,epoch=0;
   const buffers=new Map(),voices=new Set(),recent=new Map();
   const durations={waterStart:.18,waterSwing:.24,continentStart:.23,continentSwing:.34,hit:.12,down:.43,shot:.28,hurt:.20,battleStart:1.25,superdash:.48,guardRaise:.18,guardBlock:.24};
@@ -54,10 +53,9 @@
     const limiter=context.createDynamicsCompressor();
     limiter.threshold.value=-14;limiter.knee.value=12;limiter.ratio.value=8;
     limiter.attack.value=.003;limiter.release.value=.12;
-    context.createMediaElementSource(battleAudio).connect(bus);bus.connect(limiter);limiter.connect(context.destination);return true;
+    bus.connect(limiter);limiter.connect(context.destination);return true;
   }
   function clear(){
-    battleAudio.pause();battleAudio.currentTime=0;
     for(const source of voices){try{source.stop()}catch(_){}source.disconnect()}
     voices.clear();recent.clear();
   }
@@ -79,7 +77,6 @@
   function play(kind,type=''){
     if(!enabled||!context||context.state==='closed'||document.hidden||!durations[kind])return;
     try{
-      if(kind==='battleStart'){battleAudio.currentTime=0;battleAudio.play().catch(()=>{});return;}
       const key=kind+':'+type,now=context.currentTime;
       // Simultaneous multi-enemy hits share a short accent instead of clipping.
       if(now-(recent.get(key)??-Infinity)<.025)return;
