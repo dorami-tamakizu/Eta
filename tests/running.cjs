@@ -68,7 +68,7 @@ assert.equal(score.total,score.time+score.skill+score.damage+score.dealt+score.o
 s.dmg=4;const healthy=g.score(1).damage;s.dmg=10;assert(g.score(1).damage<healthy);
 const saved=new Map();context.localStorage={getItem:k=>saved.get(k),setItem:(k,v)=>saved.set(k,v)};
 g.end(1);assert.equal(g.highScore(),g.score(1).total);
-for(const heading of ['クリアタイム','スキルフィニッシュ','総被ダメージ','与ダメージ'])assert(nodes.get('#resultText').innerHTML.includes('<h3>'+heading+'</h3>'));
+for(const heading of ['クリアタイム','スキルフィニッシュスコア','被ダメージスコア','与ダメージスコア'])assert(nodes.get('#resultText').innerHTML.includes('<h3>'+heading+'</h3>'));
 assert(!nodes.get('#resultText').innerHTML.includes('オーバーキル'));
 assert.equal((nodes.get('#resultText').innerHTML.match(/class="score-section"/g)||[]).length,4);
 assert(nodes.get('#resultText').innerHTML.includes('<strong>4</strong>'));
@@ -107,9 +107,9 @@ console.log('PASS: guard raises, holds, pauses, releases and resets');
 
 s=setup();g.hurt(2);assert.equal(s.guardImpact,0);s.guard=1;g.hurt(2);assert.equal(s.guardImpact,.38);assert.equal(s.hp,18);s.pause=1;tick(40);assert.equal(s.guardImpact,.38);s.pause=0;tick(40);assert.equal(s.guardImpact,0);
 
-g.beginRun();s=g.state;tick(199);assert.equal(s.en.length,0);assert.equal(s.run,1);assert(s.z+s.pd>15);tick(2);assert.equal(s.en.length,30);assert(s.en.every(e=>e.z>s.z+s.pd+35));
+g.beginRun();s=g.state;tick(199);assert.equal(s.en.length,0);assert.equal(s.run,1);assert(s.z+s.pd>15);tick(2);assert.equal(s.en.length,45);assert(s.en.every(e=>e.z>s.z+s.pd+35));
 
 s=setup();const worldTree=35;const treeBefore=g.sceneryDepth(worldTree);tick(50);assert(Math.abs(treeBefore-g.sceneryDepth(worldTree)-s.z)<1e-8);const projected=g.yy(g.sceneryDepth(worldTree));s.pause=1;tick(30);assert.equal(g.yy(g.sceneryDepth(worldTree)),projected);s.pause=0;g.accelerate();tick(30);assert(g.yy(g.sceneryDepth(worldTree))>projected);
 console.log("PASS: trees share stage coordinates, advance with acceleration and freeze on pause");
-g.reset();s=g.state;assert.equal(s.en.length,30);for(let group=0;group<5;group++){const pack=s.en.filter(e=>e.group===group);assert.equal(pack.length,6);assert.equal(new Set(pack.map(e=>e.l)).size,3);assert.equal(Math.max(...pack.map(e=>e.z))-Math.min(...pack.map(e=>e.z)),3);if(group<4)assert.equal(s.en[(group+1)*6].z-pack[5].z,29)}
-s.run=1;s.z=19;s.pd=1;for(const e of s.en.filter(e=>e.group===0))g.hit(e,20,1);g.accelerate();assert(s.dash.n>10);const limit=s.en[6].z-1.2;tick(100);assert(s.z+s.pd<=limit+.6);console.log('PASS: five three-lane packs and longer clear-pack dash stops before next enemies');
+g.reset();s=g.state;assert.equal(s.en.length,45);for(let group=0;group<8;group++){const pack=s.en.filter(e=>e.group===group);assert.equal(pack.length,group===7?3:6);assert.equal(new Set(pack.map(e=>e.l)).size,3);assert.equal(Math.max(...pack.map(e=>e.z))-Math.min(...pack.map(e=>e.z)),group===7?0:3);if(group<7)assert.equal(s.en[(group+1)*6].z-pack[5].z,29)}
+s.run=1;s.z=19;s.pd=1;for(const e of s.en.filter(e=>e.group===0))g.hit(e,20,1);g.accelerate();assert(s.dash.n>10);const limit=s.en[6].z-1.2;tick(100);assert(s.z+s.pd<=limit+.6);console.log('PASS: eight three-lane packs and longer clear-pack dash stops before next enemies');
