@@ -24,11 +24,11 @@ g.reset();assert.equal(g.state.dashUntil,-1);assert.equal(g.state.boost,0);asser
 console.log('PASS: running, boost, both kill types, 0.5s boundary, single-use window, skill dash, pause, normal attack timing, skill interruption, front limit, dash distance, scoring, retry');
 
 s=setup();const startY=g.playerY();tick(400);
-assert(g.playerY()<startY);assert(Math.abs(g.playerY()/844-.52)<.001);
+assert(g.playerY()<startY);assert(Math.abs(g.playerY()/844-.58)<.001);
 assert(g.playerY()/844-g.playerHeight()/844/2>.42);
-const camera=s.z;tick(100);assert(s.z>camera);assert(Math.abs(g.playerY()/844-.52)<.001);
-g.accelerate();tick(50);assert(g.playerY()/844<.52);assert(g.playerY()/844>=.48-.001);
-tick(250);assert(Math.abs(g.playerY()/844-.52)<.001);
+const camera=s.z;tick(100);assert(s.z>camera);assert(Math.abs(g.playerY()/844-.58)<.001);
+g.accelerate();tick(50);assert(g.playerY()/844<.58);assert(g.playerY()/844>=.53-.001);
+tick(250);assert(Math.abs(g.playerY()/844-.58)<.001);
 s=setup();s.en[0].z=2;tick(100);assert(s.z+s.pd<=s.en[0].z-.7+1e-8);
 console.log('PASS: hero advances toward center, camera follows, boost moves hero farther, camera settles, near-enemy constraint');
 
@@ -38,3 +38,15 @@ assert(flow>.29&&flow<.32,'near-ground optical speed matches reference order');
 assert(Math.abs(g.groundPhase(y,8)-g.groundPhase(y,8+16))<1e-12);
 s=setup();tick(100);const before=g.groundPhase(.65,s.z);s.pause=1;tick(100);assert.equal(g.groundPhase(.65,s.z),before);
 console.log('PASS: reference-scale optical flow, continuous ground period, paused scenery');
+s=setup();s.en=[0,1,2].map(l=>({t:'skeleton',hp:3,max:3,l,z:5,dead:0,cd:100,mv:100,tell:0,fl:0}));
+g.fire(1);s.guard=1;tick(70);assert(s.en.every(e=>e.hp===1));assert.equal(s.fin,0);
+g.fire(1);s.guard=1;tick(70);assert(s.en.every(e=>e.dead));assert.equal(s.fin,3);
+console.log('PASS: water wave hits all three lanes once, preserves damage and skill-finish credit');
+
+s=setup();tick(200);assert(g.playerHeight()/844>.21&&g.playerHeight()/844<.24);console.log('PASS: running hero occupies 21–24% of viewport height');
+const viewportEvents={},vv={width:375,height:570,offsetTop:0,offsetLeft:0,addEventListener:(n,f)=>viewportEvents[n]=f};
+vm.runInNewContext(code,{...context,window:{visualViewport:vv}});
+assert.equal(nodes.get('#gameViewport').style.height,'570px');
+vv.height=650;viewportEvents.resize();assert.equal(nodes.get('#gameViewport').style.height,'650px');
+vv.offsetTop=8;viewportEvents.scroll();assert.equal(nodes.get('#gameViewport').style.top,'8px');
+console.log('PASS: visible viewport resize and offset updates');
