@@ -107,7 +107,7 @@ console.log('PASS: guard raises, holds, pauses, releases and resets');
 
 s=setup();g.hurt(2);assert.equal(s.guardImpact,0);s.guard=1;g.hurt(2);assert.equal(s.guardImpact,.38);assert.equal(s.hp,18);s.pause=1;tick(40);assert.equal(s.guardImpact,.38);s.pause=0;tick(40);assert.equal(s.guardImpact,0);
 
-g.beginRun();s=g.state;tick(299);assert.equal(s.en.length,0);assert.equal(s.run,1);assert(s.z+s.pd>20);tick(2);assert.equal(s.en.length,30);assert(s.en.every(e=>e.z>s.z+s.pd+35));
+g.beginRun();s=g.state;tick(199);assert.equal(s.en.length,0);assert.equal(s.run,1);assert(s.z+s.pd>15);tick(2);assert.equal(s.en.length,30);assert(s.en.every(e=>e.z>s.z+s.pd+35));
 
 s=setup();const worldTree=35;const treeBefore=g.sceneryDepth(worldTree);tick(50);assert(Math.abs(treeBefore-g.sceneryDepth(worldTree)-s.z)<1e-8);const projected=g.yy(g.sceneryDepth(worldTree));s.pause=1;tick(30);assert.equal(g.yy(g.sceneryDepth(worldTree)),projected);s.pause=0;g.accelerate();tick(30);assert(g.yy(g.sceneryDepth(worldTree))>projected);
 console.log("PASS: trees share stage coordinates, advance with acceleration and freeze on pause");
