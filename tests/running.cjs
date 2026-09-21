@@ -90,3 +90,11 @@ for(const height of [360,480,570,667,844]){
   assert(resultCard.offsetWidth*scale<=vv.width-24+1e-8);
 }
 console.log('PASS: complete results card fits five visible heights, including OK');
+
+s=setup();g.fire(2);tick(44);assert.equal(s.earthFx.length,0);tick(2);assert.equal(s.earthFx.length,1);
+const earthAge=s.earthFx[0].age;s.pause=1;tick(20);assert.equal(s.earthFx[0].age,earthAge);s.pause=0;
+tick(97);assert.equal(s.earthFx.length,0);
+s=setup();s.en=[0,1,2].map(l=>({t:'skeleton',hp:3,max:3,l,z:5,dead:0,cd:100,mv:100,tell:0,fl:0}));
+g.fire(2);s.guard=1;tick(90);assert.equal(s.en[1].dead,1);assert.equal(s.en[0].hp,3);assert.equal(s.en[2].hp,3);assert.equal(s.fin,1);
+g.reset();assert.equal(g.state.earthFx.length,0);
+console.log('PASS: earth impact synchronization, single emission, pause, cleanup, original lane/damage/score');
