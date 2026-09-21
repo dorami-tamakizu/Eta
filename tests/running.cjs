@@ -23,11 +23,11 @@ s=setup();s.t=60;const fast=g.score(1).total;s.t=120;assert(g.score(1).total<fas
 g.reset();assert.equal(g.state.dashUntil,-1);assert.equal(g.state.boost,0);assert.equal(g.state.normalAttack,null);assert.equal(g.state.fin,0);
 console.log('PASS: running, boost, both kill types, 0.5s boundary, single-use window, skill dash, pause, normal attack timing, skill interruption, front limit, dash distance, scoring, retry');
 
-s=setup();const startY=g.playerY();tick(200);
-assert(g.playerY()<startY);assert(Math.abs(g.playerY()/844-.60)<.001);
-assert(g.playerY()/844-g.playerHeight()/844/2>.47);
-const camera=s.z;tick(100);assert(s.z>camera);assert(Math.abs(g.playerY()/844-.60)<.001);
-g.accelerate();tick(50);assert(g.playerY()/844<.60);assert(g.playerY()/844>=.54-.001);
-tick(250);assert(Math.abs(g.playerY()/844-.60)<.001);
+s=setup();const startY=g.playerY();tick(400);
+assert(g.playerY()<startY);assert(Math.abs(g.playerY()/844-.52)<.001);
+assert(g.playerY()/844-g.playerHeight()/844/2>.42);
+const camera=s.z;tick(100);assert(s.z>camera);assert(Math.abs(g.playerY()/844-.52)<.001);
+g.accelerate();tick(50);assert(g.playerY()/844<.52);assert(g.playerY()/844>=.48-.001);
+tick(250);assert(Math.abs(g.playerY()/844-.52)<.001);
 s=setup();s.en[0].z=2;tick(100);assert(s.z+s.pd<=s.en[0].z-.7+1e-8);
 console.log('PASS: hero advances toward center, camera follows, boost moves hero farther, camera settles, near-enemy constraint');
