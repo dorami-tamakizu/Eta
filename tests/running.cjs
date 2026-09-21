@@ -3,11 +3,11 @@ const noop=()=>{},canvas=new Proxy({},{get:()=>noop}),nodes=new Map();
 const node=()=>({style:{},classList:{add:noop,remove:noop,toggle:noop},setAttribute:noop,addEventListener:noop,getContext:()=>canvas,setPointerCapture:noop});
 const context={console,Math,Set,Image:class{},innerWidth:390,innerHeight:844,devicePixelRatio:1,addEventListener:noop,requestAnimationFrame:noop,performance:{now:()=>0},document:{querySelector:s=>{if(!nodes.has(s))nodes.set(s,node());return nodes.get(s)},addEventListener:noop},window:{}};
 let code=fs.readFileSync(path.join(__dirname,'../game.js'),'utf8');
-code=code.replace('reset();function loop(t)','globalThis.test={reset,step,hit,accelerate,fire,score,drawPoseHero,playerY,playerHeight,get state(){return S}};reset();function loop(t)');
+code=code.replace('reset();function loop(t)','globalThis.test={reset,step,hit,accelerate,fire,score,drawPoseHero,playerY,playerHeight,groundZ,groundPhase,get state(){return S}};reset();function loop(t)');
 vm.runInNewContext(code,context);const g=context.test;
 function setup(){g.reset();const s=g.state;s.run=1;s.en=[{t:'slime',hp:2,max:2,l:1,z:100,dead:0,cd:100,mv:100,tell:0,fl:0}];return s}
 function tick(n){for(let i=0;i<n;i++)g.step(.01)}
-let s=setup();tick(50);assert(Math.abs(s.z+s.pd-5/3)<1e-8);const base=s.z+s.pd;
+let s=setup();tick(50);assert(Math.abs(s.z+s.pd-4.5)<1e-8);const base=s.z+s.pd;
 s=setup();g.accelerate();tick(50);assert(Math.abs(s.z+s.pd-2*base)<1e-8);tick(60);assert.equal(s.boost,0);
 for(const sk of [0,1])for(const delay of [.49,.5,.501]){
  s=setup();g.hit(s.en[0],2,sk);assert.equal(s.fin,sk);s.t=delay;g.accelerate();assert.equal(!!s.dash,delay<=.5);
@@ -31,3 +31,10 @@ g.accelerate();tick(50);assert(g.playerY()/844<.52);assert(g.playerY()/844>=.48-
 tick(250);assert(Math.abs(g.playerY()/844-.52)<.001);
 s=setup();s.en[0].z=2;tick(100);assert(s.z+s.pd<=s.en[0].z-.7+1e-8);
 console.log('PASS: hero advances toward center, camera follows, boost moves hero farther, camera settles, near-enemy constraint');
+
+const y=.64,z=g.groundZ(y),project=d=>.26+.49/(1+d*.115);
+const flow=(project(z-.09)-y)/.01;
+assert(flow>.29&&flow<.32,'near-ground optical speed matches reference order');
+assert(Math.abs(g.groundPhase(y,8)-g.groundPhase(y,8+16))<1e-12);
+s=setup();tick(100);const before=g.groundPhase(.65,s.z);s.pause=1;tick(100);assert.equal(g.groundPhase(.65,s.z),before);
+console.log('PASS: reference-scale optical flow, continuous ground period, paused scenery');
