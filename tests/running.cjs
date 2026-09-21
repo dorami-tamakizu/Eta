@@ -44,7 +44,7 @@ g.fire(1);s.guard=1;tick(70);assert(s.en.every(e=>e.dead));assert.equal(s.fin,3)
 console.log('PASS: water wave hits all three lanes once, preserves damage and skill-finish credit');
 
 s=setup();tick(200);assert(g.playerHeight()/844>.21&&g.playerHeight()/844<.24);console.log('PASS: running hero occupies 21–24% of viewport height');
-const viewportEvents={},vv={width:375,height:570,offsetTop:0,offsetLeft:0,addEventListener:(n,f)=>viewportEvents[n]=f};
+const viewportEvents={},vv={width:375,height:570,offsetTop:0,offsetLeft:0,addEventListener:(n,f)=>{const previous=viewportEvents[n];viewportEvents[n]=()=>{if(previous)previous();f()}}};
 vm.runInNewContext(code,{...context,window:{visualViewport:vv}});
 assert.equal(nodes.get('#gameViewport').style.height,'570px');
 vv.height=650;viewportEvents.resize();assert.equal(nodes.get('#gameViewport').style.height,'650px');
@@ -69,9 +69,24 @@ s.dmg=4;const healthy=g.score(1).damage;s.dmg=10;assert(g.score(1).damage<health
 const saved=new Map();context.localStorage={getItem:k=>saved.get(k),setItem:(k,v)=>saved.set(k,v)};
 g.end(1);assert.equal(g.highScore(),g.score(1).total);
 assert(nodes.get('#resultText').innerHTML.includes('与ダメージスコア'));
-assert(nodes.get('#resultText').innerHTML.includes('オーバーキルボーナス'));
+assert(!nodes.get('#resultText').innerHTML.includes('オーバーキル'));
+assert.equal((nodes.get('#resultText').innerHTML.match(/class="score-section"/g)||[]).length,4);
+assert(nodes.get('#resultText').innerHTML.includes('<strong>4</strong>'));
+assert(nodes.get('#resultText').innerHTML.includes('>400</strong>'));
 assert(!nodes.get('#resultText').innerHTML.includes('弱点'));
 const best=g.highScore();s=setup();s.t=600;g.end(1);assert.equal(g.highScore(),best);
 s=setup();s.fin=999;g.end(0);assert.equal(g.highScore(),best);
 g.reset();assert.equal(g.state.dealtDamage,0);assert.equal(g.state.overkill,0);
 console.log('PASS: effective damage, overkill, no repeated credit, five-component total, high score, failure, reset');
+assert(!nodes.get('#resultText').innerHTML.includes('まもの'));
+assert(nodes.get('#resultText').innerHTML.includes('総与ダメージ'));
+const resultCard=nodes.get('.quest-results');
+Object.defineProperty(resultCard,'offsetWidth',{get:()=>parseFloat(resultCard.style.width)||351});
+Object.defineProperty(resultCard,'offsetHeight',{get:()=>510});
+for(const height of [360,480,570,667,844]){
+  vv.height=height;viewportEvents.resize();
+  const scale=Number(resultCard.style.transform.match(/scale\(([^)]+)\)/)[1]);
+  assert(510*scale<=height-28+1e-8);
+  assert(resultCard.offsetWidth*scale<=vv.width-24+1e-8);
+}
+console.log('PASS: complete results card fits five visible heights, including OK');
