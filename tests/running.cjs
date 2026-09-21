@@ -68,7 +68,7 @@ assert.equal(score.total,score.time+score.skill+score.damage+score.dealt+score.o
 s.dmg=4;const healthy=g.score(1).damage;s.dmg=10;assert(g.score(1).damage<healthy);
 const saved=new Map();context.localStorage={getItem:k=>saved.get(k),setItem:(k,v)=>saved.set(k,v)};
 g.end(1);assert.equal(g.highScore(),g.score(1).total);
-assert(nodes.get('#resultText').innerHTML.includes('与ダメージスコア'));
+for(const heading of ['クリアタイム','スキルフィニッシュ','総被ダメージ','与ダメージ'])assert(nodes.get('#resultText').innerHTML.includes('<h3>'+heading+'</h3>'));
 assert(!nodes.get('#resultText').innerHTML.includes('オーバーキル'));
 assert.equal((nodes.get('#resultText').innerHTML.match(/class="score-section"/g)||[]).length,4);
 assert(nodes.get('#resultText').innerHTML.includes('<strong>4</strong>'));
