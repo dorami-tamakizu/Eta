@@ -3,7 +3,7 @@ const noop=()=>{},canvas=new Proxy({},{get:()=>noop}),nodes=new Map();
 const node=()=>({style:{},classList:{add:noop,remove:noop,toggle:noop},setAttribute:noop,addEventListener:noop,getContext:()=>canvas,setPointerCapture:noop});
 const context={console,Math,Set,Image:class{},innerWidth:390,innerHeight:844,devicePixelRatio:1,addEventListener:noop,requestAnimationFrame:noop,performance:{now:()=>0},document:{querySelector:s=>{if(!nodes.has(s))nodes.set(s,node());return nodes.get(s)},addEventListener:noop},window:{}};
 let code=fs.readFileSync(path.join(__dirname,'../game.js'),'utf8');
-code=code.replace('reset();function loop(t)','globalThis.test={reset,step,hit,accelerate,fire,score,drawPoseHero,playerY,playerHeight,waterState,groundZ,groundPhase,get state(){return S}};reset();function loop(t)');
+code=code.replace('reset();function loop(t)','globalThis.test={reset,step,hit,accelerate,fire,score,end,highScore,drawPoseHero,playerY,playerHeight,waterState,groundZ,groundPhase,get state(){return S}};reset();function loop(t)');
 vm.runInNewContext(code,context);const g=context.test;
 function setup(){g.reset();const s=g.state;s.run=1;s.en=[{t:'slime',hp:2,max:2,l:1,z:100,dead:0,cd:100,mv:100,tell:0,fl:0}];return s}
 function tick(n){for(let i=0;i<n;i++)g.step(.01)}
@@ -58,3 +58,20 @@ assert(g.waterState(.05).spread>.8);assert(g.waterState(.15).lift>g.waterState(.
 assert(g.waterState(.45).alpha<g.waterState(.15).alpha);assert.equal(g.waterState(.60).residue,0);
 g.reset();assert.equal(g.state.waterFx.length,0);
 console.log('PASS: single water emission at impact, layered phase sequence, pause, lifetime, retry cleanup');
+
+s=setup();s.en[0].hp=2;g.hit(s.en[0],3,1);assert.equal(s.dealtDamage,2);assert.equal(s.overkill,1);
+g.hit(s.en[0],3,1);assert.equal(s.dealtDamage,2);assert.equal(s.overkill,1);
+s.en.push({t:'slime',hp:1,max:2,l:1,z:101,dead:0,tell:0});g.hit(s.en[1],1,0);
+assert.equal(s.dealtDamage,3);assert.equal(s.overkill,1);assert.equal(s.fin,1);
+const score=g.score(1);assert.equal(score.dealt,300);assert.equal(score.overkill,100);
+assert.equal(score.total,score.time+score.skill+score.damage+score.dealt+score.overkill);
+s.dmg=4;const healthy=g.score(1).damage;s.dmg=10;assert(g.score(1).damage<healthy);
+const saved=new Map();context.localStorage={getItem:k=>saved.get(k),setItem:(k,v)=>saved.set(k,v)};
+g.end(1);assert.equal(g.highScore(),g.score(1).total);
+assert(nodes.get('#resultText').innerHTML.includes('与ダメージスコア'));
+assert(nodes.get('#resultText').innerHTML.includes('オーバーキルボーナス'));
+assert(!nodes.get('#resultText').innerHTML.includes('弱点'));
+const best=g.highScore();s=setup();s.t=600;g.end(1);assert.equal(g.highScore(),best);
+s=setup();s.fin=999;g.end(0);assert.equal(g.highScore(),best);
+g.reset();assert.equal(g.state.dealtDamage,0);assert.equal(g.state.overkill,0);
+console.log('PASS: effective damage, overkill, no repeated credit, five-component total, high score, failure, reset');
