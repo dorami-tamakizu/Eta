@@ -98,3 +98,9 @@ s=setup();s.en=[0,1,2].map(l=>({t:'skeleton',hp:3,max:3,l,z:5,dead:0,cd:100,mv:1
 g.fire(2);s.guard=1;tick(90);assert.equal(s.en[1].dead,1);assert.equal(s.en[0].hp,3);assert.equal(s.en[2].hp,3);assert.equal(s.fin,1);
 g.reset();assert.equal(g.state.earthFx.length,0);
 console.log('PASS: earth impact synchronization, single emission, pause, cleanup, original lane/damage/score');
+s=setup();s.guard=1;tick(25);assert.equal(s.guardPose,1);
+s.pause=1;s.guard=0;tick(20);assert.equal(s.guardPose,1);
+s.pause=0;tick(20);assert.equal(s.guardPose,0);
+s.guard=1;tick(5);assert(s.guardPose>0&&s.guardPose<1);
+g.reset();assert.equal(g.state.guardPose,0);
+console.log('PASS: guard raises, holds, pauses, releases and resets');
