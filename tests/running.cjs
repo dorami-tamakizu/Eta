@@ -3,7 +3,7 @@ const noop=()=>{},canvas=new Proxy({},{get:()=>noop}),nodes=new Map();
 const node=()=>({style:{},classList:{add:noop,remove:noop,toggle:noop},setAttribute:noop,addEventListener:noop,getContext:()=>canvas,setPointerCapture:noop});
 const context={console,Math,Set,Image:class{},innerWidth:390,innerHeight:844,devicePixelRatio:1,addEventListener:noop,requestAnimationFrame:noop,performance:{now:()=>0},document:{querySelector:s=>{if(!nodes.has(s))nodes.set(s,node());return nodes.get(s)},addEventListener:noop},window:{}};
 let code=fs.readFileSync(path.join(__dirname,'../game.js'),'utf8');
-code=code.replace('reset();function loop(t)','globalThis.test={reset,beginRun,step,hurt,hit,accelerate,fire,score,end,highScore,drawPoseHero,playerY,playerHeight,waterState,groundZ,groundPhase,sceneryDepth,yy,get state(){return S}};reset();function loop(t)');
+code=code.replace('reset();function loop(t)','globalThis.test={ULTIMATE,fireUltimate,reset,beginRun,step,hurt,hit,accelerate,fire,score,end,highScore,drawPoseHero,playerY,playerHeight,waterState,groundZ,groundPhase,sceneryDepth,yy,get state(){return S}};reset();function loop(t)');
 vm.runInNewContext(code,context);const g=context.test;
 function setup(){g.reset();const s=g.state;s.run=1;s.en=[{t:'slime',hp:2,max:2,l:1,z:100,dead:0,cd:100,mv:100,tell:0,fl:0}];return s}
 function tick(n){for(let i=0;i<n;i++)g.step(.01)}
@@ -152,3 +152,14 @@ s.shots=[{kind:'fireDragon',l:1,z:s.z+s.pd+.4,d:4,t:'boss',age:0}];g.step(.02);a
 s.shots=[{kind:'fireDragon',l:1,z:s.z+s.pd+.4,d:4,t:'boss',age:0}];s.guard=1;g.step(.02);assert.equal(s.hp,hp-7,'dragon can be guarded');
 console.log('PASS: sword impact timing/single hit, lane dodge, dragon collision, guard for both attacks');
 
+
+// Ultimate damage, range, single-hit, recharge and pause.
+s=setup();assert.equal(s.ultimateCharge,30);s.en=[0,1,2].map((l)=>({t:'boss',hp:40,max:40,l,z:35,dead:0,cd:100,mv:100,tell:0,fl:0}));
+s.en.push({t:'boss',hp:40,max:40,l:1,z:100,dead:0,cd:100,mv:100,tell:0,fl:0});
+assert.equal(g.fireUltimate(),true);assert.equal(s.ultimateCharge,0);assert.equal(g.fireUltimate(),false);
+s.pause=1;tick(30);assert.equal(s.ultimate.t,0);s.pause=0;
+tick(60);for(const e of s.en.slice(0,3))assert.equal(e.hp,30);assert.equal(s.en[3].hp,40);assert.equal(s.ultimateCharge,30);
+assert.equal(g.fireUltimate(),false,'no recast during current effect');tick(60);assert.equal(s.ultimate,null);for(const e of s.en.slice(0,3))assert.equal(e.hp,30);
+s=setup();s.ultimateCharge=0;s.en[0].hp=2;g.hit(s.en[0],10,1);assert.equal(s.ultimateCharge,2);g.hit(s.en[0],10,1);assert.equal(s.ultimateCharge,2);
+s.ultimateCharge=29;assert.equal(g.fireUltimate(),false);g.reset();assert.equal(g.state.ultimateCharge,30);
+console.log('PASS: ultimate 10 damage once across 3 lanes, far-screen reach, excludes offscreen reserve, damage recharge, pause, retry');

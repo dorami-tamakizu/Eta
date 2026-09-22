@@ -25,4 +25,4 @@ boss-motion-preview.mp4 はゲームのCanvas描画による動作サンプル�
 ゲームの剣撃は8ポーズと移動・エフェクトによるアニメーションで、生成動画ではない。
 スマートフォン実機の最終確認と動きの調整は未実施。
 
-走行の修正：GPT Imageで生成した背面走行8コマ（hero-run-gpt-v5.png）を全身単位で再生。脚の切り貼り・伸縮処理を廃止。詳細は README-running.md。
+走行の修正：GPT Imageで生成した背面走行8コマ（hero-run-female-v1.png）を全身単位で再生。脚の切り貼り・伸縮処理を廃止。詳細は README-running.md。
