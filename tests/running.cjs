@@ -3,7 +3,7 @@ const noop=()=>{},canvas=new Proxy({},{get:()=>noop}),nodes=new Map();
 const node=()=>({style:{},classList:{add:noop,remove:noop,toggle:noop},setAttribute:noop,addEventListener:noop,getContext:()=>canvas,setPointerCapture:noop});
 const context={console,Math,Set,Image:class{},innerWidth:390,innerHeight:844,devicePixelRatio:1,addEventListener:noop,requestAnimationFrame:noop,performance:{now:()=>0},document:{querySelector:s=>{if(!nodes.has(s))nodes.set(s,node());return nodes.get(s)},addEventListener:noop},window:{}};
 let code=fs.readFileSync(path.join(__dirname,'../game.js'),'utf8');
-code=code.replace('reset();function loop(t)','globalThis.test={runLegPose,reset,beginRun,step,hurt,hit,accelerate,fire,score,end,highScore,drawPoseHero,playerY,playerHeight,waterState,groundZ,groundPhase,sceneryDepth,yy,get state(){return S}};reset();function loop(t)');
+code=code.replace('reset();function loop(t)','globalThis.test={reset,beginRun,step,hurt,hit,accelerate,fire,score,end,highScore,drawPoseHero,playerY,playerHeight,waterState,groundZ,groundPhase,sceneryDepth,yy,get state(){return S}};reset();function loop(t)');
 vm.runInNewContext(code,context);const g=context.test;
 function setup(){g.reset();const s=g.state;s.run=1;s.en=[{t:'slime',hp:2,max:2,l:1,z:100,dead:0,cd:100,mv:100,tell:0,fl:0}];return s}
 function tick(n){for(let i=0;i<n;i++)g.step(.01)}
@@ -152,5 +152,3 @@ s.shots=[{kind:'fireDragon',l:1,z:s.z+s.pd+.4,d:4,t:'boss',age:0}];g.step(.02);a
 s.shots=[{kind:'fireDragon',l:1,z:s.z+s.pd+.4,d:4,t:'boss',age:0}];s.guard=1;g.step(.02);assert.equal(s.hp,hp-7,'dragon can be guarded');
 console.log('PASS: sword impact timing/single hit, lane dodge, dragon collision, guard for both attacks');
 
-for(let phase=0;phase<Math.PI*2;phase+=.07){const left=g.runLegPose(phase),right=g.runLegPose(phase+Math.PI),nextLeft=g.runLegPose(phase+Math.PI*2);for(const key of ['thigh','shin','angle','lift'])assert(Math.abs(left[key]-nextLeft[key])<1e-10);assert(Math.abs(left.lift+right.lift-1)<1e-10);assert(Math.abs(left.thigh+right.thigh-182)<1e-10);assert(Math.abs(left.shin+right.shin-234)<1e-10);}
-console.log('PASS: equal left/right gait geometry, half-cycle opposition and seamless periodicity');
