@@ -8,7 +8,7 @@ vm.runInNewContext(code,context);const g=context.test;
 function setup(){g.reset();const s=g.state;s.run=1;s.en=[{t:'slime',hp:2,max:2,l:1,z:100,dead:0,cd:100,mv:100,tell:0,fl:0}];return s}
 function tick(n){for(let i=0;i<n;i++)g.step(.01)}
 let s=setup();tick(50);assert(Math.abs(s.z+s.pd-4.5)<1e-8);const base=s.z+s.pd;
-s=setup();g.accelerate();tick(50);assert(Math.abs(s.z+s.pd-2*base)<1e-8);tick(60);assert.equal(s.boost,0);
+s=setup();g.accelerate();tick(50);assert(s.z+s.pd>base);assert(Math.abs(s.z+s.pd-base+s.boost-Math.PI/1.35)<1e-8);tick(60);assert.equal(s.boost,0);
 for(const sk of [0,1])for(const delay of [.49,.5,.501]){
  s=setup();g.hit(s.en[0],2,sk);assert.equal(s.fin,sk);s.t=delay;g.accelerate();assert.equal(!!s.dash,delay<=.5);
  if(s.dash){s.dash=null;g.accelerate();assert.equal(s.dash,null)}
@@ -18,7 +18,7 @@ s=setup();s.dashUntil=.5;s.pause=1;tick(100);assert.equal(s.t,0);g.accelerate();
 s=setup();s.en[0].z=.8;s.en[0].hp=1;g.step(.01);assert(s.normalAttack);assert.equal(s.en[0].hp,1);tick(22);assert.equal(s.en[0].hp,1);tick(2);assert.equal(s.en[0].dead,1);assert.equal(s.fin,0);assert.equal(s.phase,'bossIntro');assert.equal(s.dashUntil,-1);
 s=setup();s.en[0].z=.8;g.step(.01);g.fire(1);assert.equal(s.normalAttack,null);assert(s.skill);
 s=setup();s.en[0].z=2;s.dashUntil=.5;g.accelerate();tick(10);assert(s.z+s.pd<=s.en[0].z-.7+1e-8);assert.equal(s.dash,null);
-s=setup();s.en[0].z=100;s.en[0].hp=999;s.dashUntil=.5;g.accelerate();tick(24);assert(s.z+s.pd>10);assert(s.dash);tick(220);assert.equal(s.dash,null);assert(s.en[0].z-s.z-s.pd<=.73);
+s=setup();s.en[0].z=100;s.en[0].hp=999;s.dashUntil=.5;g.accelerate();tick(24);assert.equal(s.dash,null);assert(Math.abs(s.z+s.pd-(6+9*(.24-6/42)))<1e-8);tick(220);assert(s.en[0].z-s.z-s.pd>50);assert(Math.abs(s.speed-9)<1e-8);
 s=setup();s.t=60;const fast=g.score(1).total;s.t=120;assert(g.score(1).total<fast);s.fin=1;assert.equal(g.score(0).total,6557);assert.equal(g.score(1).skill,6557);
 g.reset();assert.equal(g.state.dashUntil,-1);assert.equal(g.state.boost,0);assert.equal(g.state.normalAttack,null);assert.equal(g.state.fin,0);
 console.log('PASS: running, boost, both kill types, 0.5s boundary, single-use window, skill dash, pause, normal attack timing, skill interruption, front limit, dash distance, scoring, retry');
@@ -112,7 +112,7 @@ g.beginRun();s=g.state;tick(199);assert.equal(s.en.length,0);assert.equal(s.run,
 s=setup();const worldTree=35;const treeBefore=g.sceneryDepth(worldTree);tick(50);assert(Math.abs(treeBefore-g.sceneryDepth(worldTree)-s.z)<1e-8);const projected=g.yy(g.sceneryDepth(worldTree));s.pause=1;tick(30);assert.equal(g.yy(g.sceneryDepth(worldTree)),projected);s.pause=0;g.accelerate();tick(30);assert(g.yy(g.sceneryDepth(worldTree))>projected);
 console.log("PASS: trees share stage coordinates, advance with acceleration and freeze on pause");
 g.reset();s=g.state;assert.equal(s.en.length,60);for(let group=0;group<10;group++){const pack=s.en.filter(e=>e.group===group);assert.equal(pack.length,6);assert.equal(new Set(pack.map(e=>e.l)).size,3);assert.equal(Math.max(...pack.map(e=>e.z))-Math.min(...pack.map(e=>e.z)),3);if(group<9)assert.equal(s.en[(group+1)*6].z-pack[5].z,29)}
-s.run=1;s.z=19;s.pd=1;for(const e of s.en.filter(e=>e.group===0))g.hit(e,20,1);g.accelerate();assert(s.dash.n>10);const limit=s.en[6].z-1.2;tick(100);assert(s.z+s.pd<=limit+.6);console.log('PASS: ten three-lane packs and longer clear-pack dash stops before next enemies');
+s.run=1;s.z=19;s.pd=1;for(const e of s.en.filter(e=>e.group===0))g.hit(e,20,1);g.accelerate();assert.equal(s.dash.n,6);const limit=s.en[6].z-1.2;tick(100);assert.equal(s.dash,null);assert(s.z+s.pd<=limit+.6);assert(s.en[6].z-s.z-s.pd>10);console.log('PASS: ten three-lane packs and bounded clear-pack dash returns to normal before next enemies');
 s=setup();s.ch=[2,4];s.fr=[.3,.8];s.dashUntil=s.t+.5;g.accelerate();assert.deepEqual(Array.from(s.ch),[2,4]);tick(1);assert.deepEqual(Array.from(s.ch),[3,4]);assert.equal(s.fr[1],0);tick(10);assert.deepEqual(Array.from(s.ch),[3,4]);g.accelerate();tick(2);assert.deepEqual(Array.from(s.ch),[3,4]);
 s=setup();s.ch=[1,1];s.guard=1;s.dashUntil=s.t+.5;g.accelerate();tick(10);assert.deepEqual(Array.from(s.ch),[1,1]);
 console.log('PASS: successful moving dash restores each skill once, capped at four; blocked dash gives no charge');
@@ -256,9 +256,9 @@ console.log('PASS: all three lanes hit in one locked depth row; backward swipe a
 for(const pd of [0,3,5]){s=setup();s.pd=pd;s.pt=pd;s.en=[];const e={t:'boss',boss:true,z:12,l:1,displayLane:1,hp:40,cd:0,wideCd:0,dragonCd:99,attackCount:0};g.updateBoss(e,.01);g.updateBoss(e,.51);e.action=null;e.cd=0;g.updateBoss(e,.01);assert.equal(s.hp,20,'far player is safe from melee and wide slash');}
 s=setup();s.phase='boss';s.pd=7;s.pt=7;s.en=[{t:'boss',boss:true,z:12,l:1,displayLane:1,hp:999,cd:100,wideCd:100,dragonCd:100}];s.shots=[{kind:'fireDragon',l:1,z:5,d:4}];tick(1);assert.equal(s.hp,20,'already passed missile cannot hit');console.log('PASS: distant melee immunity and no projectile hits from behind');
 
-// Patrol reverses naturally without crossing the center boundary; dash closes long boss gaps.
+// Patrol reverses naturally without crossing the center boundary; boss dash has the same distance cap.
 s=setup();s.phase='boss';s.guard=1;const patrol={t:'boss',boss:true,z:9,l:1,displayLane:1,hp:999,cd:100,wideCd:100,dragonCd:100};s.en=[patrol];let back=false,forward=false,lastZ=9;for(let i=0;i<2400;i++){g.step(.01);back ||= patrol.z>lastZ+.00001;forward ||= patrol.z<lastZ-.00001;assert(patrol.z>=s.z+9-1e-9&&patrol.z<=s.z+15+1e-9);lastZ=patrol.z;}assert(back&&forward);
-s=setup();s.phase='boss';s.pd=0;s.pt=0;s.l=0;s.en=[{t:'boss',boss:true,z:13,l:1,displayLane:1,hp:999,cd:100,wideCd:100,dragonCd:100}];s.dashUntil=.5;g.accelerate();tick(40);assert.equal(s.dash,null);assert(s.en[0].z-s.z-s.pd<.8);console.log('PASS: boss patrol forward/back boundary and superdash reaches boss contact');
+s=setup();s.phase='boss';s.pd=0;s.pt=0;s.l=0;s.en=[{t:'boss',boss:true,z:13,l:1,displayLane:1,hp:999,cd:100,wideCd:100,dragonCd:100}];s.dashUntil=.5;g.accelerate();tick(40);assert.equal(s.dash,null);assert(s.en[0].z-s.z-s.pd>2);console.log('PASS: boss patrol forward/back boundary and superdash ends before a distant boss');
 
 // Boss visibly visits all three lanes and spans near/far depths.
 s=setup();s.phase='boss';s.guard=1;const mover={t:'boss',boss:true,z:9,l:1,displayLane:1,hp:999,cd:100,wideCd:100,dragonCd:100};s.en=[mover];const visited=new Set();let minZ=99,maxZ=0,previousLane=1;for(let i=0;i<1800;i++){g.step(.01);visited.add(mover.l);minZ=Math.min(minZ,mover.z);maxZ=Math.max(maxZ,mover.z);assert(Math.abs(mover.displayLane-previousLane)<.03);previousLane=mover.displayLane;}assert.equal(visited.size,3);assert(maxZ-minZ>5);assert.equal(s.z,0);console.log('PASS: visible three-lane and six-unit depth patrol, smooth movement, no auto camera tracking');
