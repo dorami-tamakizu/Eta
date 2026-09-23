@@ -1,4 +1,4 @@
-(()=>{const $=s=>document.querySelector(s),cv=$('#game'),c=cv.getContext('2d');let W,H,last=0,S,combatSeed=17319;function random(){combatSeed=(Math.imul(combatSeed,1664525)+1013904223)>>>0;return combatSeed/4294967296}const C=(v,a,b)=>Math.max(a,Math.min(b,v)),R=(a,b)=>a+random()*(b-a),RI=(a,b)=>Math.floor(R(a,b+1)),E=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;const D={slime:{hp:2,d:1,r:0,h:205},skeleton:{hp:3,d:2,r:0,h:220},mage:{hp:3,d:2,r:1,h:228},bonobo:{hp:4,d:4,r:0,h:245},dragon:{hp:4,d:3,r:1,h:215},boss:{hp:40,d:3,r:0,h:300}},im={};const src={normalSlash:'assets/hero-normal-slash-v1.webp',bossFlame:'assets/boss-horizontal-flame-v2.webp',bossOverhead:'assets/boss-slide-v3.webp',bossSkills:'assets/boss-skills-contact-v6.webp',heroDefeat:'assets/hero-defeat-v2.webp',ultimateFace:'assets/hero-ultimate-cutin-v1.png',boss:'assets/boss-warlord.png',fireDragon:'assets/boss-fire-dragon-v2.webp',hero:'assets/hero.webp',slime:'assets/suraimu.png',skeleton:'assets/がいこつ.png',mage:'assets/mahoutukai.png',bonobo:'assets/bonobo.png',dragon:'assets/minidoragonn.png',body:'hero_body.png.png',upper:'hero_arm1.png',fore:'hero_arm2.png',hand:'hero_hand.png',shoulder:'hero_shoulder.png',sword:'assets/hero_sword_motion.png',forestTrees:'assets/forest-trees-gpt-v1.9d6d5503daf1.webp',forestGround:'assets/forest-ground-gpt-v1.095875d20497.webp',poses:'assets/hero-motion-sheet.png',waterSheet:'assets/water-slash-gpt-v3.webp',earthSheet:'assets/earth-slash-gpt-v1.webp',heroSkills:'assets/hero-skills-gpt-v1.webp',heroRun:'assets/hero-run-female-v2.png',heroGuard:'assets/hero-guard-gpt-v1.webp',guardImpact:'assets/guard-impact-gpt-v1.webp',dashTrail:'assets/superdash-gpt-v1.webp'};for(const k in src){im[k]=new Image;im[k].src=src[k]}
+(()=>{const $=s=>document.querySelector(s),cv=$('#game'),c=cv.getContext('2d');let W,H,last=0,S,combatSeed=17319;function random(){combatSeed=(Math.imul(combatSeed,1664525)+1013904223)>>>0;return combatSeed/4294967296}const C=(v,a,b)=>Math.max(a,Math.min(b,v)),R=(a,b)=>a+random()*(b-a),RI=(a,b)=>Math.floor(R(a,b+1)),E=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;const D={slime:{hp:2,d:1,r:0,h:205},skeleton:{hp:3,d:2,r:0,h:220},mage:{hp:3,d:2,r:1,h:228},bonobo:{hp:4,d:4,r:0,h:245},dragon:{hp:4,d:3,r:1,h:215},boss:{hp:40,d:3,r:0,h:300}},im={};const src={heroBlade:'assets/hero-blade-v2.webp',normalSlash:'assets/hero-normal-slash-v1.webp',bossFlame:'assets/boss-horizontal-flame-v2.webp',bossOverhead:'assets/boss-slide-v3.webp',bossSkills:'assets/boss-skills-contact-v6.webp',heroDefeat:'assets/hero-defeat-v2.webp',ultimateFace:'assets/hero-ultimate-cutin-v1.png',boss:'assets/boss-warlord.png',fireDragon:'assets/boss-fire-dragon-v2.webp',hero:'assets/hero.webp',slime:'assets/suraimu.png',skeleton:'assets/がいこつ.png',mage:'assets/mahoutukai.png',bonobo:'assets/bonobo.png',dragon:'assets/minidoragonn.png',body:'hero_body.png.png',upper:'hero_arm1.png',fore:'hero_arm2.png',hand:'hero_hand.png',shoulder:'hero_shoulder.png',sword:'assets/hero_sword_motion.png',forestTrees:'assets/forest-trees-gpt-v1.9d6d5503daf1.webp',forestGround:'assets/forest-ground-gpt-v1.095875d20497.webp',poses:'assets/hero-motion-sheet.png',waterSheet:'assets/water-slash-gpt-v3.webp',earthSheet:'assets/earth-slash-gpt-v1.webp',heroSkills:'assets/hero-skills-gpt-v1.webp',heroRun:'assets/hero-run-female-v2.png',heroGuard:'assets/hero-guard-gpt-v1.webp',guardImpact:'assets/guard-impact-gpt-v1.webp',dashTrail:'assets/superdash-gpt-v1.webp'};for(const k in src){im[k]=new Image;im[k].src=src[k]}
 function size(){const v=window.visualViewport;W=v?v.width:innerWidth;H=v?v.height:innerHeight;const frame=$('#gameViewport');frame.style.width=W+'px';frame.style.height=H+'px';frame.style.top=(v?v.offsetTop:0)+'px';frame.style.left=(v?v.offsetLeft:0)+'px';let d=Math.min(devicePixelRatio||1,2);cv.width=W*d;cv.height=H*d;c.setTransform(d,0,0,d,0,0)}addEventListener('resize',size);if(window.visualViewport){window.visualViewport.addEventListener('resize',size);window.visualViewport.addEventListener('scroll',size)}size();function sh(a){for(let i=a.length-1;i;i--){let j=RI(0,i);[a[i],a[j]]=[a[j],a[i]]}return a}function mk(t,z){return{t,z,l:RI(0,2),hp:D[t].hp,max:D[t].hp,dead:0,cd:R(1.8,3.8),tell:0,mv:R(.7,2),fl:0}}function roster(){let a=[],e=sh([...Array(3).fill('slime'),...Array(3).fill('skeleton')]),r=sh([...Array(6).fill('slime'),...Array(6).fill('skeleton'),...Array(6).fill('mage'),...Array(3).fill('bonobo'),...Array(3).fill('dragon')]);[...e,...r,...sh([...Array(9).fill('slime'),...Array(9).fill('skeleton'),...Array(6).fill('mage'),...Array(3).fill('bonobo'),...Array(3).fill('dragon')])].forEach((t,i)=>{const group=Math.floor(i/6),row=Math.floor(i%6/3);const enemy=mk(t,18+group*ENEMY_GROUP_GAP+row*ENEMY_ROW_GAP);enemy.l=i%3;enemy.group=group;a.push(enemy)});return a}function reset(){$('#gameViewport').classList.remove('cinematic');combatSeed=17319;S={run:0,pause:0,t:0,phase:'road',defeat:null,cinematic:null,roadTime:null,bossStartedAt:null,hp:20,dmg:0,dealtDamage:0,ultimateCharge:90,ultimate:null,overkill:0,z:0,l:1,guard:0,guardPose:0,guardImpact:0,introRun:0,ch:[4,4],fr:[0,0],skill:null,fin:0,dashUntil:-1,dash:null,boost:0,normalAttack:null,norm:0,en:roster(),shots:[],ptr:null,hit:0,pd:0,pt:0,notice:null,ll:1,fx:[],waves:[],waterFx:[],earthFx:[],combo:0,comboTime:0,shake:0,speed:0,runPhase:0,retreat:0};hideNotice();ui()}function ui(){updateUltimateUI();const hpRatio=C(S.hp/20,0,1),hpColor='hsl('+(120*hpRatio)+',100%,50%)';$('#hp').textContent=Math.ceil(C(S.hp,0,20))+'/20';$('#hpf').style.width=(hpRatio*100)+'%';$('#hpf').style.background=hpColor;$('#hpbar').style.background=hpRatio===0?'#ff0000':'#17212b';$('#hpbar').style.borderColor=hpColor;$('#time').textContent=S.t.toFixed(1);$('#fin').textContent=S.fin;const boss=S.en.find(e=>e.boss);$('#bossHud').classList.toggle('hide',S.phase!=='boss'||!!S.cinematic);$('#bossHp').textContent=boss?Math.max(0,boss.hp)+' / '+boss.max:'';for(let i=0;i<2;i++){
   // The original five charges remain unchanged; show partial recharge too.
   const fill=C((S.ch[i]+(S.ch[i]<4?S.fr[i]:0))/4,0,1);
@@ -445,7 +445,7 @@ function step(dt){
   S.norm=Math.max(0,S.norm-dt);
   if(S.skill||S.ultimate||S.guard)S.normalAttack=null;
   if(con&&!S.skill&&!S.ultimate&&!S.guard&&!S.normalAttack&&S.norm<=1e-9){
-    S.normalAttack={k:2,t:0,d:.5,done:0,target:con};S.norm=2;
+    S.normalAttack={k:2,t:0,d:.5,done:0,target:con};S.norm=1;
   }
   if(S.normalAttack){
     const a=S.normalAttack;a.t+=dt;
@@ -794,6 +794,15 @@ function drawRunningHero(h){
 }
 // GPT Image sheets preserve the supplied knight's costume and rear view.
 const ARMORED_ANCHORS=[[157, 310], [163, 310], [172, 310], [156, 311], [151, 309], [146, 310], [154, 311], [158, 310], [158, 310], [152, 311], [164, 310], [152, 311], [154, 304], [182, 305], [152, 305], [158, 310]];
+// Hilt and tip registration in each 313.5px skill frame. Occluded blades stay occluded.
+const HERO_BLADE_POSES=[[200,94,249,20],[229,99,266,25],null,[183,63,78,12],[119,101,29,60],[94,108,0,89],[237,160,297,196],[204,86,251,23],[202,91,252,20],[204,76,162,20],null,[145,43,96,120],[204,186,262,237],[233,205,289,271],[214,83,266,28],[211,84,255,18]];
+function drawHeldBlade(p,scale,anchor){
+ const img=im.heroBlade;if(!p||!img.complete||!img.naturalWidth)return;
+ const [bx,by,tx,ty]=p,dx=tx-bx,dy=ty-by,len=Math.hypot(dx,dy)*1.12*scale,width=Math.max(8,Math.hypot(dx,dy)*.095)*1.3*scale;
+ c.save();c.translate((bx-anchor[0])*scale,(by-anchor[1])*scale);c.rotate(Math.atan2(dy,dx)+Math.PI/2);
+ c.beginPath();c.moveTo(0,-len);c.lineTo(width*.43,-len*.83);c.lineTo(width/2,0);c.lineTo(-width/2,0);c.lineTo(-width*.43,-len*.83);c.closePath();c.clip();
+ c.drawImage(img,460,22,104,1487,-width/2,-len,width,len);c.restore();
+}
 function armoredReady(){return im.heroSkills.complete&&im.heroSkills.naturalWidth>0&&im.heroRun.complete&&im.heroRun.naturalWidth>0}
 function armoredFrame(sheet,index,h,running=false,alpha=1){
   const cols=4,rows=running?2:4,cw=sheet.naturalWidth/cols,ch=sheet.naturalHeight/rows;
@@ -802,6 +811,7 @@ function armoredFrame(sheet,index,h,running=false,alpha=1){
   c.save();c.globalAlpha*=alpha;
   const inset=running?18:0;
   c.drawImage(sheet,(index%4)*cw+inset,Math.floor(index/4)*ch,cw-2*inset,ch,(-a[0]+inset)*scale,-a[1]*scale,(cw-2*inset)*scale,ch*scale);
+  if(!running)drawHeldBlade(HERO_BLADE_POSES[index],scale,a);
   c.restore();
 }
 // Whole painted poses: rigid armor and foreshortened knees stay intact.
@@ -811,11 +821,13 @@ function drawRunCycle(h){
   const scale=h/480;
   // Fixed pelvis alignment and uniform scale; never stretch separate limbs.
   c.drawImage(sheet,(frame%4)*cw,Math.floor(frame/4)*ch,cw,ch,-192*scale,-496*scale,cw*scale,ch*scale);
+  drawHeldBlade([330,frame<4?248:247,395,frame<4?334:328],scale,[192,496]);
 }
 function drawGuardHero(h){
   const sheet=im.heroGuard,cw=sheet.naturalWidth/4,ch=sheet.naturalHeight;
   const frame=Math.min(3,Math.floor(S.guardPose*4)),scale=h/(ch*.96);
   c.drawImage(sheet,frame*cw,0,cw,ch,-cw*.46*scale,-ch*.985*scale,cw*scale,ch*scale);
+  const blades=[[429,354,559,555],[408,350,538,555],[391,370,532,567],[381,366,529,550]];drawHeldBlade(blades[frame],scale,[cw*.46,ch*.985]);
 }
 function drawArmoredHero(h){
   const action=S.ultimate?{k:1,t:Math.max(0,S.ultimate.t-ULTIMATE.cutin),d:ULTIMATE.duration-ULTIMATE.cutin}:S.skill||S.normalAttack;

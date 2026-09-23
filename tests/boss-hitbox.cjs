@@ -17,10 +17,10 @@ for(const lane of [0,1,2]){
 // A dragon that visually touches the torso hits before its ground point reaches the player.
 g.reset();let s=g.state;s.run=1;s.phase='boss';s.pd=3;s.pt=3;s.retreat=1;s.en=[{t:'boss',boss:true,z:15,l:1,displayLane:1,hp:999,cd:100,wideCd:100,dragonCd:100}];
 s.shots=[{kind:'fireDragon',l:1,originLane:1,originZ:12,z:8,age:.5,d:4}];assert(g.overlaps(g.heroHitRect(),g.fireDragonRect(s.shots[0])));g.step(.01);assert.equal(s.hp,16);assert.equal(s.shots.length,0);g.step(.01);assert.equal(s.hp,16);
-// Each uninterrupted melee hit deals one point and repeats at two-second intervals.
+// Each uninterrupted melee hit deals one point and repeats at one-second intervals.
 for(const dt of [1/30,1/60,1/120]){
  g.reset();s=g.state;s.run=1;s.en=[{t:'slime',l:1,z:.7,hp:999,max:999,cd:100,mv:100,dead:0}];const times=[];let hp=999;
  for(let t=0;t<6;t+=dt){g.step(dt);if(s.en[0].hp<hp){assert.equal(hp-s.en[0].hp,1);times.push(s.t);hp=s.en[0].hp;}}
- assert.equal(times.length,3);for(let i=1;i<times.length;i++)assert(Math.abs(times[i]-times[i-1]-2)<dt+1e-8);
+ assert.equal(times.length,6);for(let i=1;i<times.length;i++)assert(Math.abs(times[i]-times[i-1]-1)<dt+1e-8);
 }
-console.log('PASS: lingering and repeated wide skills, visible dragon collision, one-hit limit, and 2-second 1-damage cadence');
+console.log('PASS: lingering and repeated wide skills, visible dragon collision, one-hit limit, and 1-second 1-damage cadence');
