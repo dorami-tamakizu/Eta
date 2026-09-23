@@ -195,9 +195,9 @@ console.log('PASS: time-focused balance, safe play, score caps, no overkill farm
 // Backward motion drives alternating full-body frames; pause freezes the pose.
 g.beginRun();s=g.state;s.introRun=0;s.en=[];g.step(.01);tick(621);
 const steppingBoss=s.en.find(e=>e.boss);s.guard=1;steppingBoss.action=null;steppingBoss.attackCount=2;steppingBoss.cd=100;steppingBoss.z=s.z+s.pd+1.5;
-g.step(.02);assert.equal(steppingBoss.backstepActive,true);const phaseA=steppingBoss.backstepPhase;tick(15);assert.notEqual(steppingBoss.backstepPhase,phaseA);
+g.step(.02);assert.equal(steppingBoss.backstepActive,true);const phaseA=steppingBoss.backstepPhase;tick(15);assert.equal(steppingBoss.backstepPhase,phaseA,'once centered, boss stops stepping');
 s.pause=1;const frozenStep=steppingBoss.backstepPhase;tick(20);assert.equal(steppingBoss.backstepPhase,frozenStep);s.pause=0;
-steppingBoss.z=s.z+s.pd+8;g.step(.01);assert.equal(steppingBoss.backstepActive,false);
+steppingBoss.z=s.z+9;g.step(.01);assert.equal(steppingBoss.backstepActive,false);
 console.log('PASS: backward movement advances walk frames, pause freezes them, no stepping while stopped');
 
 s=setup();s.t=75.43;assert.equal(g.score(1).time,2996560);s.t=180;const baseTime=g.score(1).time;s.t=185;assert.equal(baseTime-g.score(1).time,40000);
@@ -207,9 +207,18 @@ console.log('PASS: reference scale, 8000 points per second, continuous long-run 
 // All-lane slash: half-second warning, one hit in every lane, guard and pause.
 for(let lane=0;lane<3;lane++){
  s=setup();s.l=lane;s.hp=20;const e={t:'boss',boss:true,z:2,l:1,displayLane:1,hp:40,max:40,attackCount:0,cd:100,action:{kind:'wide',l:1,age:0,impact:.5,duration:1.25,done:false}};s.en=[e];
- assert.equal(g.bossAuraProgress(e),0);g.updateBoss(e,.49);assert.equal(s.hp,20);assert(g.bossAuraProgress(e)>.9);g.updateBoss(e,.02);assert.equal(s.hp,17);assert.equal(g.bossAuraProgress(e),-1);g.updateBoss(e,.1);assert.equal(s.hp,17);
- e.action={kind:'wide',l:1,age:.49,impact:.5,duration:1.25,done:false};s.guard=1;g.updateBoss(e,.02);assert.equal(s.hp,17);
+ assert.equal(g.bossAuraProgress(e),0);g.updateBoss(e,.49);assert.equal(s.hp,20);assert(g.bossAuraProgress(e)>.9);g.updateBoss(e,.02);assert.equal(s.hp,16);assert.equal(g.bossAuraProgress(e),-1);g.updateBoss(e,.1);assert.equal(s.hp,16);
+ e.action={kind:'wide',l:1,age:.49,impact:.5,duration:1.25,done:false};s.guard=1;g.updateBoss(e,.02);assert.equal(s.hp,16);
 }
-s=setup();const choices=new Set();const randomBoss={t:'boss',boss:true,z:2,l:1,displayLane:1,hp:40,max:40,attackCount:0,cd:0};
-for(let i=0;i<100;i++){randomBoss.action=null;randomBoss.cd=0;g.updateBoss(randomBoss,.01);choices.add(randomBoss.action.kind);}assert(choices.has('wide')&&choices.size>1);
-console.log('PASS: randomized full-lane slash, 0.5-second warning, damage once, all lanes and guard');
+
+s=setup();s.phase='boss';s.guard=1;const arenaBoss={t:'boss',boss:true,z:9,l:1,displayLane:1,hp:40,max:40,attackCount:0,cd:0,wideCd:1,dragonCd:99};s.en=[arenaBoss];
+const fixedCamera=s.z;tick(400);assert.equal(s.z,fixedCamera);assert(arenaBoss.z>=s.z+9);assert(arenaBoss.wideCd<=4.4);
+s=setup();s.en=[];const instant={t:'boss',boss:true,z:9,l:1,displayLane:1,hp:40,max:40,attackCount:0,cd:0,wideCd:3,dragonCd:99};
+g.updateBoss(instant,.01);assert.equal(s.hp,18);assert.equal(instant.action,undefined);assert.equal(instant.tell,0);assert.equal(g.bossAuraProgress(instant),-1);
+s.guard=1;instant.cd=0;g.updateBoss(instant,.01);assert.equal(s.hp,18);
+instant.wideCd=0;g.updateBoss(instant,.01);assert.equal(instant.action.kind,'wide');assert.equal(instant.action.impact,.5);assert(instant.wideCd>=2.6&&instant.wideCd<=4.4);
+console.log('PASS: centered boss, fixed arena camera, immediate normal attacks, independent randomized skill interval');
+
+s=setup();s.phase='boss';s.pd=4.7;s.en=[{t:'boss',boss:true,z:9,l:1,displayLane:1,hp:40,max:40,attackCount:0,cd:100,wideCd:100,dragonCd:100,fl:0}];s.l=1;
+tick(30);assert(s.en[0].hp<40,'hero can still hit centered boss');assert.equal(s.z,0);assert.equal(s.en[0].z,9);
+console.log('PASS: centered boss stays reachable by player normal attack');
