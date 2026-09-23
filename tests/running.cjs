@@ -234,13 +234,13 @@ s=setup();s.phase='boss';s.guard=1;s.l=0;const retreatBoss={t:'boss',boss:true,z
 let slashes=0;for(let i=0;i<2000;i++){g.step(.01);assert(retreatBoss.z-s.z>=9);assert.equal(s.z,0);if(retreatBoss.action?.kind==='wide'&&retreatBoss.action.done){slashes++;}}
 assert(retreatBoss.z>=9&&retreatBoss.z<=15);assert(slashes>0);console.log('PASS: moving boss repeats its slashes');
 
-// Both skills ignore early taps without spending charges, then permit cancellation.
+// Both skills buffer early taps without spending charges, then permit cancellation.
 for(const first of [1,2])for(const second of [1,2]){
- s=setup();g.fire(first);const active=s.skill,charges=Array.from(s.ch);active.t=active.d*.5-.0001;g.fire(second);assert.equal(s.skill,active);assert.deepEqual(Array.from(s.ch),charges);
- active.t=active.d*.5;g.fire(second);assert.notEqual(s.skill,active);assert.equal(s.skill.k,second);assert.equal(s.skill.t,0);assert.equal(s.ch[second-1],charges[second-1]-1);
+ s=setup();g.fire(first);const active=s.skill,charges=Array.from(s.ch);active.t=active.d*(first===1?.62:.5)-.0001;g.fire(second);assert.equal(s.skill,active);assert.deepEqual(Array.from(s.ch),charges);
+ active.t=active.d*(first===1?.62:.5);g.fire(second);assert.notEqual(s.skill,active);assert.equal(s.skill.k,second);assert.equal(s.skill.t,0);assert.equal(s.ch[second-1],charges[second-1]-1);
 }
 s=setup();g.fire(2);s.skill.t=s.skill.d*.5;s.ch[0]=0;const active=s.skill;g.fire(1);assert.equal(s.skill,active);
-s=setup();g.fire(1);tick(34);const emitted=s.waves[0];assert(emitted);g.fire(2);assert(s.waves.includes(emitted));console.log('PASS: skill input lock before 50%, cancel at 50%, charges and emitted attacks preserved');
+s=setup();g.fire(1);tick(34);const emitted=s.waves[0];assert(emitted);g.fire(2);assert(s.waves.includes(emitted));console.log('PASS: buffered skill input and per-skill cancel threshold, charges and emitted attacks preserved');
 
 s=setup();const cues=[];context.window.GameSFX={play:k=>cues.push(k)};g.fireUltimate();tick(83);assert.equal(cues.filter(k=>k==='ultimateFlight').length,0);tick(5);assert.equal(cues.filter(k=>k==='ultimateFlight').length,1);tick(60);assert.equal(cues.filter(k=>k==='ultimateFlight').length,1);console.log('PASS: flight audio fires once when blade launches');
 
@@ -260,3 +260,14 @@ s=setup();s.phase='boss';s.pd=7;s.pt=7;s.en=[{t:'boss',boss:true,z:12,l:1,displa
 s=setup();s.phase='boss';s.guard=1;const stationary={t:'boss',boss:true,z:9,l:1,displayLane:1,hp:999,cd:100,wideCd:100,dragonCd:100};s.en=[stationary];tick(2400);assert(stationary.z>=9&&stationary.z<=15);assert(stationary.stepClock>0);assert.equal(s.z,0);
 s=setup();s.phase='boss';s.pd=0;s.pt=0;s.l=0;s.en=[{t:'boss',boss:true,z:9,l:1,displayLane:1,hp:999,cd:100,wideCd:100,dragonCd:100}];s.dashUntil=.5;g.accelerate();tick(40);assert.equal(s.dash,null);assert(s.en[0].z-s.z-s.pd<2);assert.equal(s.z,0);assert(s.en[0].z>=9);
 console.log('PASS: moving boss, fixed arena camera, and dash stops at contact');
+
+// Immediate double taps cancel the first water sweep after right/center, before left.
+for(const dt of [1/30,1/60,1/120])for(const second of [1,2]){
+ s=setup();s.en=[0,1,2].map(l=>({t:'slime',hp:2,max:2,l,z:2,dead:0,cd:100,mv:100,tell:0,fl:0}));
+ g.fire(1);const first=s.skill;g.fire(second);assert.equal(s.skill,first);assert.equal(first.queued,second);
+ for(let t=0;t<.62;t+=dt){s.guard=1;g.step(dt);}
+ assert.equal(s.en[0].hp,2,'left survives the cancelled first sweep');assert(s.en[1].dead&&s.en[2].dead,'center and right are hit');assert.notEqual(s.skill,first);assert.equal(s.skill.k,second);
+ assert.equal(s.ch[0],second===1?2:3);assert.equal(s.ch[1],second===2?3:4);
+}
+s=setup();s.en=[0,1,2].map(l=>({t:'slime',hp:2,max:2,l,z:2,dead:0,cd:100,mv:100,tell:0,fl:0}));g.fire(1);s.guard=1;tick(65);assert(s.en.every(e=>e.dead),'uncancelled sweep reaches all lanes');
+console.log('PASS: immediate double tap hits right/center only before cancellation at 30/60/120 fps; full sweep reaches left');
