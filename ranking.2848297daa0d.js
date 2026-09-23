@@ -38,8 +38,8 @@
     try{
       const rows=await request('',{name,...current.data});
       if(!Array.isArray(rows)||!rows[0]?.id)throw new Error('Missing receipt');
-      current.state='saved';current.message='登録しました。タイトルのランキングから確認できます。';
-      if(result===current){$('#registerScore').textContent='ランキング登録済み';$('#registerScore').disabled=true;}
+      current.state='saved';current.message='送信が完了しました。上位100位以内の記録がランキングに残ります。';
+      if(result===current){$('#registerScore').textContent='ランキング送信済み';$('#registerScore').disabled=true;}
     }catch(error){
       current.state=error.rejected?'ready':'unknown';
       current.message=error.rejected?'登録できませんでした。時間をおいて再度お試しください。':'登録結果を確認できませんでした。二重登録を避けるため、タイトルのランキングをご確認ください。';
