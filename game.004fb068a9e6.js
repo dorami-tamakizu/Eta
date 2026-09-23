@@ -1,4 +1,4 @@
-(()=>{const $=s=>document.querySelector(s),cv=$('#game'),c=cv.getContext('2d');let W,H,last=0,S,combatSeed=17319;function random(){combatSeed=(Math.imul(combatSeed,1664525)+1013904223)>>>0;return combatSeed/4294967296}const C=(v,a,b)=>Math.max(a,Math.min(b,v)),R=(a,b)=>a+random()*(b-a),RI=(a,b)=>Math.floor(R(a,b+1)),E=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;const D={slime:{hp:2,d:1,r:0,h:205},skeleton:{hp:3,d:2,r:0,h:220},mage:{hp:3,d:2,r:1,h:228},bonobo:{hp:4,d:4,r:0,h:245},dragon:{hp:4,d:3,r:1,h:215},boss:{hp:40,d:3,r:0,h:300}},im={};const src={bossFlame:'assets/boss-horizontal-flame-v2.webp',bossOverhead:'assets/boss-slide-v3.webp',bossSkills:'assets/boss-skills-contact-v6.webp',heroDefeat:'assets/hero-defeat-v2.webp',ultimateFace:'assets/hero-ultimate-cutin-v1.png',boss:'assets/boss-warlord.png',fireDragon:'assets/boss-fire-dragon-v2.webp',hero:'assets/hero.webp',slime:'assets/suraimu.png',skeleton:'assets/がいこつ.png',mage:'assets/mahoutukai.png',bonobo:'assets/bonobo.png',dragon:'assets/minidoragonn.png',body:'hero_body.png.png',upper:'hero_arm1.png',fore:'hero_arm2.png',hand:'hero_hand.png',shoulder:'hero_shoulder.png',sword:'assets/hero_sword_motion.png',forestTrees:'assets/forest-trees-gpt-v1.9d6d5503daf1.webp',forestGround:'assets/forest-ground-gpt-v1.095875d20497.webp',poses:'assets/hero-motion-sheet.png',waterSheet:'assets/water-slash-gpt-v3.webp',earthSheet:'assets/earth-slash-gpt-v1.webp',heroSkills:'assets/hero-skills-gpt-v1.webp',heroRun:'assets/hero-run-female-v2.png',heroGuard:'assets/hero-guard-gpt-v1.webp',guardImpact:'assets/guard-impact-gpt-v1.webp',dashTrail:'assets/superdash-gpt-v1.webp'};for(const k in src){im[k]=new Image;im[k].src=src[k]}
+(()=>{const $=s=>document.querySelector(s),cv=$('#game'),c=cv.getContext('2d');let W,H,last=0,S,combatSeed=17319;function random(){combatSeed=(Math.imul(combatSeed,1664525)+1013904223)>>>0;return combatSeed/4294967296}const C=(v,a,b)=>Math.max(a,Math.min(b,v)),R=(a,b)=>a+random()*(b-a),RI=(a,b)=>Math.floor(R(a,b+1)),E=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;const D={slime:{hp:2,d:1,r:0,h:205},skeleton:{hp:3,d:2,r:0,h:220},mage:{hp:3,d:2,r:1,h:228},bonobo:{hp:4,d:4,r:0,h:245},dragon:{hp:4,d:3,r:1,h:215},boss:{hp:40,d:3,r:0,h:300}},im={};const src={normalSlash:'assets/hero-normal-slash-v1.webp',bossFlame:'assets/boss-horizontal-flame-v2.webp',bossOverhead:'assets/boss-slide-v3.webp',bossSkills:'assets/boss-skills-contact-v6.webp',heroDefeat:'assets/hero-defeat-v2.webp',ultimateFace:'assets/hero-ultimate-cutin-v1.png',boss:'assets/boss-warlord.png',fireDragon:'assets/boss-fire-dragon-v2.webp',hero:'assets/hero.webp',slime:'assets/suraimu.png',skeleton:'assets/がいこつ.png',mage:'assets/mahoutukai.png',bonobo:'assets/bonobo.png',dragon:'assets/minidoragonn.png',body:'hero_body.png.png',upper:'hero_arm1.png',fore:'hero_arm2.png',hand:'hero_hand.png',shoulder:'hero_shoulder.png',sword:'assets/hero_sword_motion.png',forestTrees:'assets/forest-trees-gpt-v1.9d6d5503daf1.webp',forestGround:'assets/forest-ground-gpt-v1.095875d20497.webp',poses:'assets/hero-motion-sheet.png',waterSheet:'assets/water-slash-gpt-v3.webp',earthSheet:'assets/earth-slash-gpt-v1.webp',heroSkills:'assets/hero-skills-gpt-v1.webp',heroRun:'assets/hero-run-female-v2.png',heroGuard:'assets/hero-guard-gpt-v1.webp',guardImpact:'assets/guard-impact-gpt-v1.webp',dashTrail:'assets/superdash-gpt-v1.webp'};for(const k in src){im[k]=new Image;im[k].src=src[k]}
 function size(){const v=window.visualViewport;W=v?v.width:innerWidth;H=v?v.height:innerHeight;const frame=$('#gameViewport');frame.style.width=W+'px';frame.style.height=H+'px';frame.style.top=(v?v.offsetTop:0)+'px';frame.style.left=(v?v.offsetLeft:0)+'px';let d=Math.min(devicePixelRatio||1,2);cv.width=W*d;cv.height=H*d;c.setTransform(d,0,0,d,0,0)}addEventListener('resize',size);if(window.visualViewport){window.visualViewport.addEventListener('resize',size);window.visualViewport.addEventListener('scroll',size)}size();function sh(a){for(let i=a.length-1;i;i--){let j=RI(0,i);[a[i],a[j]]=[a[j],a[i]]}return a}function mk(t,z){return{t,z,l:RI(0,2),hp:D[t].hp,max:D[t].hp,dead:0,cd:R(1.8,3.8),tell:0,mv:R(.7,2),fl:0}}function roster(){let a=[],e=sh([...Array(3).fill('slime'),...Array(3).fill('skeleton')]),r=sh([...Array(6).fill('slime'),...Array(6).fill('skeleton'),...Array(6).fill('mage'),...Array(3).fill('bonobo'),...Array(3).fill('dragon')]);[...e,...r,...sh([...Array(9).fill('slime'),...Array(9).fill('skeleton'),...Array(6).fill('mage'),...Array(3).fill('bonobo'),...Array(3).fill('dragon')])].forEach((t,i)=>{const group=Math.floor(i/6),row=Math.floor(i%6/3);const enemy=mk(t,18+group*ENEMY_GROUP_GAP+row*ENEMY_ROW_GAP);enemy.l=i%3;enemy.group=group;a.push(enemy)});return a}function reset(){$('#gameViewport').classList.remove('cinematic');combatSeed=17319;S={run:0,pause:0,t:0,phase:'road',defeat:null,cinematic:null,roadTime:null,bossStartedAt:null,hp:20,dmg:0,dealtDamage:0,ultimateCharge:90,ultimate:null,overkill:0,z:0,l:1,guard:0,guardPose:0,guardImpact:0,introRun:0,ch:[4,4],fr:[0,0],skill:null,fin:0,dashUntil:-1,dash:null,boost:0,normalAttack:null,norm:0,en:roster(),shots:[],ptr:null,hit:0,pd:0,pt:0,notice:null,ll:1,fx:[],waves:[],waterFx:[],earthFx:[],combo:0,comboTime:0,shake:0,speed:0,runPhase:0,retreat:0};hideNotice();ui()}function ui(){updateUltimateUI();const hpRatio=C(S.hp/20,0,1),hpColor='hsl('+(120*hpRatio)+',100%,50%)';$('#hp').textContent=Math.ceil(C(S.hp,0,20))+'/20';$('#hpf').style.width=(hpRatio*100)+'%';$('#hpf').style.background=hpColor;$('#hpbar').style.background=hpRatio===0?'#ff0000':'#17212b';$('#hpbar').style.borderColor=hpColor;$('#time').textContent=S.t.toFixed(1);$('#fin').textContent=S.fin;const boss=S.en.find(e=>e.boss);$('#bossHud').classList.toggle('hide',S.phase!=='boss'||!!S.cinematic);$('#bossHp').textContent=boss?Math.max(0,boss.hp)+' / '+boss.max:'';for(let i=0;i<2;i++){
   // The original five charges remain unchanged; show partial recharge too.
   const fill=C((S.ch[i]+(S.ch[i]<4?S.fr[i]:0))/4,0,1);
@@ -265,9 +265,10 @@ function updateBoss(e,dt){
       if(a.kind==='dragon'){S.shots.push({kind:'fireDragon',l:a.l,z:e.z,originLane:e.displayLane??e.l,originZ:e.z,d:4,t:'boss',age:0});sound('shot','dragon');}
       else if(a.kind==='wide'){
         sound('continentSwing');for(let lane=0;lane<3;lane++)burst(lane,a.targetZ,'#ffae43',8);
-        if(Math.abs(S.z+S.pd-a.targetZ)<=BOSS_SLASH_DEPTH/2)hurt(4);
+        resolveBossWideHit(a);
       }else if(a.kind==='sword'){sound('continentSwing');if(S.l===a.l&&distance(e)>=0&&distance(e)<=BOSS_SLASH_DEPTH)hurt(3);}
     }
+    if(a.kind==='wide'&&a.done&&a.age<=a.impact+.38)resolveBossWideHit(a);
     if(a.age>=a.duration){e.recover={kind:a.kind,age:0};e.action=null;e.tell=0;e.cd=.48;}
     return;
   }
@@ -345,6 +346,22 @@ function drawBossAura(e,h){
   c.save();c.globalAlpha*=.30+.42*q;
   c.drawImage(img,0,sy,img.naturalWidth,sh,-w/2,-fh*.88,w,fh);c.restore();
 }
+function heroHitRect(){const h=playerHeight();return {x:playerX()-h*.18,y:playerY()-h*.80,w:h*.36,h:h*.72};}
+function overlaps(a,b){return a.x<=b.x+b.w&&a.x+a.w>=b.x&&a.y<=b.y+b.h&&a.y+a.h>=b.y;}
+function bossWideRect(a){
+ const z=a.targetZ-S.z,p=perspective(z),y=yy(z)-Math.min(H*.34,290)*p*.45,w=(lx(2.5,z)-lx(-.5,z))*1.08,h=w*292/1536;
+ return {x:W/2-w/2,y:y-h/2,w,h};
+}
+function resolveBossWideHit(a){
+ if(a.hitPlayer)return;
+ if(Math.abs(S.z+S.pd-a.targetZ)<=BOSS_SLASH_DEPTH/2||overlaps(heroHitRect(),bossWideRect(a))){a.hitPlayer=true;hurt(4);}
+}
+function fireDragonRect(shot){
+ const z=shot.z-S.z,p=perspective(z),launch=C((shot.age||0)/.18,0,1),h=300*p*Math.min(1,H/844)*(.45+.55*launch),w=h*2/3;
+ const originLane=shot.originLane??shot.l,l=originLane+(shot.l-originLane)*E(launch),bossH=bossHeight((shot.originZ??shot.z)-S.z);
+ const x=lx(l,z)+(1-launch)*bossH*.20,y=yy(z);
+ return {x:x-w/2,y:y-h*.90,w,h};
+}
 function drawBossWideSlash(){
   const e=S.en.find(e=>e.boss&&!e.dead),a=e&&e.action;if(!a||a.kind!=='wide'||!a.done||S.cinematic)return;
   const q=(a.age-a.impact)/.48;if(q<0||q>=1)return;
@@ -357,14 +374,8 @@ function drawBossWideSlash(){
 }
 function drawFireDragon(shot){
   const img=im.fireDragon;if(!img.complete||!img.naturalWidth)return;
-  const z=shot.z-S.z,p=perspective(z),launch=C((shot.age||0)/.18,0,1);
-  const h=300*p*Math.min(1,H/844)*(.45+.55*launch),w=h*img.naturalWidth/img.naturalHeight;
-  // Grow from the blade's contact point, then follow the telegraphed target lane.
-  const originLane=shot.originLane??shot.l,l=originLane+(shot.l-originLane)*E(launch);
-  const bossH=bossHeight((shot.originZ??shot.z)-S.z);
-  const x=lx(l,z)+(1-launch)*bossH*.20,y=yy(z);c.save();c.translate(x,y);c.rotate(Math.sin((shot.age||0)*9)*.025);
-  c.globalAlpha=.92;c.drawImage(img,0,0,img.naturalWidth,img.naturalHeight,-w/2,-h*.90,w,h);
-  c.restore();
+  const r=fireDragonRect(shot);c.save();c.globalAlpha=.92;
+  c.drawImage(img,0,0,img.naturalWidth,img.naturalHeight,r.x,r.y,r.w,r.h);c.restore();
 }
 function beginDefeat(){
   if(S.defeat)return;
@@ -433,8 +444,8 @@ function step(dt){
   let con=S.en.find(e=>!e.dead&&e.l===S.l&&distance(e)<=(e.boss?5:1.05)&&distance(e)>=-.1);
   S.norm=Math.max(0,S.norm-dt);
   if(S.skill||S.ultimate||S.guard)S.normalAttack=null;
-  if(con&&!S.skill&&!S.ultimate&&!S.guard&&!S.normalAttack&&S.norm<=0){
-    S.normalAttack={k:1,t:0,d:.5,done:0,target:con};S.norm=2;
+  if(con&&!S.skill&&!S.ultimate&&!S.guard&&!S.normalAttack&&S.norm<=1e-9){
+    S.normalAttack={k:2,t:0,d:.5,done:0,target:con};S.norm=2;
   }
   if(S.normalAttack){
     const a=S.normalAttack;a.t+=dt;
@@ -458,7 +469,9 @@ function step(dt){
   }
   for(const p of S.shots){
     const before=distance(p);p.z-=(p.kind==='fireDragon'?10:18)*dt;p.age=(p.age||0)+dt;
-    if(distance(p)<=.35){if(before>=-.35&&p.l===S.l)hurt(p.d);p.dead=1;if(!S.run){ui();return}}
+    if(p.kind==='fireDragon'&&before>=-.35&&overlaps(heroHitRect(),fireDragonRect(p))){hurt(p.d);p.dead=1;}
+    else if(distance(p)<=.35){if(before>=-.35&&p.l===S.l)hurt(p.d);p.dead=1;}
+    if(!S.run){ui();return}
   }
   S.shots=S.shots.filter(p=>!p.dead);
   if(!S.ultimate&&!S.introRun&&!S.en.some(e=>!e.dead)){if(S.phase==='road')startBoss();else startVictory();}
@@ -808,7 +821,7 @@ function drawArmoredHero(h){
   const action=S.ultimate?{k:1,t:Math.max(0,S.ultimate.t-ULTIMATE.cutin),d:ULTIMATE.duration-ULTIMATE.cutin}:S.skill||S.normalAttack;
   if((S.guard||S.guardPose>0)&&im.heroGuard.complete&&im.heroGuard.naturalWidth){drawGuardHero(h);
   }else if(action){
-    const p=C(action.t/action.d,0,1),i=poseFrame(action.k,p),settle=C((p-.88)/.12,0,1);
+    const raw=C(action.t/action.d,0,1),p=action===S.normalAttack?(raw<=.48?raw*.54/.48:.54+(raw-.48)*.46/.52):raw,i=poseFrame(action.k,p),settle=C((p-.88)/.12,0,1);
     armoredFrame(im.heroSkills,i,h,false,1-settle);
     if(settle>0)armoredFrame(im.heroSkills,0,h,false,settle);
   }else if(!S.guard&&S.speed>.05){
@@ -821,6 +834,12 @@ function drawArmoredHero(h){
   }
 }
 
+function drawNormalSlash(){
+ const a=S.normalAttack,img=im.normalSlash;if(!a||S.skill||!img.complete||!img.naturalWidth)return;
+ const q=(a.t-.16)/.26;if(q<0||q>1)return;
+ const h=playerHeight(),size=h*.95;c.save();c.globalAlpha=Math.min(1,q/.30,(1-q)/.45);
+ c.drawImage(img,playerX()-size*.52,playerY()-h*1.04,size,size);c.restore();
+}
 function drawPoseHero(h){
   const skill=S.skill||S.normalAttack,p=skill?C(skill.t/skill.d,0,1):0;
   if(!skill&&!S.guard&&S.speed>.05)drawRunningHero(h);else drawPoseFrame(skill?poseFrame(skill.k,p):0,h);
@@ -904,7 +923,7 @@ function draw(){
   drawWaterEffect(false);drawGuardImpact();drawDashTrail();
   const x=playerX(),y=playerY(),h=playerHeight(),img=im.hero;c.save();c.translate(x,y);
   c.fillStyle='#06111b66';c.beginPath();c.ellipse(0,0,h*.25,h*.04,0,0,7);c.fill();
-  if(S.defeat)drawDefeatedHero(h);else if(armoredReady())drawArmoredHero(h);else if(img.complete&&img.naturalWidth){const rect=crop(img),w=h*rect[2]/rect[3];c.drawImage(img,...rect,-w/2,-h,w,h)}c.restore();drawWaterEffect(true);drawEffects();c.restore();drawUltimate();drawBossWideSlash();drawBattleBanner();
+  if(S.defeat)drawDefeatedHero(h);else if(armoredReady())drawArmoredHero(h);else if(img.complete&&img.naturalWidth){const rect=crop(img),w=h*rect[2]/rect[3];c.drawImage(img,...rect,-w/2,-h,w,h)}c.restore();drawNormalSlash();drawWaterEffect(true);drawEffects();c.restore();drawUltimate();drawBossWideSlash();drawBattleBanner();
   if(S.hit){c.fillStyle='rgba(255,80,60,.12)';c.fillRect(0,0,W,H)}
   drawCinematic();
 }

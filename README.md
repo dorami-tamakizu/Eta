@@ -7,6 +7,8 @@
 ボスは前後左右へ移動し、スキル命中時のみダメージを与えます。主人公の後退に連動して巨大化しません。撃破数は画面表示しません。
 スキルは元の命中判定と50%経過後のキャンセル受付です。連打予約や左レーンだけへの命中を中断する仕様はありません。
 
+通常攻撃は2秒に1回・1ダメージで、GPTイメージ製の斜め振り下ろしエフェクトと同期します。ボスの横斬撃は表示中の接触も1発動1回まで判定し、炎竜は描画位置・幅を含めて命中判定します。防御による無効化は維持します。
+
 ## 配布ファイル
 
 `index.html` が参照するハッシュ付き JavaScript が公開用です。`game.js`、`bgm.js`、`sfx.js` は保守用ソースで、対応する公開用ファイルと内容が一致します。
@@ -17,6 +19,7 @@
 
 ```sh
 node tests/release.cjs
+node tests/boss-hitbox.cjs
 node tests/running.cjs
 node tests/boss-animation.cjs
 node tests/swipe-movement.cjs
