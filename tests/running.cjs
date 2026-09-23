@@ -232,4 +232,4 @@ console.log('PASS: no automatic boss pushback, voluntary retreat preserved');
 // Sustained retreat stays beyond center and attacks during backward stepping.
 s=setup();s.phase='boss';s.guard=1;s.l=0;const retreatBoss={t:'boss',boss:true,z:9,l:1,displayLane:1,hp:40,max:40,attackCount:0,cd:100,wideCd:.1,dragonCd:100};s.en=[retreatBoss];
 let slashes=0;for(let i=0;i<2000;i++){g.step(.01);assert(retreatBoss.z-s.z>=9);assert(retreatBoss.z-s.z<=11.50001);if(retreatBoss.action?.kind==='wide'&&retreatBoss.action.done){assert(retreatBoss.backstepActive);slashes++;}}
-assert(retreatBoss.z>20);assert(slashes>0);console.log('PASS: sustained retreat behind center, repeated slashes while stepping');
+assert(Math.abs(retreatBoss.z-15.4)<.001);assert(slashes>0);console.log('PASS: sustained retreat behind center, repeated slashes while stepping');

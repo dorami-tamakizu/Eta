@@ -13,3 +13,5 @@ Correction: fixed-camera movement preserves the player's reached depth, never pu
 Correction: restore the same frontline renderer for road and boss enemies. Boss spawns at center depth 9 and stays at that center-depth limit (feet at 50.08% of screen height). Floor attack-area telegraphs remain removed.
 
 Boss now retreats continuously at 0.65 depth units/s from center depth 9, never forward of center. Camera follows only beyond depth 11.5 to keep the fight visible. Hero can follow without being pulled back. Backstep atlas animates between attacks; sword atlas takes priority during skills while retreat continues. Start cue: original source brightened, echoes extended to 1.85 seconds, full-level dedicated playback.
+
+Slow walk revision: retreat speed 0.32 units/s, backstep cycle 0.55 cycles/s. Battle start uses the exact same original-v5.m4a asset and direct output level as ultimate cut-in.

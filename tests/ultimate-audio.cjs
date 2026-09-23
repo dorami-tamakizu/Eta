@@ -4,7 +4,8 @@ const node=()=>({connect(){},disconnect(){},gain:{value:1}});
 class Context{constructor(){this.state='running';this.destination={}}createGain(){return node()}createDynamicsCompressor(){return {...node(),threshold:{},knee:{},ratio:{},attack:{},release:{}}}createMediaElementSource(){return node()}resume(){this.state='running';return Promise.resolve()}suspend(){this.state='suspended';return Promise.resolve()}}
 const c={window:{AudioContext:Context},Audio,document:{hidden:false,addEventListener(){}},Map,Set,Float32Array,Math,Promise};
 vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../sfx.js'),'utf8'),c);const s=c.window.GameSFX;
-s.start();s.play('ultimateCutin',0);const audio=media.find(x=>x.src.includes('ultimate-cutin'));
+s.start();s.play('ultimateCutin',0);const audio=media[1];
+assert.equal(media[0].src,audio.src,'battle start uses exact same cut-in asset');s.play('battleStart');assert.equal(media[0].plays,1);assert.equal(media[0].currentTime,0);
 assert(audio);assert.equal(audio.plays,1);assert.equal(audio.currentTime,0);
 s.pause();assert.equal(audio.paused,true);s.play('ultimateCutin');assert.equal(audio.plays,1,'cannot play while paused');
 s.start();s.play('ultimateCutin',.05);assert.equal(audio.currentTime,.05);assert.equal(audio.plays,3);
