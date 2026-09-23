@@ -4,6 +4,8 @@ const node=()=>({style:{},classList:{add:noop,remove:noop,toggle:noop},setAttrib
 const context={console,Math,Set,Image:class{},innerWidth:390,innerHeight:844,devicePixelRatio:1,addEventListener:(name,fn)=>keys.set(name,fn),requestAnimationFrame:noop,performance:{now:()=>0},document:{querySelector:s=>{if(!nodes.has(s))nodes.set(s,node());return nodes.get(s)},addEventListener:noop},window:{}};
 const code=fs.readFileSync(path.join(__dirname,'../game.js'),'utf8').replace('reset();function loop(t)','globalThis.test={reset,step,hit,fireUltimate,depth,accelerate,get state(){return S}};reset();function loop(t)');
 vm.runInNewContext(code,context);const g=context.test,oneStep=Math.PI/1.35;
+const groupStart=n=>g.state.en.find(e=>e.group===n).z;
+const dashDistance=groupStart(2)-groupStart(0);assert.equal(dashDistance,64,'two full pack intervals, not rows within a pack');
 function setup(){g.reset();const s=g.state;s.run=1;s.en=[{t:'slime',hp:999,max:999,l:1,z:10000,dead:0,cd:100,mv:100,tell:0,fl:0}];return s;}
 function tick(seconds,dt=.01){let left=seconds;while(left>1e-10){const slice=Math.min(dt,left);g.step(slice);left-=slice;}}
 function position(){return g.state.z+g.state.pd;}
@@ -33,11 +35,12 @@ s=setup();s.en[0].z=1;for(let i=0;i<10;i++)swipe();tick(.02);assert(position()<=
 console.log('PASS: swipe direction, pause, input locks, keyboard repeat, reset, and front-line collision');
 
 for(const dt of [.01,1/30,1/60,1/120]){
- s=setup();s.dashUntil=.5;swipe();assert.equal(s.dash.n,6);tick(.1,dt);assert(Math.abs(position()-4.2)<1e-8);assert(s.dash);
- tick(.9,dt);assert.equal(s.dash,null);assert(Math.abs(position()-(6+9*(1-6/42)))<1e-8,'cap switches to base speed for the remainder of the frame');assert(Math.abs(s.speed-9)<1e-8);
+ s=setup();s.dashUntil=.5;swipe();assert.equal(s.dash.n,dashDistance);tick(.1,dt);assert(Math.abs(position()-4.2)<1e-8);assert(s.dash);
+ tick(.9,dt);assert(s.dash,'dash remains active across the first full pack interval');assert(Math.abs(position()-42)<1e-8);tick(1,dt);assert.equal(s.dash,null);assert(Math.abs(position()-(dashDistance+9*(2-dashDistance/42)))<1e-8,'cap switches to base speed for the remainder of the frame');assert(Math.abs(s.speed-9)<1e-8);
 }
-s=setup();s.dashUntil=.5;swipe();tick(.05);const remaining=s.dash.n;s.pause=1;tick(2);assert.equal(s.dash.n,remaining);s.pause=0;tick(.2);assert.equal(s.dash,null);
+s=setup();s.dashUntil=.5;swipe();tick(.05);const remaining=s.dash.n;s.pause=1;tick(2);assert.equal(s.dash.n,remaining);s.pause=0;tick(2);assert.equal(s.dash,null);
 s=setup();s.en[0].z=2;s.dashUntil=.5;swipe();tick(.04);assert.equal(s.dash,null);assert(position()<=s.en[0].z-.7+1e-8,'nearby contact still ends the dash early');
-s=setup();s.ch=[1,1];s.dashUntil=.5;swipe();tick(.05);const beforeMore=s.dash.n;swipe();assert.equal(s.dash.n,beforeMore,'ordinary swipes during dash do not reset its distance budget');tick(.2);assert.equal(s.dash,null);assert.deepEqual(Array.from(s.ch),[2,2]);
-s=setup();s.phase='boss';s.l=0;s.en=[{t:'boss',boss:true,z:15,l:1,displayLane:1,hp:999,max:999,cd:100,wideCd:100,dragonCd:100}];s.dashUntil=.5;swipe();tick(6/42);assert.equal(s.dash,null);assert(Math.abs(position()-6)<1e-8);assert(s.en[0].z-position()>8);
-console.log('PASS: two-row dash cap, frame-rate independence, normal-speed fallback, early contact, pause, single reward, and boss cap');
+s=setup();s.ch=[1,1];s.dashUntil=.5;swipe();tick(.05);const beforeMore=s.dash.n;swipe();assert.equal(s.dash.n,beforeMore,'ordinary swipes during dash do not reset its distance budget');tick(2);assert.equal(s.dash,null);assert.deepEqual(Array.from(s.ch),[2,2]);
+s=setup();s.phase='boss';s.l=0;s.en=[{t:'boss',boss:true,z:15,l:1,displayLane:1,hp:999,max:999,cd:100,wideCd:100,dragonCd:100}];s.dashUntil=.5;swipe();tick(dashDistance/42);assert.equal(s.dash,null);assert(position()>6&&position()<=dashDistance+1e-8,'boss dash extends beyond the old short limit and stops by contact or the full cap');assert(s.en[0].z-position()>=.7-1e-8,'moving boss is never crossed');
+g.reset();s=g.state;s.run=1;s.z=20;s.pd=0;s.pt=0;for(const e of s.en)if(e.group<3)e.dead=1;s.dashUntil=.5;swipe();tick(dashDistance/42);assert.equal(s.dash,null);assert(Math.abs(position()-20-dashDistance)<1e-8,'one activation covers two real pack intervals when the path is clear');
+console.log('PASS: two-pack-interval dash cap, frame-rate independence, normal-speed fallback, early contact, pause, single reward, and boss distance cap');
