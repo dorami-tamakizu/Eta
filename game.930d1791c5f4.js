@@ -960,16 +960,30 @@ const RANK_KEY='eta.local-ranking.v1';
 function readRanking(){try{const rows=JSON.parse(localStorage.getItem(RANK_KEY)||'[]');return Array.isArray(rows)?rows.filter(r=>r&&Number.isFinite(r.score)&&r.score>=0&&Number.isFinite(r.time)&&r.time>=0).sort((a,b)=>b.score-a.score||a.time-b.time).slice(0,10):[];}catch{return [];}}
 function saveRanking(points){try{const rows=readRanking();rows.push({score:points,time:S.t});rows.sort((a,b)=>b.score-a.score||a.time-b.time);localStorage.setItem(RANK_KEY,JSON.stringify(rows.slice(0,10)));}catch{}}
 let titleMenuFocus=null;
+let guidePage=0,guideOpen=false;
+const GUIDE_PAGES=[
+ {src:'assets/guide-page-1.webp',alt:'ゲーム概要。敵に接近してスキルや奥義を発動しよう！'},
+ {src:'assets/guide-page-2.webp',alt:'スーパーダッシュ。敵を撃破した直後に下から上へスワイプ。スキルが回復し、タイム短縮にもなります。'},
+ {src:'assets/guide-page-3.webp',alt:'ハイスコアを狙おう。クリアタイムは速いほど高得点。スキルフィニッシュで得点アップ。被ダメージを少なくし、敵に与えたダメージを増やそう。4項目の合計が総合スコア。'}
+];
+function showGuidePage(n){guidePage=C(n,0,2);const page=GUIDE_PAGES[guidePage];$('#guideImage').src=page.src;$('#guideImage').alt=page.alt;$('#guidePrev').hidden=guidePage===0;$('#guideNext').hidden=guidePage===2;$('#guideExit').textContent=guidePage===2?'ゲーム画面に戻る':'閉じる';$('#guideStatus').textContent=(guidePage+1)+' / 3';if(guideOpen)(guidePage===2?$('#guideExit'):$('#guideNext')).focus?.();}
+function closeGuide(){guideOpen=false;$('#guidePanel').classList.add('hide');$('#gameHelp').focus?.();titleMenuFocus=null;}
+$('#guidePrev').onclick=()=>showGuidePage(guidePage-1);$('#guideNext').onclick=()=>showGuidePage(guidePage+1);$('#guideExit').onclick=closeGuide;
 function openTitlePanel(kind){
  if(S.run)return;titleMenuFocus=kind==='help'?$('#gameHelp'):$('#ranking');
- $('#titlePanelHeading').textContent=kind==='help'?'ゲーム説明':'ランキング';
- $('#titlePanelBody').innerHTML=kind==='help'?'<p>敵を60体倒してボスへ。ボスを倒すとクリアです。</p><h3>移動と通常攻撃</h3><ul><li>自動で前進します。上スワイプで一歩分加速。連続入力で加速が積み重なります。</li><li>左右スワイプでレーン移動、下スワイプで後退。</li><li>敵に近づくと1秒に1回、通常攻撃で1ダメージ。</li><li>撃破後0.5秒以内の上スワイプでスーパーダッシュ。敵の束の間隔1つ分まで走ります。</li></ul><h3>スキルと防御</h3><ul><li>水波斬：周囲のレーンにも届く横斬撃。</li><li>大陸斬：同じレーンの前方へ放つ縦斬撃。</li><li>各スキルは最大4回。5秒ごとに1回分回復します。</li><li>防御ボタンを押している間は攻撃を防ぎます。</li><li>奥義はゲージ満タンで使用できます。</li></ul><h3>ボスとスコア</h3><p>ボスの移動とスキルはランダムです。炎竜・横斬撃を回避または防御しましょう。クリアタイム、スキルフィニッシュ、被ダメージ、与ダメージで採点します。</p>':rankingHTML();
+ if(kind==='help'){guideOpen=true;$('#guidePanel').classList.remove('hide');showGuidePage(0);return;}
+ $('#titlePanelHeading').textContent='ランキング';$('#titlePanelBody').innerHTML=rankingHTML();
  $('#titlePanel').classList.remove('hide');$('#titlePanelClose').focus?.();
 }
 function rankingHTML(){const rows=readRanking(),best=highScore();return '<p class="rank-note">この端末のランキング · クリア記録 上位10件</p><p>自己ベスト：'+best.toLocaleString('ja-JP')+'</p>'+(rows.length?'<table class="rank-table"><thead><tr><th>順位</th><th>スコア</th><th>タイム</th></tr></thead><tbody>'+rows.map((r,i)=>'<tr><td>'+(i+1)+'</td><td>'+r.score.toLocaleString('ja-JP')+'</td><td>'+r.time.toFixed(2)+'秒</td></tr>').join('')+'</tbody></table>':'<p>まだクリア記録がありません。クリアするとここに記録されます。</p>')+'<p class="rank-note">記録はこのブラウザに保存されます。全プレイヤー共通のランキングではありません。</p>';}
 function closeTitlePanel(){$('#titlePanel').classList.add('hide');titleMenuFocus?.focus?.();titleMenuFocus=null;}
 $('#gameHelp').onclick=()=>openTitlePanel('help');$('#ranking').onclick=()=>openTitlePanel('ranking');$('#titlePanelClose').onclick=closeTitlePanel;
-addEventListener('keydown',e=>{if(!titleMenuFocus)return;if(e.key==='Escape'){e.preventDefault();closeTitlePanel();}if(e.key==='Tab'){e.preventDefault();$('#titlePanelClose').focus?.();}});
+addEventListener('keydown',e=>{if(!titleMenuFocus)return;
+ if(e.key==='Escape'){e.preventDefault();if(guideOpen)closeGuide();else closeTitlePanel();}
+ if(guideOpen&&(e.key==='ArrowRight'||e.key==='ArrowLeft')){e.preventDefault();showGuidePage(guidePage+(e.key==='ArrowRight'?1:-1));}
+ if(e.key==='Tab'){e.preventDefault();if(guideOpen){const buttons=[$('#guidePrev'),$('#guideNext'),$('#guideExit')].filter(b=>!b.hidden),i=buttons.indexOf(document.activeElement);buttons[(i+(e.shiftKey?-1:1)+buttons.length)%buttons.length].focus?.();}else $('#titlePanelClose').focus?.();}
+});
+
 function fitResult(){
   const panel=$('#result'),card=$('.quest-results');
   if(!panel||!card)return;
