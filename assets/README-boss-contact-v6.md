@@ -8,9 +8,9 @@
 
 ## Timing and collision
 
-- A 0.5-second flame warning precedes each skill.
-- Vertical attack: top-row frames 1/2/3/4 at 0/.30/.50/.66 seconds. The third pose's sword contact emits one dragon projectile.
-- Horizontal attack: bottom-row frames 5/6/7/8 at 0/.20/.36/.50 seconds. The final follow-through applies one hit across three lanes at the locked depth row, with one-row depth. Retreat avoids it.
+- A 0.38-second flame warning precedes each skill.
+- Vertical attack: top-row frames 1/2/3/4 at 0/.228/.38/.5016 seconds. The third pose's sword contact emits one dragon projectile.
+- Horizontal attack: bottom-row frames 5/6/7/8 at 0/.152/.2736/.38 seconds. The final follow-through applies one hit across three lanes at the locked depth row, with one-row depth. Retreat avoids it.
 - Attack recovery blends for .22 seconds, with a low translucent generated flame afterimage. The flame does not cover the face or blade.
 - The dragon starts at the boss's sword-contact side and joins the target lane over .18 seconds. It retains the existing forward projectile collision checks.
 
@@ -18,11 +18,11 @@
 
 - Base run speed remains 9 units/second.
 - One upward swipe adds one footfall's travel, π/1.35 units, to the remaining boost distance. Its speed impulse decays with a .12-second time constant; repeated inputs add their remaining impulses.
-- Superdash speed remains 42 units/second. Its travel budget is 20 units (5/8 of the 32-unit enemy-pack spacing), leaving an approach gap for normal running and manual swipe strides, and ending earlier at contact. The remainder of the final frame uses normal running.
+- Superdash speed remains 42 units/second. Its travel budget is 32 units (one complete enemy-pack interval), leaving any excess distance for normal running and manual swipe strides, and ending earlier at contact. The remainder of the final frame uses normal running.
 - A further upward swipe cannot reset an active dash's distance budget. Successful dash charge recovery remains once per dash.
 
-- Boss arena camera and enemy position are fixed. Boss sprite size depends only on its fixed world depth, never on player sprite size. Attack animations and collision timing remain active.
-- Regression checks cover retreat/advance/dash without boss movement or scaling, and dash expiry before the next enemy pack.
+- Boss arena camera stays fixed; four-direction patrol is restored at 1.3× speed. Boss sprite size depends only on its own world depth, never on player sprite size. Skill duration is .76 seconds, wide cooldown 2–3.3 seconds, dragon cooldown 4.8–6.8 seconds, ordinary cooldown .8–1.05 seconds.
+- Regression checks cover player-independent scaling, four-direction patrol, synchronized faster skills, and dash expiry at one pack interval.
 
 ## Image generation prompts
 

@@ -24,14 +24,12 @@ for(const kind of ['dragon','wide']){
  g.updateBoss(boss,.2);assert.equal(state.shots.length,kind==='dragon'?1:0);assert.equal(state.hp,kind==='dragon'?20:16);
 }
 console.log('PASS: separate rows, ground-contact dragon and completed horizontal sweep at impact, single attack, planted feet, recovery');
-g.reset();const fixed=g.state;fixed.run=1;fixed.phase='boss';fixed.pd=8;fixed.pt=8;fixed.l=0;
-const stationary={t:'boss',boss:true,z:9,l:1,displayLane:1,hp:999,max:999,cd:100,wideCd:100,dragonCd:100};fixed.en=[stationary];
-const expectedHeight=g.bossHeight(9),nearHeroHeight=g.playerHeight();
-for(let swipe=0;swipe<3;swipe++){
- g.depth(-3.2);for(let i=0;i<30;i++)g.step(.01);
- assert.equal(stationary.z,9);assert.equal(stationary.l,1);assert.equal(stationary.displayLane,1);assert.equal(fixed.z,0);assert.equal(g.bossHeight(stationary.z-fixed.z),expectedHeight);
-}
-assert(g.playerHeight()>nearHeroHeight,'retreat changes player perspective without scaling the boss');
-for(let swipe=0;swipe<12;swipe++){g.accelerate();for(let i=0;i<10;i++)g.step(.01);assert.equal(fixed.z,0);assert.equal(stationary.z,9);assert.equal(g.bossHeight(9),expectedHeight);}
-fixed.dashUntil=fixed.t+.5;g.accelerate();for(let i=0;i<100;i++)g.step(.01);assert.equal(fixed.dash,null);assert.equal(fixed.z,0);assert.equal(stationary.z,9);assert.equal(stationary.stepClock,0);
-console.log('PASS: retreat, repeated advance, and superdash never move the boss/camera or enlarge its sprite');
+// Player depth never affects boss size; autonomous movement remains enabled.
+g.reset();const s2=g.state;s2.run=1;s2.phase='boss';s2.l=0;
+const expected=g.bossHeight(9);for(const pd of [0,3,8]){s2.pd=pd;assert.equal(g.bossHeight(9),expected);}
+const mover={t:'boss',boss:true,z:9,l:1,displayLane:1,hp:999,cd:1000,wideCd:1000,dragonCd:1000};s2.en=[mover];
+let left=false,right=false,forward=false,back=false;
+for(let i=0;i<4500;i++){const z=mover.z,l=mover.displayLane;g.updateBoss(mover,.01);left ||= mover.displayLane<l;right ||= mover.displayLane>l;forward ||= mover.z<z;back ||= mover.z>z;assert.equal(s2.z,0);}
+assert(left&&right&&forward&&back,'restored patrol moves in all four directions');
+for(const kind of ['wide','dragon']){mover.action=null;mover.wideCd=kind==='wide'?0:100;mover.dragonCd=kind==='dragon'?0:100;g.updateBoss(mover,.01);assert.equal(mover.action.impact,.38);assert.equal(mover.action.duration,.76);g.updateBoss(mover,.38);assert.equal(g.bossVisual(mover).frame,kind==='dragon'?2:7);}
+console.log('PASS: four-direction patrol, fixed camera, independent scale, faster skill impact and synchronized frames');

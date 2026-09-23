@@ -18,7 +18,7 @@ s=setup();s.dashUntil=.5;s.pause=1;tick(100);assert.equal(s.t,0);g.accelerate();
 s=setup();s.en[0].z=.8;s.en[0].hp=1;g.step(.01);assert(s.normalAttack);assert.equal(s.en[0].hp,1);tick(22);assert.equal(s.en[0].hp,1);tick(2);assert.equal(s.en[0].dead,1);assert.equal(s.fin,0);assert.equal(s.phase,'bossIntro');assert.equal(s.dashUntil,-1);
 s=setup();s.en[0].z=.8;g.step(.01);g.fire(1);assert.equal(s.normalAttack,null);assert(s.skill);
 s=setup();s.en[0].z=2;s.dashUntil=.5;g.accelerate();tick(10);assert(s.z+s.pd<=s.en[0].z-.7+1e-8);assert.equal(s.dash,null);
-s=setup();s.en[0].z=100;s.en[0].hp=999;s.dashUntil=.5;g.accelerate();tick(24);assert(s.dash);assert(Math.abs(s.z+s.pd-42*.24)<1e-8);tick(220);assert.equal(s.dash,null);assert(Math.abs(s.z+s.pd-(20+9*(2.44-20/42)))<1e-8);assert(s.en[0].z-s.z-s.pd>20);assert(Math.abs(s.speed-9)<1e-8);
+s=setup();s.en[0].z=100;s.en[0].hp=999;s.dashUntil=.5;g.accelerate();tick(24);assert(s.dash);assert(Math.abs(s.z+s.pd-42*.24)<1e-8);tick(220);assert.equal(s.dash,null);assert(Math.abs(s.z+s.pd-(32+9*(2.44-32/42)))<1e-8);assert(s.en[0].z-s.z-s.pd>20);assert(Math.abs(s.speed-9)<1e-8);
 s=setup();s.t=60;const fast=g.score(1).total;s.t=120;assert(g.score(1).total<fast);s.fin=1;assert.equal(g.score(0).total,6557);assert.equal(g.score(1).skill,6557);
 g.reset();assert.equal(g.state.dashUntil,-1);assert.equal(g.state.boost,0);assert.equal(g.state.normalAttack,null);assert.equal(g.state.fin,0);
 console.log('PASS: running, boost, both kill types, 0.5s boundary, single-use window, skill dash, pause, normal attack timing, skill interruption, front limit, dash distance, scoring, retry');
@@ -112,7 +112,7 @@ g.beginRun();s=g.state;tick(199);assert.equal(s.en.length,0);assert.equal(s.run,
 s=setup();const worldTree=35;const treeBefore=g.sceneryDepth(worldTree);tick(50);assert(Math.abs(treeBefore-g.sceneryDepth(worldTree)-s.z)<1e-8);const projected=g.yy(g.sceneryDepth(worldTree));s.pause=1;tick(30);assert.equal(g.yy(g.sceneryDepth(worldTree)),projected);s.pause=0;g.accelerate();tick(30);assert(g.yy(g.sceneryDepth(worldTree))>projected);
 console.log("PASS: trees share stage coordinates, advance with acceleration and freeze on pause");
 g.reset();s=g.state;assert.equal(s.en.length,60);for(let group=0;group<10;group++){const pack=s.en.filter(e=>e.group===group);assert.equal(pack.length,6);assert.equal(new Set(pack.map(e=>e.l)).size,3);assert.equal(Math.max(...pack.map(e=>e.z))-Math.min(...pack.map(e=>e.z)),3);if(group<9)assert.equal(s.en[(group+1)*6].z-pack[5].z,29)}
-s.run=1;s.z=19;s.pd=1;for(const e of s.en.filter(e=>e.group===0))g.hit(e,20,1);g.accelerate();assert.equal(s.dash.n,20);const limit=s.en[6].z-1.2;tick(100);assert.equal(s.dash,null);assert(s.z+s.pd<=limit+.6);assert(s.en[6].z-s.z-s.pd>3);console.log('PASS: dash ends with an approach gap before the next live pack');
+s.run=1;s.z=19;s.pd=1;for(const e of s.en.filter(e=>e.group===0))g.hit(e,20,1);g.accelerate();assert.equal(s.dash.n,32);const limit=s.en[6].z-1.2;tick(100);assert.equal(s.dash,null);assert(s.z+s.pd<=limit+.6);assert(s.en[6].z-s.z-s.pd>=.7-1e-8);console.log('PASS: dash reaches the next live pack and stops at contact');
 s=setup();s.ch=[2,4];s.fr=[.3,.8];s.dashUntil=s.t+.5;g.accelerate();assert.deepEqual(Array.from(s.ch),[2,4]);tick(1);assert.deepEqual(Array.from(s.ch),[3,4]);assert.equal(s.fr[1],0);tick(10);assert.deepEqual(Array.from(s.ch),[3,4]);g.accelerate();tick(2);assert.deepEqual(Array.from(s.ch),[3,4]);
 s=setup();s.ch=[1,1];s.guard=1;s.dashUntil=s.t+.5;g.accelerate();tick(10);assert.deepEqual(Array.from(s.ch),[1,1]);
 console.log('PASS: successful moving dash restores each skill once, capped at four; blocked dash gives no charge');
@@ -195,10 +195,10 @@ console.log('PASS: time-focused balance, safe play, score caps, no overkill farm
 // Backward motion drives alternating full-body frames; pause freezes the pose.
 g.beginRun();s=g.state;s.introRun=0;s.en=[];g.step(.01);tick(621);
 const steppingBoss=s.en.find(e=>e.boss);s.guard=1;steppingBoss.action=null;steppingBoss.attackCount=2;steppingBoss.cd=100;steppingBoss.z=s.z+s.pd+1.5;
-g.step(.02);assert.equal(steppingBoss.backstepActive,false);const phaseA=steppingBoss.backstepPhase;tick(30);assert.equal(steppingBoss.backstepPhase,phaseA,'fixed boss does not step');
+g.step(.02);assert.equal(steppingBoss.backstepActive,true);const phaseA=steppingBoss.backstepPhase;tick(30);assert.notEqual(steppingBoss.backstepPhase,phaseA,'boss resumes stepping');
 s.pause=1;const frozenStep=steppingBoss.backstepPhase;tick(20);assert.equal(steppingBoss.backstepPhase,frozenStep);s.pause=0;
 steppingBoss.z=s.z+9;g.step(.3);assert(steppingBoss.z>=s.z+9);
-console.log('PASS: boss keeps its stance and does not step or retreat');
+console.log('PASS: boss steps and retreats; pause freezes movement');
 
 s=setup();s.t=75.43;assert.equal(g.score(1).time,2996560);s.t=180;const baseTime=g.score(1).time;s.t=185;assert.equal(baseTime-g.score(1).time,40000);
 s.t=299.99;const beforeJoin=g.score(1).time;s.t=300;const atJoin=g.score(1).time;s.t=300.01;const afterJoin=g.score(1).time;assert(beforeJoin>atJoin&&atJoin>afterJoin);assert.equal(atJoin,1200000);
@@ -216,11 +216,11 @@ const fixedCamera=s.z;tick(400);assert.equal(s.z,fixedCamera);assert(arenaBoss.z
 s=setup();s.pd=8;s.pt=8;s.en=[];const instant={t:'boss',boss:true,z:9,l:1,displayLane:1,hp:40,max:40,attackCount:0,cd:0,wideCd:3,dragonCd:99};
 g.updateBoss(instant,.01);assert.equal(s.hp,18);assert.equal(instant.action,undefined);assert.equal(instant.tell,0);assert.equal(g.bossAuraProgress(instant),-1);
 s.guard=1;instant.cd=0;g.updateBoss(instant,.01);assert.equal(s.hp,18);
-instant.wideCd=0;g.updateBoss(instant,.01);assert.equal(instant.action.kind,'wide');assert.equal(instant.action.impact,.5);assert(instant.wideCd>=2.6&&instant.wideCd<=4.4);
+instant.wideCd=0;g.updateBoss(instant,.01);assert.equal(instant.action.kind,'wide');assert.equal(instant.action.impact,.38);assert(instant.wideCd>=2.0&&instant.wideCd<=3.3);
 console.log('PASS: centered boss, fixed arena camera, immediate normal attacks, independent randomized skill interval');
 
 s=setup();s.phase='boss';s.pd=4.7;s.en=[{t:'boss',boss:true,z:9,l:1,displayLane:1,hp:40,max:40,attackCount:0,cd:100,wideCd:100,dragonCd:100,fl:0}];s.l=1;
-tick(30);assert(s.en[0].hp<40,'hero can still hit centered boss');assert.equal(s.z,0);assert.equal(s.en[0].z,9);
+tick(30);assert(s.en[0].hp<40,'hero can still hit centered boss');assert.equal(s.z,0);assert(s.en[0].z>=9);
 console.log('PASS: centered boss stays reachable by player normal attack');
 
 // Completing a dash must never pull the player backward automatically.
@@ -232,7 +232,7 @@ console.log('PASS: no automatic boss pushback, voluntary retreat preserved');
 // Sustained retreat stays beyond center and attacks during backward stepping.
 s=setup();s.phase='boss';s.guard=1;s.l=0;const retreatBoss={t:'boss',boss:true,z:9,l:1,displayLane:1,hp:40,max:40,attackCount:0,cd:100,wideCd:.1,dragonCd:100};s.en=[retreatBoss];
 let slashes=0;for(let i=0;i<2000;i++){g.step(.01);assert(retreatBoss.z-s.z>=9);assert.equal(s.z,0);if(retreatBoss.action?.kind==='wide'&&retreatBoss.action.done){slashes++;}}
-assert(retreatBoss.z>=9&&retreatBoss.z<=15);assert(slashes>0);console.log('PASS: fixed boss repeats its slashes without moving');
+assert(retreatBoss.z>=9&&retreatBoss.z<=15);assert(slashes>0);console.log('PASS: moving boss repeats its slashes');
 
 // Both skills ignore early taps without spending charges, then permit cancellation.
 for(const first of [1,2])for(const second of [1,2]){
@@ -257,6 +257,6 @@ for(const pd of [0,3,5]){s=setup();s.pd=pd;s.pt=pd;s.en=[];const e={t:'boss',bos
 s=setup();s.phase='boss';s.pd=7;s.pt=7;s.en=[{t:'boss',boss:true,z:12,l:1,displayLane:1,hp:999,cd:100,wideCd:100,dragonCd:100}];s.shots=[{kind:'fireDragon',l:1,z:5,d:4}];tick(1);assert.equal(s.hp,20,'already passed missile cannot hit');console.log('PASS: distant melee immunity and no projectile hits from behind');
 
 // The boss and camera remain fixed while time, player input, and attacks advance.
-s=setup();s.phase='boss';s.guard=1;const stationary={t:'boss',boss:true,z:9,l:1,displayLane:1,hp:999,cd:100,wideCd:100,dragonCd:100};s.en=[stationary];tick(2400);assert.equal(stationary.z,9);assert.equal(stationary.l,1);assert.equal(stationary.displayLane,1);assert.equal(stationary.stepClock,0);assert.equal(s.z,0);
-s=setup();s.phase='boss';s.pd=0;s.pt=0;s.l=0;s.en=[{t:'boss',boss:true,z:9,l:1,displayLane:1,hp:999,cd:100,wideCd:100,dragonCd:100}];s.dashUntil=.5;g.accelerate();tick(40);assert.equal(s.dash,null);assert(s.en[0].z-s.z-s.pd<.8);assert.equal(s.z,0);assert.equal(s.en[0].z,9);
-console.log('PASS: stationary boss, fixed arena camera, and dash stops at contact');
+s=setup();s.phase='boss';s.guard=1;const stationary={t:'boss',boss:true,z:9,l:1,displayLane:1,hp:999,cd:100,wideCd:100,dragonCd:100};s.en=[stationary];tick(2400);assert(stationary.z>=9&&stationary.z<=15);assert(stationary.stepClock>0);assert.equal(s.z,0);
+s=setup();s.phase='boss';s.pd=0;s.pt=0;s.l=0;s.en=[{t:'boss',boss:true,z:9,l:1,displayLane:1,hp:999,cd:100,wideCd:100,dragonCd:100}];s.dashUntil=.5;g.accelerate();tick(40);assert.equal(s.dash,null);assert(s.en[0].z-s.z-s.pd<2);assert.equal(s.z,0);assert(s.en[0].z>=9);
+console.log('PASS: moving boss, fixed arena camera, and dash stops at contact');
