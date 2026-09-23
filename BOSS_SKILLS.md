@@ -17,3 +17,6 @@ Boss now retreats continuously at 0.65 depth units/s from center depth 9, never 
 Slow walk revision: retreat speed 0.32 units/s, backstep cycle 0.55 cycles/s. Battle start uses the exact same original-v5.m4a asset and direct output level as ultimate cut-in.
 
 Movement refinement: continuous stride phase at 0.55 cycles/s drives both alternating foot frames and integrated backward displacement. Average speed remains 0.32 units/s, weight transfer varies speed smoothly. Camera follow eases in at depth 10.8. Central boundary and frontal line remain. Skill inputs ignored until active motion reaches 50%; ignored input spends no charges.
+
+Depth-dodge correction: wide slash locks targetZ at the start of the 0.5-second flame warning. Covers all three lanes but only one depth row (MAX_DEPTH/4 world units, matching one backward swipe). Damage and graphic use the same locked targetZ; backward movement can escape. Removed automatic camera tracking of boss retreat. Camera may advance only when player explicitly boosts forward at the player depth limit, allowing pursuit in long fights. Boss continuously retreats into screen from central boundary.
+Ultimate banner: centered two-line gold outlined title, purple/gold crest, animated white strike backing and impact entrance.

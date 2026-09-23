@@ -212,7 +212,7 @@ for(let lane=0;lane<3;lane++){
 }
 
 s=setup();s.phase='boss';s.guard=1;const arenaBoss={t:'boss',boss:true,z:9,l:1,displayLane:1,hp:40,max:40,attackCount:0,cd:0,wideCd:1,dragonCd:99};s.en=[arenaBoss];
-const fixedCamera=s.z;tick(400);assert(s.z>=fixedCamera);assert(arenaBoss.z>=s.z+9);assert(arenaBoss.wideCd<=4.4);
+const fixedCamera=s.z;tick(400);assert.equal(s.z,fixedCamera);assert(arenaBoss.z>=s.z+9);assert(arenaBoss.wideCd<=4.4);
 s=setup();s.en=[];const instant={t:'boss',boss:true,z:9,l:1,displayLane:1,hp:40,max:40,attackCount:0,cd:0,wideCd:3,dragonCd:99};
 g.updateBoss(instant,.01);assert.equal(s.hp,18);assert.equal(instant.action,undefined);assert.equal(instant.tell,0);assert.equal(g.bossAuraProgress(instant),-1);
 s.guard=1;instant.cd=0;g.updateBoss(instant,.01);assert.equal(s.hp,18);
@@ -231,7 +231,7 @@ console.log('PASS: no automatic boss pushback, voluntary retreat preserved');
 
 // Sustained retreat stays beyond center and attacks during backward stepping.
 s=setup();s.phase='boss';s.guard=1;s.l=0;const retreatBoss={t:'boss',boss:true,z:9,l:1,displayLane:1,hp:40,max:40,attackCount:0,cd:100,wideCd:.1,dragonCd:100};s.en=[retreatBoss];
-let slashes=0;for(let i=0;i<2000;i++){g.step(.01);assert(retreatBoss.z-s.z>=9);assert(retreatBoss.z-s.z<=11.50001);if(retreatBoss.action?.kind==='wide'&&retreatBoss.action.done){assert(retreatBoss.backstepActive);slashes++;}}
+let slashes=0;for(let i=0;i<2000;i++){g.step(.01);assert(retreatBoss.z-s.z>=9);assert.equal(s.z,0);if(retreatBoss.action?.kind==='wide'&&retreatBoss.action.done){assert(retreatBoss.backstepActive);slashes++;}}
 assert(Math.abs(retreatBoss.z-15.4)<.001);assert(slashes>0);console.log('PASS: sustained retreat behind center, repeated slashes while stepping');
 
 // Both skills ignore early taps without spending charges, then permit cancellation.
@@ -245,3 +245,9 @@ s=setup();g.fire(1);tick(34);const emitted=s.waves[0];assert(emitted);g.fire(2);
 s=setup();const cues=[];context.window.GameSFX={play:k=>cues.push(k)};g.fireUltimate();tick(83);assert.equal(cues.filter(k=>k==='ultimateFlight').length,0);tick(5);assert.equal(cues.filter(k=>k==='ultimateFlight').length,1);tick(60);assert.equal(cues.filter(k=>k==='ultimateFlight').length,1);console.log('PASS: flight audio fires once when blade launches');
 
 s=setup();const falls=[];context.window.GameSFX={play:k=>falls.push(k),finish:()=>{}};s.hp=1;const deathClock=s.t;g.hurt(2);assert(s.defeat);assert.equal(s.hp,0);g.fire(1);assert.equal(s.skill,null);tick(77);assert(!falls.includes('heroFall'));s.pause=1;tick(30);assert(s.defeat.t<.78);s.pause=0;tick(2);assert.equal(falls.filter(k=>k==='heroFall').length,1);assert(!s.defeat.finished);tick(202);assert(s.defeat.finished);assert.equal(s.t,deathClock);assert.equal(falls.filter(k=>k==='heroFall').length,1);g.beginRun();assert.equal(g.state.defeat,null);console.log('PASS: defeat sequence locks input, freezes combat clock, single impact sound, pause and reset');
+
+// Wide slash locks one depth row when the flame warning begins; backward dodge escapes it.
+for(const lane of [0,1,2])for(const dodge of [false,true]){
+ s=setup();s.phase='boss';s.pd=7;s.pt=7;s.l=lane;const e={t:'boss',boss:true,z:12,l:1,displayLane:1,hp:999,max:999,cd:100,wideCd:0,dragonCd:100,attackCount:0};s.en=[e];g.updateBoss(e,.01);assert.equal(e.action.targetZ,7);if(dodge)g.depth(-3.2);tick(51);assert.equal(s.hp,dodge?20:16);assert.equal(e.action.targetZ,7);
+}
+console.log('PASS: all three lanes hit in one locked depth row; backward swipe avoids damage');
