@@ -142,7 +142,7 @@ s.guard=0;g.hurt(100);assert.equal(s.run,0);assert(s.defeat);tick(281);assert.eq
 console.log('PASS: cinematic sequence, input lock, frozen clock, pause, continuity, boss spawn once, delayed result, retry');
 
 g.beginRun();s=g.state;s.introRun=0;s.en=[];g.step(.01);tick(621);
-let enemy=s.en.find(e=>e.boss);enemy.z=s.z+s.pd+1.2;enemy.l=s.l;enemy.cd=100;
+s.pd=7.8;s.pt=7.8;let enemy=s.en.find(e=>e.boss);enemy.z=s.z+s.pd+1.2;enemy.l=s.l;enemy.cd=100;
 function sword(){enemy.action={kind:'sword',l:1,age:1.09,impact:1.1,duration:2,done:false};}
 s.l=1;sword();const hp=s.hp;g.step(.02);assert.equal(s.hp,hp-3);tick(10);assert.equal(s.hp,hp-3,'sword hits once');
 s.l=0;sword();g.step(.02);assert.equal(s.hp,hp-3,'lane dodge avoids sword');
@@ -206,14 +206,14 @@ console.log('PASS: reference scale, 8000 points per second, continuous long-run 
 
 // All-lane slash: half-second warning, one hit in every lane, guard and pause.
 for(let lane=0;lane<3;lane++){
- s=setup();s.l=lane;s.hp=20;const e={t:'boss',boss:true,z:2,l:1,displayLane:1,hp:40,max:40,attackCount:0,cd:100,action:{kind:'wide',l:1,age:0,impact:.5,duration:1.25,done:false}};s.en=[e];
+ s=setup();s.pd=7;s.pt=7;s.l=lane;s.hp=20;const e={t:'boss',boss:true,z:2,l:1,displayLane:1,hp:40,max:40,attackCount:0,cd:100,action:{kind:'wide',l:1,age:0,impact:.5,duration:1.25,done:false}};s.en=[e];
  assert.equal(g.bossAuraProgress(e),0);g.updateBoss(e,.49);assert.equal(s.hp,20);assert(g.bossAuraProgress(e)>.9);g.updateBoss(e,.02);assert.equal(s.hp,16);assert.equal(g.bossAuraProgress(e),-1);g.updateBoss(e,.1);assert.equal(s.hp,16);
  e.action={kind:'wide',l:1,age:.49,impact:.5,duration:1.25,done:false};s.guard=1;g.updateBoss(e,.02);assert.equal(s.hp,16);
 }
 
 s=setup();s.phase='boss';s.guard=1;const arenaBoss={t:'boss',boss:true,z:9,l:1,displayLane:1,hp:40,max:40,attackCount:0,cd:0,wideCd:1,dragonCd:99};s.en=[arenaBoss];
 const fixedCamera=s.z;tick(400);assert.equal(s.z,fixedCamera);assert(arenaBoss.z>=s.z+9);assert(arenaBoss.wideCd<=4.4);
-s=setup();s.en=[];const instant={t:'boss',boss:true,z:9,l:1,displayLane:1,hp:40,max:40,attackCount:0,cd:0,wideCd:3,dragonCd:99};
+s=setup();s.pd=8;s.pt=8;s.en=[];const instant={t:'boss',boss:true,z:9,l:1,displayLane:1,hp:40,max:40,attackCount:0,cd:0,wideCd:3,dragonCd:99};
 g.updateBoss(instant,.01);assert.equal(s.hp,18);assert.equal(instant.action,undefined);assert.equal(instant.tell,0);assert.equal(g.bossAuraProgress(instant),-1);
 s.guard=1;instant.cd=0;g.updateBoss(instant,.01);assert.equal(s.hp,18);
 instant.wideCd=0;g.updateBoss(instant,.01);assert.equal(instant.action.kind,'wide');assert.equal(instant.action.impact,.5);assert(instant.wideCd>=2.6&&instant.wideCd<=4.4);
@@ -248,6 +248,10 @@ s=setup();const falls=[];context.window.GameSFX={play:k=>falls.push(k),finish:()
 
 // Wide slash locks one depth row when the flame warning begins; backward dodge escapes it.
 for(const lane of [0,1,2])for(const dodge of [false,true]){
- s=setup();s.phase='boss';s.pd=7;s.pt=7;s.l=lane;const e={t:'boss',boss:true,z:12,l:1,displayLane:1,hp:999,max:999,cd:100,wideCd:0,dragonCd:100,attackCount:0};s.en=[e];g.updateBoss(e,.01);assert.equal(e.action.targetZ,7);if(dodge)g.depth(-3.2);tick(51);assert.equal(s.hp,dodge?20:16);assert.equal(e.action.targetZ,7);
+ s=setup();s.phase='boss';s.pd=10;s.pt=10;s.l=lane;const e={t:'boss',boss:true,z:12,l:1,displayLane:1,hp:999,max:999,cd:100,wideCd:0,dragonCd:100,attackCount:0};s.en=[e];g.updateBoss(e,.01);const locked=e.action.targetZ;assert(locked>9&&locked<10);if(dodge)g.depth(-3.2);tick(51);assert.equal(s.hp,dodge?20:16);assert.equal(e.action.targetZ,locked);
 }
 console.log('PASS: all three lanes hit in one locked depth row; backward swipe avoids damage');
+
+// No remote melee damage; missiles must actually cross the player.
+for(const pd of [0,3,5]){s=setup();s.pd=pd;s.pt=pd;s.en=[];const e={t:'boss',boss:true,z:12,l:1,displayLane:1,hp:40,cd:0,wideCd:0,dragonCd:99,attackCount:0};g.updateBoss(e,.01);g.updateBoss(e,.51);e.action=null;e.cd=0;g.updateBoss(e,.01);assert.equal(s.hp,20,'far player is safe from melee and wide slash');}
+s=setup();s.phase='boss';s.pd=7;s.pt=7;s.en=[{t:'boss',boss:true,z:12,l:1,displayLane:1,hp:999,cd:100,wideCd:100,dragonCd:100}];s.shots=[{kind:'fireDragon',l:1,z:5,d:4}];tick(1);assert.equal(s.hp,20,'already passed missile cannot hit');console.log('PASS: distant melee immunity and no projectile hits from behind');

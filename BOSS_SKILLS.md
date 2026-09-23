@@ -20,3 +20,6 @@ Movement refinement: continuous stride phase at 0.55 cycles/s drives both altern
 
 Depth-dodge correction: wide slash locks targetZ at the start of the 0.5-second flame warning. Covers all three lanes but only one depth row (MAX_DEPTH/4 world units, matching one backward swipe). Damage and graphic use the same locked targetZ; backward movement can escape. Removed automatic camera tracking of boss retreat. Camera may advance only when player explicitly boosts forward at the player depth limit, allowing pursuit in long fights. Boss continuously retreats into screen from central boundary.
 Ultimate banner: centered two-line gold outlined title, purple/gold crest, animated white strike backing and impact entrance.
+
+Range correction: ordinary boss hits require same lane and forward distance 0..BOSS_SLASH_DEPTH. Sword actions use same reach limit. Wide slash locks the row immediately in front of the boss at warning start, not a remote row at the player. Missiles already behind the player cannot deal damage.
+Ultimate label is now a small outlined gold single line near top with no background panels.
