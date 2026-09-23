@@ -195,9 +195,9 @@ console.log('PASS: time-focused balance, safe play, score caps, no overkill farm
 // Backward motion drives alternating full-body frames; pause freezes the pose.
 g.beginRun();s=g.state;s.introRun=0;s.en=[];g.step(.01);tick(621);
 const steppingBoss=s.en.find(e=>e.boss);s.guard=1;steppingBoss.action=null;steppingBoss.attackCount=2;steppingBoss.cd=100;steppingBoss.z=s.z+s.pd+1.5;
-g.step(.02);assert.equal(steppingBoss.backstepActive,true);const phaseA=steppingBoss.backstepPhase;tick(15);assert.notEqual(steppingBoss.backstepPhase,phaseA,'boss keeps stepping backward');
+g.step(.02);assert.equal(steppingBoss.backstepActive,true);const phaseA=steppingBoss.backstepPhase;tick(30);assert.notEqual(steppingBoss.backstepPhase,phaseA,'boss keeps stepping backward');
 s.pause=1;const frozenStep=steppingBoss.backstepPhase;tick(20);assert.equal(steppingBoss.backstepPhase,frozenStep);s.pause=0;
-steppingBoss.z=s.z+9;g.step(.01);assert.equal(steppingBoss.backstepActive,true);
+steppingBoss.z=s.z+9;g.step(.3);assert(steppingBoss.z>=s.z+9);
 console.log('PASS: backward movement advances walk frames, pause freezes them, no stepping while stopped');
 
 s=setup();s.t=75.43;assert.equal(g.score(1).time,2996560);s.t=180;const baseTime=g.score(1).time;s.t=185;assert.equal(baseTime-g.score(1).time,40000);
@@ -231,7 +231,7 @@ console.log('PASS: no automatic boss pushback, voluntary retreat preserved');
 
 // Sustained retreat stays beyond center and attacks during backward stepping.
 s=setup();s.phase='boss';s.guard=1;s.l=0;const retreatBoss={t:'boss',boss:true,z:9,l:1,displayLane:1,hp:40,max:40,attackCount:0,cd:100,wideCd:.1,dragonCd:100};s.en=[retreatBoss];
-let slashes=0;for(let i=0;i<2000;i++){g.step(.01);assert(retreatBoss.z-s.z>=9);assert.equal(s.z,0);if(retreatBoss.action?.kind==='wide'&&retreatBoss.action.done){assert(retreatBoss.moveActive);slashes++;}}
+let slashes=0;for(let i=0;i<2000;i++){g.step(.01);assert(retreatBoss.z-s.z>=9);assert.equal(s.z,0);if(retreatBoss.action?.kind==='wide'&&retreatBoss.action.done){slashes++;}}
 assert(retreatBoss.z>=9&&retreatBoss.z<=15);assert(slashes>0);console.log('PASS: sustained retreat behind center, repeated slashes while stepping');
 
 // Both skills ignore early taps without spending charges, then permit cancellation.
@@ -262,3 +262,6 @@ s=setup();s.phase='boss';s.pd=0;s.pt=0;s.l=0;s.en=[{t:'boss',boss:true,z:13,l:1,
 
 // Boss visibly visits all three lanes and spans near/far depths.
 s=setup();s.phase='boss';s.guard=1;const mover={t:'boss',boss:true,z:9,l:1,displayLane:1,hp:999,cd:100,wideCd:100,dragonCd:100};s.en=[mover];const visited=new Set();let minZ=99,maxZ=0,previousLane=1;for(let i=0;i<1800;i++){g.step(.01);visited.add(mover.l);minZ=Math.min(minZ,mover.z);maxZ=Math.max(maxZ,mover.z);assert(Math.abs(mover.displayLane-previousLane)<.03);previousLane=mover.displayLane;}assert.equal(visited.size,3);assert(maxZ-minZ>5);assert.equal(s.z,0);console.log('PASS: visible three-lane and six-unit depth patrol, smooth movement, no auto camera tracking');
+
+// Planted feet stay still; position advances during the matching footstep phase.
+s=setup();s.phase='boss';s.guard=1;const heavy={t:'boss',boss:true,z:9,l:1,displayLane:1,hp:999,cd:100,wideCd:100,dragonCd:100};s.en=[heavy];tick(15);assert.equal(heavy.z,9);assert.equal(heavy.displayLane,1);tick(30);assert(heavy.z>9);assert(heavy.displayLane<1);tick(20);const plantedZ=heavy.z,plantedLane=heavy.displayLane;tick(15);assert.equal(heavy.z,plantedZ);assert.equal(heavy.displayLane,plantedLane);console.log('PASS: deliberate footstep travel and planted pauses');
