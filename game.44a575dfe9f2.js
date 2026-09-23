@@ -962,9 +962,10 @@ let guidePage=0,guideOpen=false;
 const GUIDE_PAGES=[
  {src:'assets/guide-page-1.webp',alt:'ゲーム概要。敵に接近してスキルや奥義を発動しよう！'},
  {src:'assets/guide-page-2.webp',alt:'スーパーダッシュ。敵を撃破した直後に下から上へスワイプ。スキルが回復し、タイム短縮にもなります。'},
- {src:'assets/guide-page-3.webp',alt:'ハイスコアを狙おう。クリアタイムは速いほど高得点。スキルフィニッシュで得点アップ。被ダメージを少なくし、敵に与えたダメージを増やそう。4項目の合計が総合スコア。'}
+ {src:'assets/guide-page-3.webp',alt:'ハイスコアを狙おう。クリアタイムは速いほど高得点。スキルフィニッシュで得点アップ。被ダメージを少なくし、敵に与えたダメージを増やそう。4項目の合計が総合スコア。'},
+ {src:'assets/guide-page-4.webp',alt:'ランキングに登録しよう。クリア後に名前を入力し、登録を押すと全プレイヤー共通のランキングに参加できます。上位100件の記録を保存し、詳細からスコアの内訳を確認できます。'}
 ];
-function showGuidePage(n){guidePage=C(n,0,2);const page=GUIDE_PAGES[guidePage];$('#guideImage').src=page.src;$('#guideImage').alt=page.alt;$('#guidePrev').hidden=guidePage===0;$('#guideNext').hidden=guidePage===2;$('#guideExit').textContent='閉じる';$('#guideStatus').textContent=(guidePage+1)+' / 3';if(guideOpen)(guidePage===2?$('#guideExit'):$('#guideNext')).focus?.();}
+function showGuidePage(n){guidePage=C(n,0,GUIDE_PAGES.length-1);const page=GUIDE_PAGES[guidePage];$('#guideImage').src=page.src;$('#guideImage').alt=page.alt;$('#guidePrev').hidden=guidePage===0;$('#guideNext').hidden=guidePage===GUIDE_PAGES.length-1;$('#guideExit').textContent='閉じる';$('#guideStatus').textContent=(guidePage+1)+' / '+GUIDE_PAGES.length;$('#guideCount').textContent=$('#guideStatus').textContent;if(guideOpen)(guidePage===GUIDE_PAGES.length-1?$('#guideExit'):$('#guideNext')).focus?.();}
 function closeGuide(){guideOpen=false;$('#guidePanel').classList.add('hide');$('#gameHelp').focus?.();titleMenuFocus=null;}
 $('#guidePrev').onclick=()=>showGuidePage(guidePage-1);$('#guideNext').onclick=()=>showGuidePage(guidePage+1);$('#guideExit').onclick=closeGuide;
 function openTitlePanel(kind){
