@@ -5,6 +5,7 @@ class Context{constructor(){this.state='running';this.destination={}}createGain(
 const c={window:{AudioContext:Context},Audio,document:{hidden:false,addEventListener(){}},Map,Set,Float32Array,Math,Promise};
 vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../sfx.js'),'utf8'),c);const s=c.window.GameSFX;
 s.start();s.play('ultimateCutin',0);const audio=media[1];
+assert.equal(media[0].volume,.12,'battle cue uses field BGM level');
 assert.equal(media[0].src,audio.src,'battle start uses exact same cut-in asset');s.play('battleStart');assert.equal(media[0].plays,1);assert.equal(media[0].currentTime,0);
 assert(audio);assert.equal(audio.plays,1);assert.equal(audio.currentTime,0);
 s.pause();assert.equal(audio.paused,true);s.play('ultimateCutin');assert.equal(audio.plays,1,'cannot play while paused');
