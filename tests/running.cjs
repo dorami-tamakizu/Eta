@@ -233,3 +233,8 @@ console.log('PASS: no automatic boss pushback, voluntary retreat preserved');
 s=setup();s.phase='boss';s.guard=1;s.l=0;const retreatBoss={t:'boss',boss:true,z:9,l:1,displayLane:1,hp:40,max:40,attackCount:0,cd:100,wideCd:.1,dragonCd:100};s.en=[retreatBoss];
 let slashes=0;for(let i=0;i<2000;i++){g.step(.01);assert(retreatBoss.z-s.z>=9);assert(retreatBoss.z-s.z<=11.50001);if(retreatBoss.action?.kind==='wide'&&retreatBoss.action.done){assert(retreatBoss.backstepActive);slashes++;}}
 assert(Math.abs(retreatBoss.z-15.4)<.001);assert(slashes>0);console.log('PASS: sustained retreat behind center, repeated slashes while stepping');
+
+// New available skill input cancels the active motion immediately.
+s=setup();g.fire(1);tick(22);assert.equal(s.waterFx.length,1);g.fire(2);assert.equal(s.skill.k,2);assert.equal(s.skill.t,0);assert.equal(s.waterFx.length,0);assert.deepEqual(Array.from(s.ch),[3,3]);tick(45);assert(s.waves.some(w=>w.k===2));assert(!s.waves.some(w=>w.k===1));
+s=setup();g.fire(2);tick(10);g.fire(2);assert.equal(s.skill.t,0);assert.equal(s.ch[1],2);s.ch[0]=0;const active=s.skill;g.fire(1);assert.equal(s.skill,active,'unavailable skill cannot cancel');
+s=setup();g.fire(1);tick(34);const emitted=s.waves[0];assert(emitted);g.fire(2);assert(s.waves.includes(emitted),'already emitted attacks persist after motion cancel');console.log('PASS: immediate skill cancel, same-skill restart, no canceled wind-up hit, unavailable input ignored, emitted waves preserved');
