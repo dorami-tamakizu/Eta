@@ -1,0 +1,2 @@
+Generated with built-in GPT Image from the user supplied purple/gold skill icon. Final size 1254 × 1254 PNG.
+Prompt: Recreate and polish the reference with a symmetrical layered metallic gold frame, dark navy interior, violet spiral slash and central white-purple starburst, thin gold lightning accents. Preserve composition and palette, clean readable silhouette at 80px, no text or numbers, edge-to-edge square icon.
