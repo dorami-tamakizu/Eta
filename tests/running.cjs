@@ -18,7 +18,7 @@ s=setup();s.dashUntil=.5;s.pause=1;tick(100);assert.equal(s.t,0);g.accelerate();
 s=setup();s.en[0].z=.8;s.en[0].hp=1;g.step(.01);assert(s.normalAttack);assert.equal(s.en[0].hp,1);tick(22);assert.equal(s.en[0].hp,1);tick(2);assert.equal(s.en[0].dead,1);assert.equal(s.fin,0);assert.equal(s.phase,'bossIntro');assert.equal(s.dashUntil,-1);
 s=setup();s.en[0].z=.8;g.step(.01);g.fire(1);assert.equal(s.normalAttack,null);assert(s.skill);
 s=setup();s.en[0].z=2;s.dashUntil=.5;g.accelerate();tick(10);assert(s.z+s.pd<=s.en[0].z-.7+1e-8);assert.equal(s.dash,null);
-s=setup();s.en[0].z=100;s.dashUntil=.5;g.accelerate();tick(24);assert(s.z+s.pd<=10+1e-8);assert.equal(s.dash,null);
+s=setup();s.en[0].z=100;s.en[0].hp=999;s.dashUntil=.5;g.accelerate();tick(24);assert(s.z+s.pd>10);assert(s.dash);tick(220);assert.equal(s.dash,null);assert(s.en[0].z-s.z-s.pd<=.73);
 s=setup();s.t=60;const fast=g.score(1).total;s.t=120;assert(g.score(1).total<fast);s.fin=1;assert.equal(g.score(0).total,6557);assert.equal(g.score(1).skill,6557);
 g.reset();assert.equal(g.state.dashUntil,-1);assert.equal(g.state.boost,0);assert.equal(g.state.normalAttack,null);assert.equal(g.state.fin,0);
 console.log('PASS: running, boost, both kill types, 0.5s boundary, single-use window, skill dash, pause, normal attack timing, skill interruption, front limit, dash distance, scoring, retry');
@@ -231,8 +231,8 @@ console.log('PASS: no automatic boss pushback, voluntary retreat preserved');
 
 // Sustained retreat stays beyond center and attacks during backward stepping.
 s=setup();s.phase='boss';s.guard=1;s.l=0;const retreatBoss={t:'boss',boss:true,z:9,l:1,displayLane:1,hp:40,max:40,attackCount:0,cd:100,wideCd:.1,dragonCd:100};s.en=[retreatBoss];
-let slashes=0;for(let i=0;i<2000;i++){g.step(.01);assert(retreatBoss.z-s.z>=9);assert.equal(s.z,0);if(retreatBoss.action?.kind==='wide'&&retreatBoss.action.done){assert(retreatBoss.backstepActive);slashes++;}}
-assert(Math.abs(retreatBoss.z-15.4)<.001);assert(slashes>0);console.log('PASS: sustained retreat behind center, repeated slashes while stepping');
+let slashes=0;for(let i=0;i<2000;i++){g.step(.01);assert(retreatBoss.z-s.z>=9);assert.equal(s.z,0);if(retreatBoss.action?.kind==='wide'&&retreatBoss.action.done){assert(retreatBoss.moveActive);slashes++;}}
+assert(retreatBoss.z>=9&&retreatBoss.z<=13);assert(slashes>0);console.log('PASS: sustained retreat behind center, repeated slashes while stepping');
 
 // Both skills ignore early taps without spending charges, then permit cancellation.
 for(const first of [1,2])for(const second of [1,2]){
@@ -255,3 +255,7 @@ console.log('PASS: all three lanes hit in one locked depth row; backward swipe a
 // No remote melee damage; missiles must actually cross the player.
 for(const pd of [0,3,5]){s=setup();s.pd=pd;s.pt=pd;s.en=[];const e={t:'boss',boss:true,z:12,l:1,displayLane:1,hp:40,cd:0,wideCd:0,dragonCd:99,attackCount:0};g.updateBoss(e,.01);g.updateBoss(e,.51);e.action=null;e.cd=0;g.updateBoss(e,.01);assert.equal(s.hp,20,'far player is safe from melee and wide slash');}
 s=setup();s.phase='boss';s.pd=7;s.pt=7;s.en=[{t:'boss',boss:true,z:12,l:1,displayLane:1,hp:999,cd:100,wideCd:100,dragonCd:100}];s.shots=[{kind:'fireDragon',l:1,z:5,d:4}];tick(1);assert.equal(s.hp,20,'already passed missile cannot hit');console.log('PASS: distant melee immunity and no projectile hits from behind');
+
+// Patrol reverses naturally without crossing the center boundary; dash closes long boss gaps.
+s=setup();s.phase='boss';s.guard=1;const patrol={t:'boss',boss:true,z:9,l:1,displayLane:1,hp:999,cd:100,wideCd:100,dragonCd:100};s.en=[patrol];let back=false,forward=false,lastZ=9;for(let i=0;i<2400;i++){g.step(.01);back ||= patrol.z>lastZ+.00001;forward ||= patrol.z<lastZ-.00001;assert(patrol.z>=s.z+9-1e-9&&patrol.z<=s.z+13+1e-9);lastZ=patrol.z;}assert(back&&forward);
+s=setup();s.phase='boss';s.pd=0;s.pt=0;s.l=0;s.en=[{t:'boss',boss:true,z:13,l:1,displayLane:1,hp:999,cd:100,wideCd:100,dragonCd:100}];s.dashUntil=.5;g.accelerate();tick(40);assert.equal(s.dash,null);assert(s.en[0].z-s.z-s.pd<.8);console.log('PASS: boss patrol forward/back boundary and superdash reaches boss contact');

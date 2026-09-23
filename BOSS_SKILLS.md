@@ -23,3 +23,5 @@ Ultimate banner: centered two-line gold outlined title, purple/gold crest, anima
 
 Range correction: ordinary boss hits require same lane and forward distance 0..BOSS_SLASH_DEPTH. Sword actions use same reach limit. Wide slash locks the row immediately in front of the boss at warning start, not a remote row at the player. Missiles already behind the player cannot deal damage.
 Ultimate label is now a small outlined gold single line near top with no background panels.
+
+Patrol revision: boss smoothly moves forward and backward between depths 9 and 13, never ahead of center. Walking frames follow signed displacement. Superdash no longer uses a fixed distance budget; it ends at the nearest enemy frontline contact gap, on both road and boss stages.
