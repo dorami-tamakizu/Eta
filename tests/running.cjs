@@ -3,7 +3,7 @@ const noop=()=>{},canvas=new Proxy({},{get:()=>noop}),nodes=new Map();
 const node=()=>({style:{},classList:{add:noop,remove:noop,toggle:noop},setAttribute:noop,addEventListener:noop,getContext:()=>canvas,setPointerCapture:noop});
 const context={console,Math,Set,Image:class{},innerWidth:390,innerHeight:844,devicePixelRatio:1,addEventListener:noop,requestAnimationFrame:noop,performance:{now:()=>0},document:{querySelector:s=>{if(!nodes.has(s))nodes.set(s,node());return nodes.get(s)},addEventListener:noop},window:{}};
 let code=fs.readFileSync(path.join(__dirname,'../game.js'),'utf8');
-code=code.replace('reset();function loop(t)','globalThis.test={ULTIMATE,fireUltimate,reset,beginRun,step,hurt,hit,accelerate,fire,score,end,highScore,drawPoseHero,playerY,playerHeight,waterState,groundZ,groundPhase,sceneryDepth,yy,get state(){return S}};reset();function loop(t)');
+code=code.replace('reset();function loop(t)','globalThis.test={updateBoss,bossAuraProgress,ULTIMATE,fireUltimate,reset,beginRun,step,hurt,hit,accelerate,fire,score,end,highScore,drawPoseHero,playerY,playerHeight,waterState,groundZ,groundPhase,sceneryDepth,yy,get state(){return S}};reset();function loop(t)');
 vm.runInNewContext(code,context);const g=context.test;
 function setup(){g.reset();const s=g.state;s.run=1;s.en=[{t:'slime',hp:2,max:2,l:1,z:100,dead:0,cd:100,mv:100,tell:0,fl:0}];return s}
 function tick(n){for(let i=0;i<n;i++)g.step(.01)}
@@ -203,3 +203,13 @@ console.log('PASS: backward movement advances walk frames, pause freezes them, n
 s=setup();s.t=75.43;assert.equal(g.score(1).time,2996560);s.t=180;const baseTime=g.score(1).time;s.t=185;assert.equal(baseTime-g.score(1).time,40000);
 s.t=299.99;const beforeJoin=g.score(1).time;s.t=300;const atJoin=g.score(1).time;s.t=300.01;const afterJoin=g.score(1).time;assert(beforeJoin>atJoin&&atJoin>afterJoin);assert.equal(atJoin,1200000);
 console.log('PASS: reference scale, 8000 points per second, continuous long-run scoring');
+
+// All-lane slash: half-second warning, one hit in every lane, guard and pause.
+for(let lane=0;lane<3;lane++){
+ s=setup();s.l=lane;s.hp=20;const e={t:'boss',boss:true,z:2,l:1,displayLane:1,hp:40,max:40,attackCount:0,cd:100,action:{kind:'wide',l:1,age:0,impact:.5,duration:1.25,done:false}};s.en=[e];
+ assert.equal(g.bossAuraProgress(e),0);g.updateBoss(e,.49);assert.equal(s.hp,20);assert(g.bossAuraProgress(e)>.9);g.updateBoss(e,.02);assert.equal(s.hp,17);assert.equal(g.bossAuraProgress(e),-1);g.updateBoss(e,.1);assert.equal(s.hp,17);
+ e.action={kind:'wide',l:1,age:.49,impact:.5,duration:1.25,done:false};s.guard=1;g.updateBoss(e,.02);assert.equal(s.hp,17);
+}
+s=setup();const choices=new Set();const randomBoss={t:'boss',boss:true,z:2,l:1,displayLane:1,hp:40,max:40,attackCount:0,cd:0};
+for(let i=0;i<100;i++){randomBoss.action=null;randomBoss.cd=0;g.updateBoss(randomBoss,.01);choices.add(randomBoss.action.kind);}assert(choices.has('wide')&&choices.size>1);
+console.log('PASS: randomized full-lane slash, 0.5-second warning, damage once, all lanes and guard');
