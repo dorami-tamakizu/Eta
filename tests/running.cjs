@@ -158,8 +158,21 @@ s=setup();assert.equal(s.ultimateCharge,30);s.en=[0,1,2].map((l)=>({t:'boss',hp:
 s.en.push({t:'boss',hp:40,max:40,l:1,z:100,dead:0,cd:100,mv:100,tell:0,fl:0});
 assert.equal(g.fireUltimate(),true);assert.equal(s.ultimateCharge,0);assert.equal(g.fireUltimate(),false);
 s.pause=1;tick(30);assert.equal(s.ultimate.t,0);s.pause=0;
-tick(60);for(const e of s.en.slice(0,3))assert.equal(e.hp,30);assert.equal(s.en[3].hp,40);assert.equal(s.ultimateCharge,30);
+tick(132);for(const e of s.en.slice(0,3))assert.equal(e.hp,30);assert.equal(s.en[3].hp,40);assert.equal(s.ultimateCharge,0,'ultimate damage never recharges itself');
 assert.equal(g.fireUltimate(),false,'no recast during current effect');tick(60);assert.equal(s.ultimate,null);for(const e of s.en.slice(0,3))assert.equal(e.hp,30);
 s=setup();s.ultimateCharge=0;s.en[0].hp=2;g.hit(s.en[0],10,1);assert.equal(s.ultimateCharge,2);g.hit(s.en[0],10,1);assert.equal(s.ultimateCharge,2);
 s.ultimateCharge=29;assert.equal(g.fireUltimate(),false);g.reset();assert.equal(g.state.ultimateCharge,30);
 console.log('PASS: ultimate 10 damage once across 3 lanes, far-screen reach, excludes offscreen reserve, damage recharge, pause, retry');
+
+// Cut-in freezes gameplay and clock, and damage source controls recharge.
+s=setup();s.en[0].hp=100;s.en[0].max=100;s.ultimateCharge=30;g.fireUltimate();
+const cutinClock=s.t,cutinZ=s.z,cutinCd=s.en[0].cd;
+tick(50);assert.equal(s.t,cutinClock);assert.equal(s.z,cutinZ);assert.equal(s.en[0].cd,cutinCd);assert.equal(s.en[0].hp,100);
+s.pause=1;const cutinT=s.ultimate.t;tick(20);assert.equal(s.ultimate.t,cutinT);s.pause=0;
+tick(25);assert(s.t>cutinClock);assert.equal(s.ultimateCharge,0);
+g.hit(s.en[0],5,0);assert.equal(s.ultimateCharge,5,'normal damage recharges');
+g.hit(s.en[0],8,1);assert.equal(s.ultimateCharge,13,'skill damage recharges');
+g.hit(s.en[0],10,1,'ultimate');assert.equal(s.ultimateCharge,13,'ultimate does not recharge, even alongside another effect');
+assert.equal(s.dealtDamage,23,'ultimate still contributes to damage score');
+g.reset();assert.equal(g.state.ultimate,null);assert.equal(g.state.ultimateCharge,30);
+console.log('PASS: cut-in freezes clock/world, pause/resume, normal/skill-only recharge, damage scoring, retry');
