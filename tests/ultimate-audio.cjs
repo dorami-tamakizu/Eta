@@ -6,7 +6,7 @@ const c={window:{AudioContext:Context},Audio,document:{hidden:false,addEventList
 vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../sfx.js'),'utf8'),c);const s=c.window.GameSFX;
 s.start();s.play('ultimateCutin',0);const audio=media[1];
 assert.equal(media[0].volume,.12,'battle cue uses field BGM level');
-assert.equal(media[0].src,audio.src,'battle start uses exact same cut-in asset');s.play('battleStart');assert.equal(media[0].plays,1);assert.equal(media[0].currentTime,0);
+assert.equal(media[0].src,'assets/battle-start-syakiin-v8.mp3');assert.equal(audio.src,'assets/sword-clash-cc0-v7.m4a');s.play('battleStart');assert.equal(media[0].plays,1);assert.equal(media[0].currentTime,0);
 assert(audio);assert.equal(audio.plays,1);assert.equal(audio.currentTime,0);
 s.pause();assert.equal(audio.paused,true);s.play('ultimateCutin');assert.equal(audio.plays,1,'cannot play while paused');
 s.start();s.play('ultimateCutin',.05);assert.equal(audio.currentTime,.05);assert.equal(audio.plays,3);
