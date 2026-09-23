@@ -236,27 +236,32 @@ function drawCinematic(){
   c.restore();
 }
 // Boss attack timelines share one clock with their visual frames and collision.
+// Boss decisions use fresh browser entropy, independent of the reproducible road roster.
+function bossRandom(){if(globalThis.crypto?.getRandomValues){const v=new Uint32Array(1);globalThis.crypto.getRandomValues(v);return v[0]/4294967296;}return Math.random();}
+function bossRange(a,b){return a+(b-a)*bossRandom();}
+function bossMove(e){const lane=e.displayLane??e.l??1,depth=C(e.z-S.z,9,15);
+ return {t:0,fromLane:lane,fromDepth:depth,target:[bossRange(0,2),bossRange(9,15)],duration:bossRange(1.4,3.8),stride:bossRange(.52,.86)};
+}
+function resetBossSkillTimers(e){e.wideCd=bossRange(1.1,4.0);e.dragonCd=bossRange(1.1,4.0);}
 function updateBoss(e,dt){
   // A stable center-stage position (feet ~50% of screen height).
   if(e.recover){e.recover.age+=dt;if(e.recover.age>=.22)e.recover=null;}
   const beforeMove=e.z,centerZ=S.z+BOSS_DEPTH;
-  // Travel between actual lane/depth waypoints, rather than posing at center.
-  const route=[[0,12],[2,15],[1,9],[2,12],[0,9],[1,14]];
-  if(!e.patrol){const lane=e.displayLane??e.l??1;e.patrol={leg:0,t:0,fromLane:lane,fromDepth:C(e.z-S.z,9,15)};}
-  const p=e.patrol,target=route[p.leg],duration=Math.max(4,Math.abs(target[0]-p.fromLane)/.42,Math.abs(target[1]-p.fromDepth)/.85)/1.3;
+  if(!e.patrol)e.patrol=bossMove(e);
+  const p=e.patrol,target=p.target,duration=p.duration;
   // Each deliberate footstep has a planted pause and a short weight-transfer phase.
-  const oldStep=e.stepClock||0,newStep=oldStep+(e.action?0:dt/.73);
+  const oldStep=e.stepClock||0,newStep=oldStep+(e.action?0:dt/p.stride);
   const progress=t=>Math.floor(t)+C(((t%1)-.22)/.40,0,1);
-  p.t=Math.min(duration,p.t+(progress(newStep)-progress(oldStep))*.73);e.stepClock=newStep;
+  p.t=Math.min(duration,p.t+(progress(newStep)-progress(oldStep))*p.stride);e.stepClock=newStep;
   const foot=newStep%1;e.stepFrame=(Math.floor(newStep)%2)*3+(foot<.22?0:foot<.62?1:2);
   const q=p.t/duration,oldLane=e.displayLane??p.fromLane;
   e.displayLane=p.fromLane+(target[0]-p.fromLane)*q;e.l=Math.round(e.displayLane);
   e.z=centerZ+(p.fromDepth-BOSS_DEPTH)+(target[1]-p.fromDepth)*q;
   const movement=e.z-beforeMove,lateral=e.displayLane-oldLane;e.moveActive=Math.abs(movement)+Math.abs(lateral)>1e-6;e.backstepActive=movement>1e-6;
   e.backstepPhase=e.stepFrame/6;
-  if(p.t>=duration){p.leg=(p.leg+1)%route.length;p.t=0;p.fromLane=e.displayLane;p.fromDepth=e.z-S.z;}
-  if(e.wideCd===undefined)e.wideCd=R(2.0,3.3);
-  if(e.dragonCd===undefined)e.dragonCd=R(4.8,6.8);
+  if(p.t>=duration)e.patrol=bossMove(e);
+  if(e.wideCd===undefined)e.wideCd=bossRange(1.1,4.0);
+  if(e.dragonCd===undefined)e.dragonCd=bossRange(1.1,4.0);
   e.wideCd-=dt;e.dragonCd-=dt;
   if(e.action){
     const a=e.action;if(a.kind==='wide'&&a.targetZ===undefined)a.targetZ=e.z-FRONT_GAP-BOSS_SLASH_DEPTH/2;a.age+=dt;e.tell=a.kind==='normal'?0:Math.max(0,a.impact-a.age);
@@ -272,11 +277,11 @@ function updateBoss(e,dt){
     if(a.age>=a.duration){e.recover={kind:a.kind,age:0};e.action=null;e.tell=0;e.cd=.48;}
     return;
   }
-  if(e.wideCd<=0){
-    e.wideCd=R(2.0,3.3);e.action={kind:'wide',l:1,targetZ:e.z-FRONT_GAP-BOSS_SLASH_DEPTH/2,age:0,impact:.38,duration:.76,done:false};e.tell=.38;e.attackCount++;return;
+  if(e.wideCd<=0&&(e.dragonCd>0||e.wideCd<e.dragonCd)){
+    resetBossSkillTimers(e);e.action={kind:'wide',l:1,targetZ:e.z-FRONT_GAP-BOSS_SLASH_DEPTH/2,age:0,impact:.38,duration:.76,done:false};e.tell=.38;e.attackCount++;return;
   }
   if(e.dragonCd<=0){
-    e.dragonCd=R(4.8,6.8);e.action={kind:'dragon',l:S.l,age:0,impact:.38,duration:.76,done:false};e.tell=.38;e.attackCount++;return;
+    resetBossSkillTimers(e);e.action={kind:'dragon',l:S.l,age:0,impact:.38,duration:.76,done:false};e.tell=.38;e.attackCount++;return;
   }
   // Contact alone never hurts the player; only skill impacts deal damage.
   e.tell=0;

@@ -216,7 +216,7 @@ const fixedCamera=s.z;tick(400);assert.equal(s.z,fixedCamera);assert(arenaBoss.z
 s=setup();s.pd=8;s.pt=8;s.en=[];const instant={t:'boss',boss:true,z:9,l:1,displayLane:1,hp:40,max:40,attackCount:0,cd:0,wideCd:3,dragonCd:99};
 g.updateBoss(instant,.01);assert.equal(s.hp,20);assert.equal(instant.action,undefined);assert.equal(instant.tell,0);assert.equal(g.bossAuraProgress(instant),-1);
 s.guard=1;instant.cd=0;g.updateBoss(instant,.01);assert.equal(s.hp,20);
-instant.wideCd=0;g.updateBoss(instant,.01);assert.equal(instant.action.kind,'wide');assert.equal(instant.action.impact,.38);assert(instant.wideCd>=2.0&&instant.wideCd<=3.3);
+instant.wideCd=0;g.updateBoss(instant,.01);assert.equal(instant.action.kind,'wide');assert.equal(instant.action.impact,.38);assert(instant.wideCd>=1.1&&instant.wideCd<=4.0);
 console.log('PASS: centered boss, fixed arena camera, no contact damage, independent randomized skill interval');
 
 s=setup();s.phase='boss';s.pd=4.7;s.en=[{t:'boss',boss:true,z:9,l:1,displayLane:1,hp:40,max:40,attackCount:0,cd:100,wideCd:100,dragonCd:100,fl:0}];s.l=1;

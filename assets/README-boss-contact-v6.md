@@ -21,7 +21,7 @@
 - Superdash speed remains 42 units/second. Its travel budget is 32 units (one complete enemy-pack interval), leaving any excess distance for normal running and manual swipe strides, and ending earlier at contact. The remainder of the final frame uses normal running.
 - A further upward swipe cannot reset an active dash's distance budget. Successful dash charge recovery remains once per dash.
 
-- Boss arena camera stays fixed; four-direction patrol is restored at 1.3× speed. Boss sprite size depends only on its own world depth, never on player sprite size. Skill duration is .76 seconds, wide cooldown 2–3.3 seconds, dragon cooldown 4.8–6.8 seconds; contact/ordinary automatic damage is disabled.
+- Boss arena camera stays fixed; movement picks a fresh lane/depth destination, duration (1.4–3.8 seconds) and stride (.52–.86 seconds) for every leg. Boss sprite size depends only on its own world depth, never on player sprite size. Skill duration is .76 seconds, both skill timers independently redrawn from 1.1–4.0 seconds after each cast (the first expiry chooses the next skill); contact/ordinary automatic damage is disabled.
 - Regression checks cover player-independent scaling, four-direction patrol, synchronized faster skills, and dash expiry at one pack interval.
 
 ## Image generation prompts

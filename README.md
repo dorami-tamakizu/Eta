@@ -20,6 +20,7 @@
 ```sh
 node tests/release.cjs
 node tests/boss-hitbox.cjs
+node tests/boss-random.cjs
 node tests/running.cjs
 node tests/boss-animation.cjs
 node tests/swipe-movement.cjs
@@ -31,3 +32,5 @@ node tests/ultimate-audio.cjs
 音源の出典は `AUDIO_CREDITS.md`、ボス素材の出典は `assets/README-boss-contact-v6.md` を参照してください。
 
 主人公の刀身は持ち手を基準に約12%長く、約30%太く描画します。立ち姿・攻撃・走行・防御の各フレームに位置を登録し、身体に隠れる刀身はそのまま隠します。
+
+ボスの移動先・移動時間・歩調・スキル順・発動間隔は都度抽選します。移動は3レーン内、奥行き9〜15に収まり、予兆と命中モーションは維持します。ブラウザの乱数を独立に使うため、再プレイでも固定行動列には戻りません。
