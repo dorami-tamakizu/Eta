@@ -11,3 +11,5 @@ Fire dragon remains on a separate 6.5–9s randomized timer, using the same 0.5s
 Correction: fixed-camera movement preserves the player's reached depth, never pulls back toward default depth after dash/boost, and retains explicit retreat input. Boss floor range polygons, ground line, and ground warning marker removed; the requested flame aura remains. Cut-in sound is a direct AAC stream copy of the reference video 3.20–3.92s, with no synthesized ringing or EQ, played at its original level.
 
 Correction: restore the same frontline renderer for road and boss enemies. Boss spawns at center depth 9 and stays at that center-depth limit (feet at 50.08% of screen height). Floor attack-area telegraphs remain removed.
+
+Boss now retreats continuously at 0.65 depth units/s from center depth 9, never forward of center. Camera follows only beyond depth 11.5 to keep the fight visible. Hero can follow without being pulled back. Backstep atlas animates between attacks; sword atlas takes priority during skills while retreat continues. Start cue: original source brightened, echoes extended to 1.85 seconds, full-level dedicated playback.

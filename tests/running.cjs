@@ -195,9 +195,9 @@ console.log('PASS: time-focused balance, safe play, score caps, no overkill farm
 // Backward motion drives alternating full-body frames; pause freezes the pose.
 g.beginRun();s=g.state;s.introRun=0;s.en=[];g.step(.01);tick(621);
 const steppingBoss=s.en.find(e=>e.boss);s.guard=1;steppingBoss.action=null;steppingBoss.attackCount=2;steppingBoss.cd=100;steppingBoss.z=s.z+s.pd+1.5;
-g.step(.02);assert.equal(steppingBoss.backstepActive,true);const phaseA=steppingBoss.backstepPhase;tick(15);assert.equal(steppingBoss.backstepPhase,phaseA,'once centered, boss stops stepping');
+g.step(.02);assert.equal(steppingBoss.backstepActive,true);const phaseA=steppingBoss.backstepPhase;tick(15);assert.notEqual(steppingBoss.backstepPhase,phaseA,'boss keeps stepping backward');
 s.pause=1;const frozenStep=steppingBoss.backstepPhase;tick(20);assert.equal(steppingBoss.backstepPhase,frozenStep);s.pause=0;
-steppingBoss.z=s.z+9;g.step(.01);assert.equal(steppingBoss.backstepActive,false);
+steppingBoss.z=s.z+9;g.step(.01);assert.equal(steppingBoss.backstepActive,true);
 console.log('PASS: backward movement advances walk frames, pause freezes them, no stepping while stopped');
 
 s=setup();s.t=75.43;assert.equal(g.score(1).time,2996560);s.t=180;const baseTime=g.score(1).time;s.t=185;assert.equal(baseTime-g.score(1).time,40000);
@@ -212,7 +212,7 @@ for(let lane=0;lane<3;lane++){
 }
 
 s=setup();s.phase='boss';s.guard=1;const arenaBoss={t:'boss',boss:true,z:9,l:1,displayLane:1,hp:40,max:40,attackCount:0,cd:0,wideCd:1,dragonCd:99};s.en=[arenaBoss];
-const fixedCamera=s.z;tick(400);assert.equal(s.z,fixedCamera);assert(arenaBoss.z>=s.z+9);assert(arenaBoss.wideCd<=4.4);
+const fixedCamera=s.z;tick(400);assert(s.z>=fixedCamera);assert(arenaBoss.z>=s.z+9);assert(arenaBoss.wideCd<=4.4);
 s=setup();s.en=[];const instant={t:'boss',boss:true,z:9,l:1,displayLane:1,hp:40,max:40,attackCount:0,cd:0,wideCd:3,dragonCd:99};
 g.updateBoss(instant,.01);assert.equal(s.hp,18);assert.equal(instant.action,undefined);assert.equal(instant.tell,0);assert.equal(g.bossAuraProgress(instant),-1);
 s.guard=1;instant.cd=0;g.updateBoss(instant,.01);assert.equal(s.hp,18);
@@ -220,11 +220,16 @@ instant.wideCd=0;g.updateBoss(instant,.01);assert.equal(instant.action.kind,'wid
 console.log('PASS: centered boss, fixed arena camera, immediate normal attacks, independent randomized skill interval');
 
 s=setup();s.phase='boss';s.pd=4.7;s.en=[{t:'boss',boss:true,z:9,l:1,displayLane:1,hp:40,max:40,attackCount:0,cd:100,wideCd:100,dragonCd:100,fl:0}];s.l=1;
-tick(30);assert(s.en[0].hp<40,'hero can still hit centered boss');assert.equal(s.z,0);assert.equal(s.en[0].z,9);
+tick(30);assert(s.en[0].hp<40,'hero can still hit centered boss');assert.equal(s.z,0);assert(s.en[0].z>9);
 console.log('PASS: centered boss stays reachable by player normal attack');
 
 // Completing a dash must never pull the player backward automatically.
 s=setup();s.phase='boss';s.pd=7.4;s.pt=7.4;s.en=[{t:'boss',boss:true,z:9,l:1,displayLane:1,hp:40,max:40,attackCount:0,cd:100,wideCd:100,dragonCd:100,fl:0}];
-const closeDepth=s.pd;tick(70);assert.equal(s.pd,closeDepth,'hold reached distance after dash');assert.equal(s.z,0);
+const closeDepth=s.pd;tick(70);assert(s.pd>=closeDepth,'never push player backward after dash');assert.equal(s.z,0);
 g.depth(-2);tick(20);assert(s.pd<closeDepth-1,'intentional backward swipe remains functional');
 console.log('PASS: no automatic boss pushback, voluntary retreat preserved');
+
+// Sustained retreat stays beyond center and attacks during backward stepping.
+s=setup();s.phase='boss';s.guard=1;s.l=0;const retreatBoss={t:'boss',boss:true,z:9,l:1,displayLane:1,hp:40,max:40,attackCount:0,cd:100,wideCd:.1,dragonCd:100};s.en=[retreatBoss];
+let slashes=0;for(let i=0;i<2000;i++){g.step(.01);assert(retreatBoss.z-s.z>=9);assert(retreatBoss.z-s.z<=11.50001);if(retreatBoss.action?.kind==='wide'&&retreatBoss.action.done){assert(retreatBoss.backstepActive);slashes++;}}
+assert(retreatBoss.z>20);assert(slashes>0);console.log('PASS: sustained retreat behind center, repeated slashes while stepping');
