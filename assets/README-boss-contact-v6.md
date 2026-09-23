@@ -18,8 +18,11 @@
 
 - Base run speed remains 9 units/second.
 - One upward swipe adds one footfall's travel, π/1.35 units, to the remaining boost distance. Its speed impulse decays with a .12-second time constant; repeated inputs add their remaining impulses.
-- Superdash speed remains 42 units/second. Its travel budget is 64 units (twice the 32-unit enemy-pack spacing, rather than the 3-unit rows within each pack), ending earlier at contact. The remainder of the final frame uses normal running.
+- Superdash speed remains 42 units/second. Its travel budget is 20 units (5/8 of the 32-unit enemy-pack spacing), leaving an approach gap for normal running and manual swipe strides, and ending earlier at contact. The remainder of the final frame uses normal running.
 - A further upward swipe cannot reset an active dash's distance budget. Successful dash charge recovery remains once per dash.
+
+- Boss arena camera and enemy position are fixed. Boss sprite size depends only on its fixed world depth, never on player sprite size. Attack animations and collision timing remain active.
+- Regression checks cover retreat/advance/dash without boss movement or scaling, and dash expiry before the next enemy pack.
 
 ## Image generation prompts
 

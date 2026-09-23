@@ -3,7 +3,7 @@ const noop=()=>{},canvas=new Proxy({},{get:()=>noop}),nodes=new Map();
 const node=()=>({style:{},classList:{add:noop,remove:noop,toggle:noop},setAttribute:noop,addEventListener:noop,getContext:()=>canvas,setPointerCapture:noop});
 const context={console,Math,Set,Image:class{},innerWidth:390,innerHeight:844,devicePixelRatio:1,addEventListener:noop,requestAnimationFrame:noop,performance:{now:()=>0},document:{querySelector:s=>{if(!nodes.has(s))nodes.set(s,node());return nodes.get(s)},addEventListener:noop},window:{}};
 let code=fs.readFileSync(path.join(__dirname,'../game.js'),'utf8');
-code=code.replace('reset();function loop(t)','globalThis.test={bossVisual,depth,updateBoss,bossAuraProgress,ULTIMATE,fireUltimate,reset,beginRun,step,hurt,hit,accelerate,fire,score,end,highScore,drawPoseHero,playerY,playerHeight,waterState,groundZ,groundPhase,sceneryDepth,yy,get state(){return S}};reset();function loop(t)');
+code=code.replace('reset();function loop(t)','globalThis.test={bossHeight,bossVisual,depth,updateBoss,bossAuraProgress,ULTIMATE,fireUltimate,reset,beginRun,step,hurt,hit,accelerate,fire,score,end,highScore,drawPoseHero,playerY,playerHeight,waterState,groundZ,groundPhase,sceneryDepth,yy,get state(){return S}};reset();function loop(t)');
 vm.runInNewContext(code,context);const g=context.test;
 
 for(const kind of ['dragon','wide']){
@@ -24,3 +24,14 @@ for(const kind of ['dragon','wide']){
  g.updateBoss(boss,.2);assert.equal(state.shots.length,kind==='dragon'?1:0);assert.equal(state.hp,kind==='dragon'?20:16);
 }
 console.log('PASS: separate rows, ground-contact dragon and completed horizontal sweep at impact, single attack, planted feet, recovery');
+g.reset();const fixed=g.state;fixed.run=1;fixed.phase='boss';fixed.pd=8;fixed.pt=8;fixed.l=0;
+const stationary={t:'boss',boss:true,z:9,l:1,displayLane:1,hp:999,max:999,cd:100,wideCd:100,dragonCd:100};fixed.en=[stationary];
+const expectedHeight=g.bossHeight(9),nearHeroHeight=g.playerHeight();
+for(let swipe=0;swipe<3;swipe++){
+ g.depth(-3.2);for(let i=0;i<30;i++)g.step(.01);
+ assert.equal(stationary.z,9);assert.equal(stationary.l,1);assert.equal(stationary.displayLane,1);assert.equal(fixed.z,0);assert.equal(g.bossHeight(stationary.z-fixed.z),expectedHeight);
+}
+assert(g.playerHeight()>nearHeroHeight,'retreat changes player perspective without scaling the boss');
+for(let swipe=0;swipe<12;swipe++){g.accelerate();for(let i=0;i<10;i++)g.step(.01);assert.equal(fixed.z,0);assert.equal(stationary.z,9);assert.equal(g.bossHeight(9),expectedHeight);}
+fixed.dashUntil=fixed.t+.5;g.accelerate();for(let i=0;i<100;i++)g.step(.01);assert.equal(fixed.dash,null);assert.equal(fixed.z,0);assert.equal(stationary.z,9);assert.equal(stationary.stepClock,0);
+console.log('PASS: retreat, repeated advance, and superdash never move the boss/camera or enlarge its sprite');
