@@ -967,7 +967,7 @@ const GUIDE_PAGES=[
  {src:'assets/guide-page-2.webp',alt:'スーパーダッシュ。敵を撃破した直後に下から上へスワイプ。スキルが回復し、タイム短縮にもなります。'},
  {src:'assets/guide-page-3.webp',alt:'ハイスコアを狙おう。クリアタイムは速いほど高得点。スキルフィニッシュで得点アップ。被ダメージを少なくし、敵に与えたダメージを増やそう。4項目の合計が総合スコア。'}
 ];
-function showGuidePage(n){guidePage=C(n,0,2);const page=GUIDE_PAGES[guidePage];$('#guideImage').src=page.src;$('#guideImage').alt=page.alt;$('#guidePrev').hidden=guidePage===0;$('#guideNext').hidden=guidePage===2;$('#guideExit').textContent=guidePage===2?'ゲーム画面に戻る':'閉じる';$('#guideStatus').textContent=(guidePage+1)+' / 3';if(guideOpen)(guidePage===2?$('#guideExit'):$('#guideNext')).focus?.();}
+function showGuidePage(n){guidePage=C(n,0,2);const page=GUIDE_PAGES[guidePage];$('#guideImage').src=page.src;$('#guideImage').alt=page.alt;$('#guidePrev').hidden=guidePage===0;$('#guideNext').hidden=guidePage===2;$('#guideExit').textContent='閉じる';$('#guideStatus').textContent=(guidePage+1)+' / 3';if(guideOpen)(guidePage===2?$('#guideExit'):$('#guideNext')).focus?.();}
 function closeGuide(){guideOpen=false;$('#guidePanel').classList.add('hide');$('#gameHelp').focus?.();titleMenuFocus=null;}
 $('#guidePrev').onclick=()=>showGuidePage(guidePage-1);$('#guideNext').onclick=()=>showGuidePage(guidePage+1);$('#guideExit').onclick=closeGuide;
 function openTitlePanel(kind){

@@ -6,4 +6,4 @@ Page 1 prompt: navy-and-gold fantasy tutorial card titled ゲーム概要, instr
 Page 2 prompt: match page 1; スーパーダッシュ, swipe upward immediately after defeating an enemy, スキルが回復 and タイム短縮 benefits, footer 2 / 3.
 Page 3 prompt: match page 1; ハイスコアを狙おう; four readable panels describing クリアタイム, スキルフィニッシュ, 被ダメージ and 与ダメージ, footer 3 / 3.
 
-The final-page ゲーム画面に戻る button closes the guide and restores title-menu focus. It does not start combat.
+The 閉じる button on every page closes the guide and restores title-menu focus. It does not start combat.
