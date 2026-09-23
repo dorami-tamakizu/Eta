@@ -9,7 +9,13 @@
     const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),15000);
     try{
       const response=await fetch(API+query,{method:body?'POST':'GET',headers:{apikey:KEY,...(body?{'Content-Type':'application/json',Prefer:'return=representation'}:{})},body:body?JSON.stringify(body):undefined,signal:controller.signal});
-      if(!response.ok){const error=new Error('HTTP '+response.status);error.rejected=response.status>=400&&response.status<500;throw error;}
+      if(!response.ok){
+        // Old database schemas reject this field before inserting anything.
+        if(response.status===400&&body&&Object.prototype.hasOwnProperty.call(body,'road_time')){
+          const info=await response.json().catch(()=>({}));
+          if(info.code==='PGRST204'&&String(info.message).includes('road_time')){const {road_time,...legacy}=body;return request(query,legacy);}
+        }
+        const error=new Error('HTTP '+response.status);error.rejected=response.status>=400&&response.status<500;throw error;}
       return await response.json();
     }finally{clearTimeout(timer);}
   }
@@ -48,7 +54,7 @@
   }
   function detail(r){
     const rows=[['クリアタイム',Number(r.clear_time).toFixed(2)+'秒',r.time_score],['スキルフィニッシュ',number(r.skill_finishes)+'回',r.skill_score],['被ダメージ',number(r.damage_taken),r.damage_taken_score],['与ダメージ',number(r.damage_dealt),r.damage_dealt_score]];
-    return '<table class="rank-breakdown"><thead><tr><th>項目</th><th>記録</th><th>スコア</th></tr></thead><tbody>'+rows.map(([label,value,points])=>'<tr><th>'+label+'</th><td>'+value+'</td><td>'+number(points)+'</td></tr>').join('')+'</tbody></table><p>オーバーキル分：'+number(r.overkill)+'（与ダメージに含む）</p><p>トータルスコア：'+number(r.total_score)+'</p>';
+    return '<table class="rank-breakdown"><thead><tr><th>項目</th><th>記録</th><th>スコア</th></tr></thead><tbody>'+rows.map(([label,value,points])=>'<tr><th>'+label+'</th><td>'+value+'</td><td>'+number(points)+'</td></tr>').join('')+'</tbody></table><p>道中クリアタイム：'+(r.road_time!=null&&Number.isFinite(Number(r.road_time))?Number(r.road_time).toFixed(2)+'秒':'未記録')+'</p><p>オーバーキル分：'+number(r.overkill)+'（与ダメージに含む）</p><p>トータルスコア：'+number(r.total_score)+'</p>';
   }
   const HONORS=[['gold','覇者'],['silver','英雄'],['bronze','英傑']];
   function cup(){return '<svg class="rank-cup" viewBox="0 0 64 64" aria-hidden="true"><path d="M15 12H5v8c0 12 8 18 18 18M49 12h10v8c0 12-8 18-18 18" fill="none" stroke="currentColor" stroke-width="5"/><path d="M14 7h36v15c0 12-8 20-15 22v8h11v7H18v-7h11v-8c-7-2-15-10-15-22Z" fill="currentColor" stroke="#58351b" stroke-width="2"/><path d="M19 12h8v15c0 5 1 8 4 11-8-3-12-9-12-16Z" fill="#fff" opacity=".48"/><path d="M18 8h32M20 54h23" stroke="#fff" opacity=".65" stroke-width="2"/></svg>';}
@@ -61,7 +67,7 @@
   async function open(body){
     const id=++loadId;body.innerHTML='<p role="status">ランキングを読み込み中…</p>';
     try{
-      const rows=await request('?select=id,name,total_score,clear_time,skill_finishes,damage_taken,damage_dealt,overkill,time_score,skill_score,damage_taken_score,damage_dealt_score&order=total_score.desc,created_at.asc,id.asc&limit=100');
+      const rows=await request('?select=*&order=total_score.desc,created_at.asc,id.asc&limit=100');
       if(!Array.isArray(rows))throw new Error('Invalid ranking');
       if(id!==loadId)return;body.innerHTML=rankingHTML(rows);
     }catch(_){if(id!==loadId)return;body.innerHTML='<p role="alert">ランキングを読み込めませんでした。通信状態を確認して再度お試しください。</p><button type="button" class="btn rank-refresh">再読み込み</button>';}

@@ -1002,7 +1002,7 @@ function end(ok){
   if(window.GameSFX)window.GameSFX.finish();S.run=0;S.ptr=null;S.guard=0;S.cinematic=null;$('#gameViewport').classList.remove('cinematic');hideNotice();
   const points=score(ok),previous=highScore();
   if(ok&&points.total>previous)saveHighScore(points.total);
-  if(window.GameRanking)window.GameRanking.setResult(ok,{clear_time:S.t,skill_finishes:S.fin,damage_taken:S.dmg,damage_dealt:totalDealtDamage(),overkill:S.overkill,time_score:points.time,skill_score:points.skill,damage_taken_score:points.damage,damage_dealt_score:points.dealt});
+  if(window.GameRanking)window.GameRanking.setResult(ok,{clear_time:S.t,road_time:S.roadTime,skill_finishes:S.fin,damage_taken:S.dmg,damage_dealt:totalDealtDamage(),overkill:S.overkill,time_score:points.time,skill_score:points.skill,damage_taken_score:points.damage,damage_dealt_score:points.dealt});
   $('#resultTitle').textContent=ok?'クエスト結果':'クエスト失敗';
   $('#resultText').innerHTML=
     resultRow('クリアタイムスコア','クリアタイム（秒）',ok?S.t.toFixed(2):'—',points.time)+
