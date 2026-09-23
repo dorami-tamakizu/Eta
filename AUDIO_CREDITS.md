@@ -16,3 +16,9 @@ User-provided Onoma-Syakiin04-1(Long).mp3, copied without processing as assets/b
 
 ## Active ultimate cut-in
 User-provided Onoma-Syakiin05-1(Heavy).mp3, copied without processing as assets/ultimate-syakiin-heavy-v9.mp3. Full 3.213-second tail retained; cut-in ending does not stop this audio. Replaces the CC0 clash described above.
+
+## Ultimate blade flight
+User-provided Motion-Speed_Lines09-4(High-Short).mp3 copied unchanged as assets/ultimate-sword-flight-v10.mp3. Plays once at blade launch, independently of the Heavy cut-in cue, with full tail.
+
+## Defeat ground contact
+User-provided Motion-Fall02-3(Gentle).mp3 copied unchanged as assets/hero-fall-v11.mp3. Triggered once at ground contact, 0.78s into the defeat animation.

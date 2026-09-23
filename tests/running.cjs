@@ -138,7 +138,7 @@ assert(nodes.get('#resultText').innerHTML.includes(finishTime.toFixed(2)));asser
 g.beginRun();s=g.state;assert.equal(s.phase,'road');assert.equal(s.roadTime,null);assert.equal(s.cinematic,null);
 s.introRun=0;s.en=[];g.step(.01);tick(621);const boss=s.en.find(e=>e.boss);boss.l=s.l;boss.z=s.z+s.pd+8;boss.action={kind:'dragon',l:s.l,age:1.49,impact:1.5,duration:2.1,done:false};
 g.step(.02);assert(s.shots.some(p=>p.kind==='fireDragon'),'boss emits dragon-shaped projectile');
-s.guard=0;g.hurt(100);assert.equal(s.run,0);assert.equal(nodes.get('#resultTitle').textContent,'クエスト失敗');
+s.guard=0;g.hurt(100);assert.equal(s.run,0);assert(s.defeat);tick(281);assert.equal(nodes.get('#resultTitle').textContent,'クエスト失敗');
 console.log('PASS: cinematic sequence, input lock, frozen clock, pause, continuity, boss spawn once, delayed result, retry');
 
 g.beginRun();s=g.state;s.introRun=0;s.en=[];g.step(.01);tick(621);
@@ -238,3 +238,7 @@ assert(Math.abs(retreatBoss.z-15.4)<.001);assert(slashes>0);console.log('PASS: s
 s=setup();g.fire(1);tick(22);assert.equal(s.waterFx.length,1);g.fire(2);assert.equal(s.skill.k,2);assert.equal(s.skill.t,0);assert.equal(s.waterFx.length,0);assert.deepEqual(Array.from(s.ch),[3,3]);tick(45);assert(s.waves.some(w=>w.k===2));assert(!s.waves.some(w=>w.k===1));
 s=setup();g.fire(2);tick(10);g.fire(2);assert.equal(s.skill.t,0);assert.equal(s.ch[1],2);s.ch[0]=0;const active=s.skill;g.fire(1);assert.equal(s.skill,active,'unavailable skill cannot cancel');
 s=setup();g.fire(1);tick(34);const emitted=s.waves[0];assert(emitted);g.fire(2);assert(s.waves.includes(emitted),'already emitted attacks persist after motion cancel');console.log('PASS: immediate skill cancel, same-skill restart, no canceled wind-up hit, unavailable input ignored, emitted waves preserved');
+
+s=setup();const cues=[];context.window.GameSFX={play:k=>cues.push(k)};g.fireUltimate();tick(83);assert.equal(cues.filter(k=>k==='ultimateFlight').length,0);tick(5);assert.equal(cues.filter(k=>k==='ultimateFlight').length,1);tick(60);assert.equal(cues.filter(k=>k==='ultimateFlight').length,1);console.log('PASS: flight audio fires once when blade launches');
+
+s=setup();const falls=[];context.window.GameSFX={play:k=>falls.push(k),finish:()=>{}};s.hp=1;const deathClock=s.t;g.hurt(2);assert(s.defeat);assert.equal(s.hp,0);g.fire(1);assert.equal(s.skill,null);tick(77);assert(!falls.includes('heroFall'));s.pause=1;tick(30);assert(s.defeat.t<.78);s.pause=0;tick(2);assert.equal(falls.filter(k=>k==='heroFall').length,1);assert(!s.defeat.finished);tick(202);assert(s.defeat.finished);assert.equal(s.t,deathClock);assert.equal(falls.filter(k=>k==='heroFall').length,1);g.beginRun();assert.equal(g.state.defeat,null);console.log('PASS: defeat sequence locks input, freezes combat clock, single impact sound, pause and reset');

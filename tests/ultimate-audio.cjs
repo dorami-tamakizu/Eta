@@ -12,3 +12,7 @@ s.pause();assert.equal(audio.paused,true);s.play('ultimateCutin');assert.equal(a
 s.start();s.play('ultimateCutin',.05);assert.equal(audio.currentTime,.05);assert.equal(audio.plays,3);
 audio.currentTime=.08;s.finish();assert.equal(audio.paused,false,'tail continues after results');s.pause();assert.equal(audio.paused,true);s.start();assert.equal(audio.currentTime,.08);assert.equal(audio.paused,false,'resume tail after cut-in ends');s.start();assert.equal(audio.currentTime,.08,'retry does not truncate tail');s.play('ultimateCutin',0);assert.equal(audio.currentTime,0);
 console.log('PASS: reference audio playback, pause, resume offset and restart');
+
+s.start();const flight=media[2];assert.equal(flight.src,'assets/ultimate-sword-flight-v10.mp3');s.play('ultimateFlight');const count=flight.plays;assert(count>0);flight.currentTime=.3;s.pause();assert(flight.paused);s.start();assert.equal(flight.currentTime,.3);assert.equal(flight.plays,count+1);s.finish();assert.equal(flight.paused,false,'flight tail continues after result');
+
+s.start();const fall=media[3];assert.equal(fall.src,'assets/hero-fall-v11.mp3');s.play('heroFall');assert(fall.plays>0);fall.currentTime=.4;s.pause();assert(fall.paused);s.start();assert.equal(fall.currentTime,.4);assert.equal(fall.paused,false);s.finish();assert.equal(fall.paused,false,'fall sound retains tail');
