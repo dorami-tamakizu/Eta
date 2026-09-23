@@ -50,8 +50,13 @@
     const rows=[['クリアタイム',Number(r.clear_time).toFixed(2)+'秒',r.time_score],['スキルフィニッシュ',number(r.skill_finishes)+'回',r.skill_score],['被ダメージ',number(r.damage_taken),r.damage_taken_score],['与ダメージ',number(r.damage_dealt),r.damage_dealt_score]];
     return '<table class="rank-breakdown"><thead><tr><th>項目</th><th>記録</th><th>スコア</th></tr></thead><tbody>'+rows.map(([label,value,points])=>'<tr><th>'+label+'</th><td>'+value+'</td><td>'+number(points)+'</td></tr>').join('')+'</tbody></table><p>オーバーキル分：'+number(r.overkill)+'（与ダメージに含む）</p><p>トータルスコア：'+number(r.total_score)+'</p>';
   }
+  const HONORS=[['gold','覇者'],['silver','英雄'],['bronze','英傑']];
+  function cup(){return '<svg class="rank-cup" viewBox="0 0 64 64" aria-hidden="true"><path d="M15 12H5v8c0 12 8 18 18 18M49 12h10v8c0 12-8 18-18 18" fill="none" stroke="currentColor" stroke-width="5"/><path d="M14 7h36v15c0 12-8 20-15 22v8h11v7H18v-7h11v-8c-7-2-15-10-15-22Z" fill="currentColor" stroke="#58351b" stroke-width="2"/><path d="M19 12h8v15c0 5 1 8 4 11-8-3-12-9-12-16Z" fill="#fff" opacity=".48"/><path d="M18 8h32M20 54h23" stroke="#fff" opacity=".65" stroke-width="2"/></svg>';}
   function rankingHTML(rows){
-    return '<p class="rank-note">全プレイヤー共通 · 上位100件</p>'+(rows.length?'<ol class="shared-ranking">'+rows.map((r,i)=>'<li><div class="rank-line"><span class="rank-position">'+(i+1)+'位</span><span class="rank-name">'+esc(r.name)+'</span><strong>'+number(r.total_score)+'</strong></div><details><summary>'+esc(r.name)+' の詳細</summary>'+detail(r)+'</details></li>').join('')+'</ol>':'<p>まだ登録された記録はありません。</p>')+'<button type="button" class="btn rank-refresh">更新</button>';
+    const honors='<div class="rank-honors" aria-label="上位3位の称号">'+HONORS.map(([metal,title],i)=>'<div class="honor '+metal+'">'+cup()+'<span>'+(i+1)+'位</span><strong>'+title+'</strong></div>').join('')+'</div>';
+    return honors+'<p class="rank-note">全プレイヤー共通 · 上位100件</p>'+(rows.length?'<ol class="shared-ranking">'+rows.map((r,i)=>{
+      const honor=HONORS[i];return '<li class="rank-card '+(honor?honor[0]:'standard')+'"><div class="rank-card-header">'+(honor?cup():'')+'<span class="rank-position">'+(i+1)+'位</span>'+(honor?'<span class="rank-title">'+honor[1]+'</span>':'')+'</div><div class="rank-card-body"><span class="rank-name">'+esc(r.name)+'</span><div class="rank-score"><span>トータルスコア</span><strong>'+number(r.total_score)+'</strong></div><details><summary aria-label="'+esc(r.name)+' のスコア詳細">詳細</summary>'+detail(r)+'</details></div></li>';
+    }).join('')+'</ol>':'<p class="rank-empty">まだ登録された記録はありません。<br>クリアして最初の記録を登録しよう！</p>')+'<button type="button" class="btn rank-refresh">更新</button>';
   }
   async function open(body){
     const id=++loadId;body.innerHTML='<p role="status">ランキングを読み込み中…</p>';
