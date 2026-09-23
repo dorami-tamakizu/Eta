@@ -17,5 +17,6 @@ vm.runInNewContext(fs.readFileSync(__dirname+'/../ranking.js','utf8'),context);c
  const uncertain=$('#scoreEntryForm').onsubmit({preventDefault(){}});resolvePost({ok:true,json:async()=>{throw Error('lost response')}});await uncertain;assert.equal($('#submitScore').disabled,true);assert($('#entryStatus').textContent.includes('二重登録'));
  // A response from the previous result cannot change a new run's submission UI.
  g.setResult(true,data);const old=$('#scoreEntryForm').onsubmit({preventDefault(){}});g.setResult(true,data);resolvePost({ok:true,json:async()=>[{id:'old'}]});await old;assert.equal($('#registerScore').disabled,false);
+ g.setResult(true,data);const merged=$('#scoreEntryForm').onsubmit({preventDefault(){}});resolvePost({ok:true,json:async()=>[]});await merged;assert.equal($('#registerScore').disabled,true);assert($('#entryStatus').textContent.includes('高い場合だけ'));
  console.log('PASS: public leaderboard/details, escaped names, exact breakdown, optional submission, duplicate guard, errors, stale responses');
 })().catch(e=>{console.error(e);process.exitCode=1});

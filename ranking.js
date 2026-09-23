@@ -37,8 +37,8 @@
     current.state='pending';current.message='登録しています…';renderEntry();
     try{
       const rows=await request('',{name,...current.data});
-      if(!Array.isArray(rows)||!rows[0]?.id)throw new Error('Missing receipt');
-      current.state='saved';current.message='送信が完了しました。上位100位以内の記録がランキングに残ります。';
+      if(!Array.isArray(rows)||(rows.length>0&&!rows[0]?.id))throw new Error('Missing receipt');
+      current.state='saved';current.message=rows.length===0?'受付が完了しました。同じ名前の記録は、トータルスコアが高い場合だけ更新されます。':'送信が完了しました。上位100位以内の記録がランキングに残ります。';
       if(result===current){$('#registerScore').textContent='ランキング送信済み';$('#registerScore').disabled=true;}
     }catch(error){
       current.state=error.rejected?'ready':'unknown';
