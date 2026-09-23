@@ -149,10 +149,9 @@ function drawUltimate(){
   for(let i=0;i<4;i++){const dx=width*(-.72+i*.48);c.beginPath();c.moveTo(dx,-rise*.15);c.lineTo(dx+width*.08,-rise*.5);c.lineTo(dx+width*.045,-rise*.08);c.stroke();}
   c.restore();
 }
-function cancelAt(a){return a.d*(a.k===1?.62:.5);}
 function fire(k){
   if(!S.run||S.pause||S.cinematic||S.ultimate||S.ch[k-1]<1)return;
-  if(S.skill&&S.skill.t<cancelAt(S.skill)-1e-9){S.skill.queued=k;return;}
+  if(S.skill&&S.skill.t<S.skill.d*.5-1e-9)return;
   if(S.skill&&!S.skill.done&&S.skill.waterVisual)S.waterFx=S.waterFx.filter(f=>f!==S.skill.waterVisual);
   S.guard=0;S.normalAttack=null;S.ch[k-1]--;S.skill={k,l:S.l,t:0,d:k===1?.68:.82,done:0};
   sound(k===1?'waterStart':'continentStart');
@@ -424,20 +423,11 @@ function step(dt){
   if(S.skill){
     S.skill.t+=dt;let p=S.skill.t/S.skill.d;
     if(S.skill.k===1&&!S.skill.visual&&p>.27){S.skill.visual=1;S.skill.waterVisual={age:0,l:S.l};S.waterFx.push(S.skill.waterVisual)}
-    const a=S.skill,limit=a.queued?Math.min(p,cancelAt(a)/a.d):p;
-    if(a.k===1){
-      const beats=[.48,.56,.72];a.emitted??=0;
-      while(a.emitted<3&&limit>=beats[a.emitted]){
-        const lane=a.l+1-a.emitted++;
-        if(!a.done){a.done=1;sound('waterSwing');}
-        if(lane>=0&&lane<=2)S.waves.push({k:1,l:lane,singleLane:true,z:S.z+S.pd,origin:S.z+S.pd,travel:0,seen:new Set()});
-      }
-    }else if(!a.done&&limit>.54){
-      a.done=1;sound('continentSwing');
-      S.waves.push({k:2,l:S.l,z:S.z+S.pd,origin:S.z+S.pd,travel:0,seen:new Set()});
-      S.earthFx.push({age:0,l:S.l,z:S.z+S.pd+1.2});
+    if(!S.skill.done&&p>(S.skill.k===1?.48:.54)){
+      S.skill.done=1;sound(S.skill.k===1?'waterSwing':'continentSwing');
+      S.waves.push({k:S.skill.k,l:S.l,z:S.z+S.pd,origin:S.z+S.pd,travel:0,seen:new Set()});
+      if(S.skill.k===2)S.earthFx.push({age:0,l:S.l,z:S.z+S.pd+1.2});
     }
-    if(a.queued&&a.t>=cancelAt(a)-1e-9){const next=a.queued;delete a.queued;fire(next);}
     if(S.skill.t>=S.skill.d)S.skill=null;
   }
   let con=S.en.find(e=>!e.dead&&e.l===S.l&&distance(e)<=(e.boss?5:1.05)&&distance(e)>=-.1);
@@ -489,7 +479,7 @@ function updateWaves(dt){
     const previous=w.z,move=24*dt;w.z+=move;w.travel+=move;
     for(const e of S.en){
       if(e.dead||w.seen.has(e)||e.z<previous-.5||e.z>w.z+.5)continue;
-      if(w.k===1&&!w.singleLane?Math.abs(e.l-w.l)<=1:e.l===w.l){w.seen.add(e);hit(e,w.k===1?2:3,1)}
+      if(w.k===1?Math.abs(e.l-w.l)<=1:e.l===w.l){w.seen.add(e);hit(e,w.k===1?2:3,1)}
     }
   }
   S.waves=S.waves.filter(w=>w.travel<(w.k===1?9:13));
