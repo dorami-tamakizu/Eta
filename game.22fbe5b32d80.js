@@ -1,5 +1,5 @@
-(()=>{const $=s=>document.querySelector(s),cv=$('#game'),c=cv.getContext('2d');let W,H,last=0,S,combatSeed=17319;function random(){combatSeed=(Math.imul(combatSeed,1664525)+1013904223)>>>0;return combatSeed/4294967296}const C=(v,a,b)=>Math.max(a,Math.min(b,v)),R=(a,b)=>a+random()*(b-a),RI=(a,b)=>Math.floor(R(a,b+1)),E=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;const D={slime:{hp:2,d:1,r:0,h:205},skeleton:{hp:3,d:2,r:0,h:220},mage:{hp:3,d:2,r:1,h:228},bonobo:{hp:4,d:4,r:0,h:245},dragon:{hp:4,d:3,r:1,h:215},boss:{hp:40,d:3,r:0,h:300}},im={};const src={heroDefeat:'assets/hero-defeat-v2.webp',ultimateFace:'assets/hero-ultimate-cutin-v1.png',boss:'assets/boss-warlord.png',bossBackstep:'assets/boss-backstep-v1.png',bossSword:'assets/boss-sword-atlas.png',fireDragon:'assets/boss-fire-dragon.png',hero:'assets/hero.webp',slime:'assets/suraimu.png',skeleton:'assets/がいこつ.png',mage:'assets/mahoutukai.png',bonobo:'assets/bonobo.png',dragon:'assets/minidoragonn.png',body:'hero_body.png.png',upper:'hero_arm1.png',fore:'hero_arm2.png',hand:'hero_hand.png',shoulder:'hero_shoulder.png',sword:'assets/hero_sword_motion.png',forest:'assets/forest-background.webp',forestTrees:'assets/forest-trees-gpt-v1.webp',forestGround:'assets/forest-ground-gpt-v1.webp',poses:'assets/hero-motion-sheet.png',waterSheet:'assets/water-slash-gpt-v3.webp',earthSheet:'assets/earth-slash-gpt-v1.webp',heroSkills:'assets/hero-skills-gpt-v1.webp',heroRun:'assets/hero-run-female-v2.png',heroGuard:'assets/hero-guard-gpt-v1.webp',guardImpact:'assets/guard-impact-gpt-v1.webp',dashTrail:'assets/superdash-gpt-v1.webp'};for(const k in src){im[k]=new Image;im[k].src=src[k]}
-function size(){const v=window.visualViewport;W=v?v.width:innerWidth;H=v?v.height:innerHeight;const frame=$('#gameViewport');frame.style.width=W+'px';frame.style.height=H+'px';frame.style.top=(v?v.offsetTop:0)+'px';frame.style.left=(v?v.offsetLeft:0)+'px';let d=Math.min(devicePixelRatio||1,2);cv.width=W*d;cv.height=H*d;c.setTransform(d,0,0,d,0,0)}addEventListener('resize',size);if(window.visualViewport){window.visualViewport.addEventListener('resize',size);window.visualViewport.addEventListener('scroll',size)}size();function sh(a){for(let i=a.length-1;i;i--){let j=RI(0,i);[a[i],a[j]]=[a[j],a[i]]}return a}function mk(t,z){return{t,z,l:RI(0,2),hp:D[t].hp,max:D[t].hp,dead:0,cd:R(1.8,3.8),tell:0,mv:R(.7,2),fl:0}}function roster(){let a=[],e=sh([...Array(3).fill('slime'),...Array(3).fill('skeleton')]),r=sh([...Array(6).fill('slime'),...Array(6).fill('skeleton'),...Array(6).fill('mage'),...Array(3).fill('bonobo'),...Array(3).fill('dragon')]);[...e,...r,...sh([...Array(9).fill('slime'),...Array(9).fill('skeleton'),...Array(6).fill('mage'),...Array(3).fill('bonobo'),...Array(3).fill('dragon')])].forEach((t,i)=>{const group=Math.floor(i/6),row=Math.floor(i%6/3);const enemy=mk(t,18+group*32+row*3);enemy.l=i%3;enemy.group=group;a.push(enemy)});return a}function reset(){$('#gameViewport').classList.remove('cinematic');combatSeed=17319;S={run:0,pause:0,t:0,phase:'road',defeat:null,cinematic:null,roadTime:null,bossStartedAt:null,hp:20,dmg:0,dealtDamage:0,ultimateCharge:90,ultimate:null,overkill:0,z:0,l:1,guard:0,guardPose:0,guardImpact:0,introRun:0,ch:[4,4],fr:[0,0],skill:null,fin:0,dashUntil:-1,dashReach:10,dash:null,boost:0,normalAttack:null,norm:0,en:roster(),shots:[],ptr:null,hit:0,pd:0,pt:0,notice:null,ll:1,fx:[],waves:[],waterFx:[],earthFx:[],combo:0,comboTime:0,shake:0,speed:0,runPhase:0,retreat:0};hideNotice();ui()}function ui(){updateUltimateUI();const hpRatio=C(S.hp/20,0,1),hpColor='hsl('+(120*hpRatio)+',100%,50%)';$('#hp').textContent=Math.ceil(C(S.hp,0,20))+'/20';$('#hpf').style.width=(hpRatio*100)+'%';$('#hpf').style.background=hpColor;$('#hpbar').style.background=hpRatio===0?'#ff0000':'#17212b';$('#hpbar').style.borderColor=hpColor;$('#time').textContent=S.t.toFixed(1);$('#fin').textContent=S.fin;$('#kills').textContent=S.en.filter(e=>e.dead&&!e.boss).length;const boss=S.en.find(e=>e.boss);$('#bossHud').classList.toggle('hide',S.phase!=='boss'||!!S.cinematic);$('#bossHp').textContent=boss?Math.max(0,boss.hp)+' / '+boss.max:'';for(let i=0;i<2;i++){
+(()=>{const $=s=>document.querySelector(s),cv=$('#game'),c=cv.getContext('2d');let W,H,last=0,S,combatSeed=17319;function random(){combatSeed=(Math.imul(combatSeed,1664525)+1013904223)>>>0;return combatSeed/4294967296}const C=(v,a,b)=>Math.max(a,Math.min(b,v)),R=(a,b)=>a+random()*(b-a),RI=(a,b)=>Math.floor(R(a,b+1)),E=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;const D={slime:{hp:2,d:1,r:0,h:205},skeleton:{hp:3,d:2,r:0,h:220},mage:{hp:3,d:2,r:1,h:228},bonobo:{hp:4,d:4,r:0,h:245},dragon:{hp:4,d:3,r:1,h:215},boss:{hp:40,d:3,r:0,h:300}},im={};const src={bossFlame:'assets/boss-horizontal-flame-v2.webp',bossOverhead:'assets/boss-slide-v3.webp',bossSkills:'assets/boss-skills-contact-v6.webp',heroDefeat:'assets/hero-defeat-v2.webp',ultimateFace:'assets/hero-ultimate-cutin-v1.png',boss:'assets/boss-warlord.png',fireDragon:'assets/boss-fire-dragon-v2.webp',hero:'assets/hero.webp',slime:'assets/suraimu.png',skeleton:'assets/がいこつ.png',mage:'assets/mahoutukai.png',bonobo:'assets/bonobo.png',dragon:'assets/minidoragonn.png',body:'hero_body.png.png',upper:'hero_arm1.png',fore:'hero_arm2.png',hand:'hero_hand.png',shoulder:'hero_shoulder.png',sword:'assets/hero_sword_motion.png',forestTrees:'assets/forest-trees-gpt-v1.9d6d5503daf1.webp',forestGround:'assets/forest-ground-gpt-v1.095875d20497.webp',poses:'assets/hero-motion-sheet.png',waterSheet:'assets/water-slash-gpt-v3.webp',earthSheet:'assets/earth-slash-gpt-v1.webp',heroSkills:'assets/hero-skills-gpt-v1.webp',heroRun:'assets/hero-run-female-v2.png',heroGuard:'assets/hero-guard-gpt-v1.webp',guardImpact:'assets/guard-impact-gpt-v1.webp',dashTrail:'assets/superdash-gpt-v1.webp'};for(const k in src){im[k]=new Image;im[k].src=src[k]}
+function size(){const v=window.visualViewport;W=v?v.width:innerWidth;H=v?v.height:innerHeight;const frame=$('#gameViewport');frame.style.width=W+'px';frame.style.height=H+'px';frame.style.top=(v?v.offsetTop:0)+'px';frame.style.left=(v?v.offsetLeft:0)+'px';let d=Math.min(devicePixelRatio||1,2);cv.width=W*d;cv.height=H*d;c.setTransform(d,0,0,d,0,0)}addEventListener('resize',size);if(window.visualViewport){window.visualViewport.addEventListener('resize',size);window.visualViewport.addEventListener('scroll',size)}size();function sh(a){for(let i=a.length-1;i;i--){let j=RI(0,i);[a[i],a[j]]=[a[j],a[i]]}return a}function mk(t,z){return{t,z,l:RI(0,2),hp:D[t].hp,max:D[t].hp,dead:0,cd:R(1.8,3.8),tell:0,mv:R(.7,2),fl:0}}function roster(){let a=[],e=sh([...Array(3).fill('slime'),...Array(3).fill('skeleton')]),r=sh([...Array(6).fill('slime'),...Array(6).fill('skeleton'),...Array(6).fill('mage'),...Array(3).fill('bonobo'),...Array(3).fill('dragon')]);[...e,...r,...sh([...Array(9).fill('slime'),...Array(9).fill('skeleton'),...Array(6).fill('mage'),...Array(3).fill('bonobo'),...Array(3).fill('dragon')])].forEach((t,i)=>{const group=Math.floor(i/6),row=Math.floor(i%6/3);const enemy=mk(t,18+group*ENEMY_GROUP_GAP+row*ENEMY_ROW_GAP);enemy.l=i%3;enemy.group=group;a.push(enemy)});return a}function reset(){$('#gameViewport').classList.remove('cinematic');combatSeed=17319;S={run:0,pause:0,t:0,phase:'road',defeat:null,cinematic:null,roadTime:null,bossStartedAt:null,hp:20,dmg:0,dealtDamage:0,ultimateCharge:90,ultimate:null,overkill:0,z:0,l:1,guard:0,guardPose:0,guardImpact:0,introRun:0,ch:[4,4],fr:[0,0],skill:null,fin:0,dashUntil:-1,dash:null,boost:0,normalAttack:null,norm:0,en:roster(),shots:[],ptr:null,hit:0,pd:0,pt:0,notice:null,ll:1,fx:[],waves:[],waterFx:[],earthFx:[],combo:0,comboTime:0,shake:0,speed:0,runPhase:0,retreat:0};hideNotice();ui()}function ui(){updateUltimateUI();const hpRatio=C(S.hp/20,0,1),hpColor='hsl('+(120*hpRatio)+',100%,50%)';$('#hp').textContent=Math.ceil(C(S.hp,0,20))+'/20';$('#hpf').style.width=(hpRatio*100)+'%';$('#hpf').style.background=hpColor;$('#hpbar').style.background=hpRatio===0?'#ff0000':'#17212b';$('#hpbar').style.borderColor=hpColor;$('#time').textContent=S.t.toFixed(1);$('#fin').textContent=S.fin;const boss=S.en.find(e=>e.boss);$('#bossHud').classList.toggle('hide',S.phase!=='boss'||!!S.cinematic);$('#bossHp').textContent=boss?Math.max(0,boss.hp)+' / '+boss.max:'';for(let i=0;i<2;i++){
   // The original five charges remain unchanged; show partial recharge too.
   const fill=C((S.ch[i]+(S.ch[i]<4?S.fr[i]:0))/4,0,1);
   $('#g'+(i+1)).style.strokeDashoffset=String(100*(1-fill));
@@ -11,7 +11,12 @@ function size(){const v=window.visualViewport;W=v?v.width:innerWidth;H=v?v.heigh
   }
 }}// pd/pt are player depth in the same world units as enemy.z and stage S.z.
 const HORIZON=.26,GROUND_SPAN=.49,RUN_SPEED=9;
-const MAX_DEPTH=(GROUND_SPAN/(.46-HORIZON)-1)/.115, FRONT_GAP=.7,BOSS_DEPTH=9;
+const ENEMY_ROW_GAP=3,ENEMY_GROUP_GAP=32;
+// One dash covers one pack interval, then returns to ordinary running.
+const SUPERDASH_DISTANCE=ENEMY_GROUP_GAP,SUPERDASH_SPEED=42;
+// One footfall is half the existing run cycle. Each swipe adds that much travel.
+const RUN_PHASE_PER_UNIT=1.35,SWIPE_STEP_DISTANCE=Math.PI/RUN_PHASE_PER_UNIT,SWIPE_DECAY=.12;
+const MAX_DEPTH=(GROUND_SPAN/(.46-HORIZON)-1)/.115, FRONT_GAP=.7,BOSS_DEPTH=9,BOSS_SLASH_DEPTH=MAX_DEPTH/4;
 // Reference framing: horizon 26%, running feet 58%, body above center.
 const RUN_DEPTH=(GROUND_SPAN/(.58-HORIZON)-1)/.115,DASH_DEPTH=(GROUND_SPAN/(.53-HORIZON)-1)/.115;
 function distance(e){return e.z-S.z-S.pd}
@@ -28,10 +33,11 @@ function updateDepth(dt){
 }
 function adv(n){
   if(S.phase==='boss'){
-    // Preserve reached depth after a dash; retreat only on the player's input.
-    if(S.retreat>0)return 0;
-    const target=Math.max(S.pd,Math.min(depthLimit(),S.dash||S.boost>0?DASH_DEPTH:RUN_DEPTH+Math.max(0,front()-S.z-BOSS_DEPTH)));
-    const move=Math.min(target-S.pd,n*.65);S.pd+=move;S.pt=S.pd;return move;
+    // Player input never shifts the arena camera or the boss patrol.
+    if(S.retreat>0&&!S.dash)return 0;
+    const target=S.dash||S.boost>0?depthLimit():Math.max(S.pd,Math.min(depthLimit(),RUN_DEPTH));
+    const move=Math.min(Math.max(0,target-S.pd),n*(S.dash?1:.65));
+    S.pd+=move;S.pt=S.pd;return move;
   }
   const moved=Math.min(n,Math.max(0,front()-S.z-S.pd-FRONT_GAP));
   const target=S.retreat>0?S.pd:(S.dash||S.boost>0?DASH_DEPTH:RUN_DEPTH);
@@ -42,7 +48,7 @@ function adv(n){
   if(!S.retreat)S.pt=target;
   return moved;
 }
-function sound(kind,type){if(window.GameSFX)window.GameSFX.play(kind,type)}function hurt(n){if(S.defeat)return;if(S.guard){S.guardImpact=.38;sound('guardBlock');return;}S.combo=0;S.shake=.18;burst(S.l,S.z+S.pd,'#ff7563',12);sound('hurt');S.hp-=n;S.dmg+=n;S.hit=.15;if(S.hp<=0)beginDefeat()}function hit(e,n,sk,source=sk?'skill':'normal'){if(e.dead)return;const dealt=Math.min(Math.max(0,e.hp),Math.max(0,n));S.dealtDamage+=dealt;if(source==='normal'||source==='skill')S.ultimateCharge=C(S.ultimateCharge+dealt,0,ULTIMATE.capacity);S.overkill+=Math.max(0,n-Math.max(0,e.hp));sound('hit',e.t);e.hp-=n;e.fl=.12;S.combo++;S.comboTime=2;S.fx.push({kind:'number',l:e.l,z:e.z,n:n,t:0,life:.8,color:sk?'#fff079':'#ffffff'});burst(e.l,e.z,sk?'#b5f7ff':'#ffffff',9);S.shake=sk?.08:.035;if(e.tell>0&&!e.boss){e.tell=0;e.cd=R(1.8,3.8)}if(e.hp<=0){e.dead=1;e.fade=.4;burst(e.l,e.z,'#ffdfa0',18);sound('down',e.t);S.dashUntil=S.t+.5;S.dashReach=e.group!==undefined&&!S.en.some(o=>!o.dead&&o.group===e.group)?C(front()-S.z-S.pd-1.2,10,36):10;if(sk)S.fin++}}function hideNotice(){const n=$('#actionName');n.style.opacity='0';n.classList.remove('moveArrow');if(S)S.notice=null}
+function sound(kind,type){if(window.GameSFX)window.GameSFX.play(kind,type)}function hurt(n){if(S.defeat)return;if(S.guard){S.guardImpact=.38;sound('guardBlock');return;}S.combo=0;S.shake=.18;burst(S.l,S.z+S.pd,'#ff7563',12);sound('hurt');S.hp-=n;S.dmg+=n;S.hit=.15;if(S.hp<=0)beginDefeat()}function hit(e,n,sk,source=sk?'skill':'normal'){if(e.dead)return;const dealt=Math.min(Math.max(0,e.hp),Math.max(0,n));S.dealtDamage+=dealt;if(source==='normal'||source==='skill')S.ultimateCharge=C(S.ultimateCharge+dealt,0,ULTIMATE.capacity);S.overkill+=Math.max(0,n-Math.max(0,e.hp));sound('hit',e.t);e.hp-=n;e.fl=.12;S.combo++;S.comboTime=2;S.fx.push({kind:'number',l:e.l,z:e.z,n:n,t:0,life:.8,color:sk?'#fff079':'#ffffff'});burst(e.l,e.z,sk?'#b5f7ff':'#ffffff',9);S.shake=sk?.08:.035;if(e.tell>0&&!e.boss){e.tell=0;e.cd=R(1.8,3.8)}if(e.hp<=0){e.dead=1;e.fade=.4;burst(e.l,e.z,'#ffdfa0',18);sound('down',e.t);S.dashUntil=S.t+.5;if(sk)S.fin++}}function hideNotice(){const n=$('#actionName');n.style.opacity='0';n.classList.remove('moveArrow');if(S)S.notice=null}
 // Compact skill label, styled to match the forest HUD.
 function notice(text,seconds,arrow=false){
   const plate=text==='水波斬'||text==='大陸斬';
@@ -50,7 +56,7 @@ function notice(text,seconds,arrow=false){
   const ultimatePlate=text==='渾身のストラッシュ';n.classList.toggle('ultimate-nameplate',ultimatePlate);
   n.classList.toggle('nameplate',plate);n.classList.toggle('moveArrow',arrow);
   n.style.width='';n.style.height='';
-  if(ultimatePlate){n.innerHTML='<span class="ultimate-title">'+text+'</span>';}else if(plate){
+  if(ultimatePlate){n.innerHTML='<span class="ultimate-title">渾身のストラッシュ</span>';}else if(plate){
     n.innerHTML='<span class="plaque-name">'+text+'</span>';
   }else n.textContent=text;
   n.style.opacity='1';placeNotice();
@@ -58,6 +64,7 @@ function notice(text,seconds,arrow=false){
 function noticePosition(){return {x:playerX(),y:Math.max(88,playerY()-playerHeight()*1.36-36)}}
 function placeNotice(){
   if(!S.notice)return;const state=S.notice,n=$('#actionName'),pos=noticePosition(),age=state.total-state.left;
+  if(state.text==='渾身のストラッシュ'){n.style.left=W/2+'px';n.style.top=Math.max(105,Math.min(145,H*.18))+'px';n.style.transform='translate(-50%,-50%)';n.style.opacity=String(Math.min(1,age/.05,state.left/.18));return;}
   n.style.left=pos.x+'px';n.style.top=pos.y+'px';
   const entrance=C(age/.12,0,1),scale=state.plate?.97+.03*E(entrance):1;
   const lift=state.plate?(1-E(entrance))*3:0;
@@ -81,7 +88,7 @@ function updateUltimate(dt){
   const a=S.ultimate;if(!a)return;a.t+=dt;
   const progress=C((a.t-ULTIMATE.windup)/ULTIMATE.travel,0,1);
   if(progress>0){
-    if(!a.fired){a.fired=true;notice('渾身のストラッシュ',.85);sound('ultimateFlight');}
+    if(!a.fired){a.fired=true;notice('渾身のストラッシュ',1.15);sound('ultimateFlight');}
     const front=a.origin+(a.far-a.origin)*progress;
     for(const e of S.en){
       if(e.dead||a.seen.has(e)||e.z<a.origin-.1||e.z>a.far||e.z>front)continue;
@@ -144,6 +151,7 @@ function drawUltimate(){
 }
 function fire(k){
   if(!S.run||S.pause||S.cinematic||S.ultimate||S.ch[k-1]<1)return;
+  if(S.skill&&S.skill.t<S.skill.d*.5-1e-9)return;
   if(S.skill&&!S.skill.done&&S.skill.waterVisual)S.waterFx=S.waterFx.filter(f=>f!==S.skill.waterVisual);
   S.guard=0;S.normalAttack=null;S.ch[k-1]--;S.skill={k,l:S.l,t:0,d:k===1?.68:.82,done:0};
   sound(k===1?'waterStart':'continentStart');
@@ -157,9 +165,16 @@ function lane(d){
 // One kill opens one inclusive 0.5-second window on the active game clock.
 function accelerate(){
   if(!S.run||S.pause||S.cinematic||ultimateCutinActive())return;
-  if(S.dashUntil>=0&&S.t<=S.dashUntil+1e-9){
-    S.dash={n:S.dashReach||10};sound('superdash');S.dashUntil=-1;S.boost=0;
-  }else S.boost=1;
+  S.retreat=0;
+  if(!S.dash&&S.dashUntil>=0&&S.t<=S.dashUntil+1e-9){
+    S.dash={n:SUPERDASH_DISTANCE};sound('superdash');S.dashUntil=-1;S.boost=0;
+  }else S.boost+=SWIPE_STEP_DISTANCE;
+}
+function runForward(dt){
+  // Integrate the short speed impulse exactly, so repeated swipes add full steps
+  // at any frame rate. A blocked step expires instead of teleporting past an enemy.
+  const extra=S.boost<.001?S.boost:S.boost*-Math.expm1(-dt/SWIPE_DECAY);
+  adv(RUN_SPEED*dt+extra);S.boost=Math.max(0,S.boost-extra);
 }
 function depth(d){if(S.cinematic||ultimateCutinActive())return;S.retreat=1;S.pt=C(S.pd+d,0,depthLimit())}
 
@@ -186,7 +201,7 @@ function stepCinematic(dt){
   const scene=S.cinematic;scene.t+=dt;
   if(scene.kind==='entry'){
     // Run through the same scenery, then introduce the boss before combat resumes.
-    if(scene.t<2.6){const moved=adv(6*dt);S.runPhase+=moved*1.35;S.speed=6;}
+    if(scene.t<2.6){const moved=adv(6*dt);S.runPhase+=moved*RUN_PHASE_PER_UNIT;S.speed=6;}
     else S.speed=0;
     if(scene.t>=3.6&&!S.en.some(e=>e.boss))revealBoss();
     if(scene.t>=6.2){S.phase='boss';S.bossStartedAt=S.t;S.cinematic=null;$('#gameViewport').classList.remove('cinematic');}
@@ -223,92 +238,132 @@ function drawCinematic(){
 // Boss attack timelines share one clock with their visual frames and collision.
 function updateBoss(e,dt){
   // A stable center-stage position (feet ~50% of screen height).
+  if(e.recover){e.recover.age+=dt;if(e.recover.age>=.22)e.recover=null;}
   const beforeMove=e.z,centerZ=S.z+BOSS_DEPTH;
-  e.z=Math.max(centerZ,e.z)+.32*dt;
-  // Follow a retreating opponent only once it reaches the far edge of the arena.
-  if(S.phase==='boss')S.z=Math.max(S.z,e.z-(BOSS_DEPTH+2.5));
-  e.l=1;e.displayLane+=(1-e.displayLane)*(1-Math.exp(-9*dt));
-  const backward=Math.max(0,e.z-beforeMove);e.backstepActive=backward>1e-6;
-  if(e.backstepActive)e.backstepPhase=((e.backstepPhase||0)+dt*.55)%1;
-  if(e.wideCd===undefined)e.wideCd=R(2.6,4.4);
-  if(e.dragonCd===undefined)e.dragonCd=R(6.5,9);
+  // Travel between actual lane/depth waypoints, rather than posing at center.
+  const route=[[0,12],[2,15],[1,9],[2,12],[0,9],[1,14]];
+  if(!e.patrol){const lane=e.displayLane??e.l??1;e.patrol={leg:0,t:0,fromLane:lane,fromDepth:C(e.z-S.z,9,15)};}
+  const p=e.patrol,target=route[p.leg],duration=Math.max(4,Math.abs(target[0]-p.fromLane)/.42,Math.abs(target[1]-p.fromDepth)/.85)/1.3;
+  // Each deliberate footstep has a planted pause and a short weight-transfer phase.
+  const oldStep=e.stepClock||0,newStep=oldStep+(e.action?0:dt/.73);
+  const progress=t=>Math.floor(t)+C(((t%1)-.22)/.40,0,1);
+  p.t=Math.min(duration,p.t+(progress(newStep)-progress(oldStep))*.73);e.stepClock=newStep;
+  const foot=newStep%1;e.stepFrame=(Math.floor(newStep)%2)*3+(foot<.22?0:foot<.62?1:2);
+  const q=p.t/duration,oldLane=e.displayLane??p.fromLane;
+  e.displayLane=p.fromLane+(target[0]-p.fromLane)*q;e.l=Math.round(e.displayLane);
+  e.z=centerZ+(p.fromDepth-BOSS_DEPTH)+(target[1]-p.fromDepth)*q;
+  const movement=e.z-beforeMove,lateral=e.displayLane-oldLane;e.moveActive=Math.abs(movement)+Math.abs(lateral)>1e-6;e.backstepActive=movement>1e-6;
+  e.backstepPhase=e.stepFrame/6;
+  if(p.t>=duration){p.leg=(p.leg+1)%route.length;p.t=0;p.fromLane=e.displayLane;p.fromDepth=e.z-S.z;}
+  if(e.wideCd===undefined)e.wideCd=R(2.0,3.3);
+  if(e.dragonCd===undefined)e.dragonCd=R(4.8,6.8);
   e.wideCd-=dt;e.dragonCd-=dt;
   if(e.action){
-    const a=e.action;a.age+=dt;e.tell=a.kind==='normal'?0:Math.max(0,a.impact-a.age);
+    const a=e.action;if(a.kind==='wide'&&a.targetZ===undefined)a.targetZ=e.z-FRONT_GAP-BOSS_SLASH_DEPTH/2;a.age+=dt;e.tell=a.kind==='normal'?0:Math.max(0,a.impact-a.age);
     if(!a.done&&a.age>=a.impact){
       a.done=true;
-      if(a.kind==='dragon'){S.shots.push({kind:'fireDragon',l:a.l,z:e.z,d:4,t:'boss',age:0});sound('shot','dragon');}
+      if(a.kind==='dragon'){S.shots.push({kind:'fireDragon',l:a.l,z:e.z,originLane:e.displayLane??e.l,originZ:e.z,d:4,t:'boss',age:0});sound('shot','dragon');}
       else if(a.kind==='wide'){
-        sound('continentSwing');for(let lane=0;lane<3;lane++)burst(lane,S.z+S.pd+1,'#ffae43',8);hurt(4);
-      }else if(a.kind==='sword'){sound('continentSwing');if(S.l===a.l)hurt(3);}
+        sound('continentSwing');for(let lane=0;lane<3;lane++)burst(lane,a.targetZ,'#ffae43',8);
+        if(Math.abs(S.z+S.pd-a.targetZ)<=BOSS_SLASH_DEPTH/2)hurt(4);
+      }else if(a.kind==='sword'){sound('continentSwing');if(S.l===a.l&&distance(e)>=0&&distance(e)<=BOSS_SLASH_DEPTH)hurt(3);}
     }
-    if(a.age>=a.duration){e.action=null;e.tell=0;e.cd=.65;}
+    if(a.age>=a.duration){e.recover={kind:a.kind,age:0};e.action=null;e.tell=0;e.cd=.48;}
     return;
   }
   if(e.wideCd<=0){
-    e.wideCd=R(2.6,4.4);e.action={kind:'wide',l:1,age:0,impact:.5,duration:1.0,done:false};e.tell=.5;e.attackCount++;return;
+    e.wideCd=R(2.0,3.3);e.action={kind:'wide',l:1,targetZ:e.z-FRONT_GAP-BOSS_SLASH_DEPTH/2,age:0,impact:.38,duration:.76,done:false};e.tell=.38;e.attackCount++;return;
   }
   if(e.dragonCd<=0){
-    e.dragonCd=R(6.5,9);e.action={kind:'dragon',l:S.l,age:0,impact:.5,duration:1.0,done:false};e.tell=.5;e.attackCount++;return;
+    e.dragonCd=R(4.8,6.8);e.action={kind:'dragon',l:S.l,age:0,impact:.38,duration:.76,done:false};e.tell=.38;e.attackCount++;return;
   }
-  e.cd-=dt;
-  if(e.cd<=0){
-    // Immediate ordinary hit: no pose, aura, or anticipatory attack action.
-    e.cd=R(1.05,1.35);e.attackCount++;e.tell=0;sound('hit','boss');hurt(2);
+  // Contact alone never hurts the player; only skill impacts deal damage.
+  e.tell=0;
+}
+// Blend only short neighboring poses; cover large recovery transitions with local flames.
+function bossVisual(e){
+  const a=e.action;
+  if(!a)return {sheet:im.bossOverhead,frame:((e.stepClock||0)*4)%8,next:null,mix:0};
+  // Upper row: blade meets the ground in frame 3. Lower row: follow-through in frame 8.
+  const base=a.kind==='dragon'?0:4;
+  const pace=a.impact/.5;
+  const times=a.kind==='dragon'?[0,a.impact-.20*pace,a.impact,a.impact+.16*pace]:[0,a.impact-.30*pace,a.impact-.14*pace,a.impact];
+  let i=0;while(i<3&&a.age>=times[i+1])i++;
+  const mix=i<3?C((a.age-(times[i+1]-.045))/.045,0,1):0;
+  return {sheet:im.bossSkills,frame:base+i,next:i<3?base+i+1:null,mix};
+}
+function drawBossFrame(sheet,frame,h,alpha=1){
+  if(!sheet?.complete||!sheet.naturalWidth||alpha<=0)return;
+  if(sheet===im.bossSkills){
+    // Crop the supplied contact sheet without repainting the warrior. Extra space
+    // below the third pose preserves the blade's ground-contact flame.
+    const poses=[
+      [0,0,400,512,192,503],[400,0,368,512,176,505],
+      [768,128,400,416,192,380],[1168,144,368,384,176,365],
+      [0,512,400,512,192,497],[400,528,368,496,176,468],
+      [768,576,400,448,192,412],[1168,576,368,448,176,416]
+    ];
+    const [sx,sy,sw,sh,ax,ay]=poses[frame],scale=h/512;
+    c.save();c.globalAlpha*=alpha;c.drawImage(sheet,sx,sy,sw,sh,-ax*scale,-ay*scale,sw*scale,sh*scale);c.restore();return;
   }
+  const cw=sheet.naturalWidth/4,ch=sheet.naturalHeight/2,w=h*cw/ch;
+  const sx=frame%4*cw,sy=Math.floor(frame/4)*ch;
+  c.save();c.globalAlpha*=alpha;
+  c.drawImage(sheet,sx,sy,cw,ch,-w/2,-h,w,h);
+  c.restore();
+}
+
+function drawBossVeil(h,strength,t){
+  const img=im.bossFlame;if(strength<=0||!img.complete||!img.naturalWidth)return;
+  // A low, translucent flame afterimage bridges recovery without covering the face or blade.
+  const sy=t<1?560:804,sh=t<1?244:220,w=h*1.12,fh=w*sh/img.naturalWidth;
+  c.save();c.globalAlpha*=C(strength,0,1)*.65;
+  c.drawImage(img,0,sy,img.naturalWidth,sh,-w/2,-fh*.90,w,fh);c.restore();
 }
 function drawBossSprite(e,h){
-  const atlas=im.bossSword,a=e.action;
-  const base=im.boss;if(!base.complete||!base.naturalWidth)return;
   drawBossAura(e,h);
-  const walk=im.bossBackstep;
-  if(!a&&e.backstepActive&&walk.complete&&walk.naturalWidth){
-    const frame=Math.floor((e.backstepPhase||0)*8)%8,cw=walk.naturalWidth/4,ch=walk.naturalHeight/2,w=h*cw/ch;
-    c.drawImage(walk,(frame%4)*cw,Math.floor(frame/4)*ch,cw,ch,-w/2,-h,w,h);
-  }
-  if(a&&atlas.complete&&atlas.naturalWidth){
-    let frame;
-    if(a.kind==='wide')frame=a.age<a.impact?Math.min(2,Math.floor(a.age/.18)):Math.min(7,3+Math.floor((a.age-a.impact)/.12));
-    else if(a.kind==='dragon')frame=a.age<a.impact?Math.min(2,Math.floor(a.age/.3)):6;
-    else{const t=a.age/a.duration;frame=t<.15?0:t<.32?1:t<.50?2:t<.57?3:t<.67?4:t<.78?5:t<.90?6:7;}
-    const cw=atlas.naturalWidth/4,ch=atlas.naturalHeight/2,w=h*cw/ch;
-    c.drawImage(atlas,(frame%4)*cw,Math.floor(frame/4)*ch,cw,ch,-w/2,-h,w,h);
-  }else if(!e.backstepActive||!walk.complete||!walk.naturalWidth){
-    const rect=crop(base),w=h*rect[2]/rect[3],breath=1+Math.sin(S.t*2.5)*.007;
-    c.drawImage(base,...rect,-w/2,-h*breath,w,h*breath);
-  }
-  if(a&&(a.kind==='sword'||a.kind==='wide')&&a.age>=a.impact&&a.age<a.impact+.25){
-    const q=(a.age-a.impact)/.25;c.save();c.globalAlpha=(1-q)*.85;c.strokeStyle='#ffe9a1';c.shadowColor='#ff5c14';c.shadowBlur=14;c.lineWidth=6;
-    c.beginPath();c.ellipse(0,-h*.35,h*.48,h*.16,-.5,.15+q,Math.PI*1.15+q);c.stroke();c.restore();
-  }
+  const v=bossVisual(e),a=e.action,r=e.recover;
+  const frame=Math.floor(v.frame),mix=a?v.mix:C((v.frame-frame-.72)/.28,0,1);
+  const next=a?v.next:(frame+1)%8;
+  const recovery=r?C(r.age/.22,0,1):1;
+  if(r)drawBossFrame(im.bossSkills,r.kind==='dragon'?3:7,h,1-recovery);
+  drawBossFrame(v.sheet,frame,h,(1-mix)*recovery);
+  if(mix&&next!==null)drawBossFrame(v.sheet,next,h,mix*recovery);
+  if(a){
+    const impact=Math.max(0,1-Math.abs(a.age-a.impact)/.13);
+    const exit=C((a.age-(a.duration-.16))/.16,0,1);
+    drawBossVeil(h,Math.max(impact*.82,exit*.96),a.age);
+  }else if(r)drawBossVeil(h,(1-recovery)*.96,r.age+1);
 }
 function bossAuraProgress(e){
   const a=e.action;if(!a||a.kind==='normal'||a.done||e.dead)return -1;
   const age=a.age-(a.impact-.5);return age>=-1e-9&&age<.5?C(age/.5,0,1):-1;
 }
 function drawBossAura(e,h){
-  const q=bossAuraProgress(e);if(q<0||S.cinematic)return;
-  c.save();c.globalCompositeOperation='lighter';c.globalAlpha=.45+.45*q;c.shadowColor='#ff4800';c.shadowBlur=13;
-  for(let i=0;i<9;i++){
-    const x=(i-4)*h*.105,w=h*.11,tip=-h*(.35+.8*q)+Math.sin(i*2+q*18)*h*.09;
-    const g=c.createLinearGradient(0,0,0,tip);g.addColorStop(0,'#ff3600');g.addColorStop(.6,'#ff9e19');g.addColorStop(1,'#fff6ab');c.fillStyle=g;
-    c.beginPath();c.moveTo(x-w,0);c.bezierCurveTo(x-w*1.3,tip*.4,x+w,tip*.6,x,tip);c.bezierCurveTo(x+w*.2,tip*.45,x+w*1.4,tip*.3,x+w,0);c.closePath();c.fill();
-  }c.restore();
+  const q=bossAuraProgress(e),img=im.bossFlame;if(q<0||S.cinematic||!img.complete||!img.naturalWidth)return;
+  const sy=q<.6?0:292,sh=q<.6?292:268,w=h*(.85+.25*q),fh=h*(.16+.13*q);
+  c.save();c.globalAlpha*=.30+.42*q;
+  c.drawImage(img,0,sy,img.naturalWidth,sh,-w/2,-fh*.88,w,fh);c.restore();
 }
 function drawBossWideSlash(){
   const e=S.en.find(e=>e.boss&&!e.dead),a=e&&e.action;if(!a||a.kind!=='wide'||!a.done||S.cinematic)return;
-  const q=(a.age-a.impact)/.24;if(q<0||q>1)return;
-  const y=playerY()-playerHeight()*.45;
-  c.save();c.globalAlpha=1-q;c.shadowColor='#ff620c';c.shadowBlur=18;
-  // One level horizontal slash spans the three lanes at the same instant.
-  c.strokeStyle='#ff791b';c.lineWidth=18*(1-q)+4;c.beginPath();c.moveTo(-W*.08,y);c.lineTo(W*1.08,y);c.stroke();
-  c.strokeStyle='#fff6d5';c.lineWidth=7*(1-q)+1;c.beginPath();c.moveTo(-W*.08,y);c.lineTo(W*1.08,y);c.stroke();c.restore();
+  const q=(a.age-a.impact)/.48;if(q<0||q>=1)return;
+  const img=im.bossFlame;if(!img.complete||!img.naturalWidth)return;
+  const z=a.targetZ-S.z,p=perspective(z),y=yy(z)-Math.min(H*.34,290)*p*.45,left=lx(-.5,z),right=lx(2.5,z);
+  const frame=Math.min(3,Math.floor(q*4)),rows=[0,292,560,804,1024];
+  const sw=img.naturalWidth,sy=rows[frame],sh=rows[frame+1]-sy,w=(right-left)*1.08,h=w*sh/sw;
+  c.save();c.globalAlpha=q>.78?(1-q)/.22:1;
+  c.drawImage(img,0,sy,sw,sh,W/2-w/2,y-h/2,w,h);c.restore();
 }
 function drawFireDragon(shot){
   const img=im.fireDragon;if(!img.complete||!img.naturalWidth)return;
-  const z=shot.z-S.z,p=perspective(z),h=300*p*Math.min(1,H/844),w=h*img.naturalWidth/img.naturalHeight;
-  const x=lx(shot.l,z),y=yy(z);c.save();c.translate(x,y);c.rotate(Math.sin(shot.age*9)*.045);
-  c.globalAlpha=.92;c.drawImage(img,0,0,img.naturalWidth,img.naturalHeight,-w/2,-h,w,h);
+  const z=shot.z-S.z,p=perspective(z),launch=C((shot.age||0)/.18,0,1);
+  const h=300*p*Math.min(1,H/844)*(.45+.55*launch),w=h*img.naturalWidth/img.naturalHeight;
+  // Grow from the blade's contact point, then follow the telegraphed target lane.
+  const originLane=shot.originLane??shot.l,l=originLane+(shot.l-originLane)*E(launch);
+  const bossH=bossHeight((shot.originZ??shot.z)-S.z);
+  const x=lx(l,z)+(1-launch)*bossH*.20,y=yy(z);c.save();c.translate(x,y);c.rotate(Math.sin((shot.age||0)*9)*.025);
+  c.globalAlpha=.92;c.drawImage(img,0,0,img.naturalWidth,img.naturalHeight,-w/2,-h*.90,w,h);
   c.restore();
 }
 function beginDefeat(){
@@ -337,11 +392,20 @@ function step(dt){
   if(S.notice){S.notice.left-=dt;if(S.notice.left<=0)hideNotice()}
   for(let i=0;i<2;i++)if(S.ch[i]<4){S.fr[i]+=dt/5;if(S.fr[i]>=1){S.fr[i]--;S.ch[i]++}}
   if(!S.guard&&!S.ultimate){
-    if(S.dash){const requested=Math.min(S.dash.n,42*dt),v=adv(requested);S.dash.n-=v;if(v>.0001&&!S.dash.rewarded){S.dash.rewarded=true;for(let i=0;i<2;i++){S.ch[i]=Math.min(4,S.ch[i]+1);if(S.ch[i]===4)S.fr[i]=0}}if(v<requested-.0001||S.dash.n<=.0001)S.dash=null}
-    else adv((dt+Math.min(dt,S.boost))*RUN_SPEED);
+    let runningTime=dt;
+    if(S.dash){
+      const dash=S.dash,requested=Math.min(SUPERDASH_SPEED*dt,dash.n),v=adv(requested);
+      dash.n=Math.max(0,dash.n-v);
+      if(v>.0001&&!dash.rewarded){dash.rewarded=true;for(let i=0;i<2;i++){S.ch[i]=Math.min(4,S.ch[i]+1);if(S.ch[i]===4)S.fr[i]=0}}
+      if(dash.n<=1e-9||v+1e-9<requested||!Number.isFinite(front())||front()-S.z-S.pd<=FRONT_GAP+.025){
+        S.dash=null;runningTime=Math.max(0,dt-requested/SUPERDASH_SPEED);
+      }else runningTime=0;
+    }
+    if(runningTime>0)runForward(runningTime);
+  }else{
+    S.boost*=Math.exp(-dt/SWIPE_DECAY);if(S.boost<.001)S.boost=0;
   }
-  S.boost=Math.max(0,S.boost-dt);
-  const travelled=S.z+S.pd-previousZ;S.speed=dt>0?travelled/dt:0;S.runPhase+=Math.max(0,travelled)*1.35;
+  const travelled=S.z+S.pd-previousZ;S.speed=dt>0?travelled/dt:0;S.runPhase+=Math.max(0,travelled)*RUN_PHASE_PER_UNIT;
   // Update the moving front before resolving any attacks against player depth.
   for(const e of S.en){
     if(e.dead)continue;e.fl=Math.max(0,e.fl-dt);
@@ -393,8 +457,8 @@ function step(dt){
     }else{e.cd-=dt;if(e.cd<=0)e.tell=e.t==='bonobo'?1.15:e.t==='dragon'?1.1:e.t==='mage'?1:.85}
   }
   for(const p of S.shots){
-    p.z-=(p.kind==='fireDragon'?10:18)*dt;p.age=(p.age||0)+dt;
-    if(distance(p)<=.35){if(p.l===S.l)hurt(p.d);p.dead=1;if(!S.run){ui();return}}
+    const before=distance(p);p.z-=(p.kind==='fireDragon'?10:18)*dt;p.age=(p.age||0)+dt;
+    if(distance(p)<=.35){if(before>=-.35&&p.l===S.l)hurt(p.d);p.dead=1;if(!S.run){ui();return}}
   }
   S.shots=S.shots.filter(p=>!p.dead);
   if(!S.ultimate&&!S.introRun&&!S.en.some(e=>!e.dead)){if(S.phase==='road')startBoss();else startVictory();}
@@ -408,6 +472,7 @@ function yy(z){return H*HORIZON+H*GROUND_SPAN*perspective(z)}
 function playerY(){return yy(S.pd)}
 function playerX(){return lx(S.ll,S.pd)}
 function playerHeight(){return Math.min(H*.34,290)*perspective(S.pd)}
+function bossHeight(z){return D.boss.h*perspective(z)*Math.min(1,H/844)*.77*1.85;}
 function burst(l,z,color,count){for(let i=0;i<count;i++)S.fx.push({kind:'spark',l,z,color,t:0,life:.35+Math.random()*.25,vx:(Math.random()-.5)*180,vy:-30-Math.random()*140})}
 function updateWaves(dt){
   for(const w of S.waves){
@@ -549,7 +614,6 @@ function crop(image){
 
 // One vanishing point, shared with the enemy ground horizon. Cache the painted
 // scenery at device resolution so foliage does not add work to each game frame.
-let forestLayer=null,forestKey='';
 function groundZ(y){return (GROUND_SPAN/(y-HORIZON)-1)/.115}
 function groundPhase(y,z){const u=((groundZ(y)+z)/8%2+2)%2;return u<=1?u:2-u}
 function drawGround(image){
@@ -596,71 +660,8 @@ function drawMovingForest(){
 }
 function bg(){
   if(im.forestTrees.complete&&im.forestTrees.naturalWidth&&im.forestGround.complete&&im.forestGround.naturalWidth){drawMovingForest();const fog=c.createRadialGradient(W/2,H*HORIZON,0,W/2,H*HORIZON,W*.25);fog.addColorStop(0,"#c7d3b4ee");fog.addColorStop(.3,"#c7d3b488");fog.addColorStop(1,"#c7d3b400");c.fillStyle=fog;c.fillRect(0,0,W,H);return;}
-  // Keep the existing forest as a fallback while the painting loads.
-  const d=Math.min(devicePixelRatio||1,2),key=W+':'+H+':'+d;
-  if(forestKey!==key){
-    forestLayer=document.createElement('canvas');forestLayer.width=Math.round(W*d);forestLayer.height=Math.round(H*d);
-    const f=forestLayer.getContext('2d');f.setTransform(d,0,0,d,0,0);
-    const vx=W*.5,vy=H*HORIZON;
-    // Local deterministic texture: never consume the combat RNG.
-    const noise=n=>{let x=Math.imul(n+71,374761393);x=Math.imul(x^(x>>>13),1274126177);return ((x^(x>>>16))>>>0)/4294967296};
-    const ground=p=>vy+H*GROUND_SPAN*p;
-    function shape(points,color){f.fillStyle=color;f.beginPath();points.forEach((a,i)=>i?f.lineTo(...a):f.moveTo(...a));f.closePath();f.fill()}
-    function oval(x,y,rx,ry,color){f.fillStyle=color;f.beginPath();f.ellipse(x,y,Math.max(.1,rx),Math.max(.1,ry),0,0,Math.PI*2);f.fill()}
-    let g=f.createLinearGradient(0,0,0,H);g.addColorStop(0,'#254c46');g.addColorStop(.18,'#bdd2b0');g.addColorStop(.34,'#71916d');g.addColorStop(1,'#172e23');f.fillStyle=g;f.fillRect(0,0,W,H);
-    // Pale distant trunks and opening through the forest.
-    for(let i=0;i<46;i++){
-      const x=noise(i)*W,w=2+noise(i+50)*4,h=H*(.13+noise(i+80)*.17);
-      f.fillStyle='rgba(49,84,67,.22)';f.fillRect(x,vy-h,w,h+H*.10);
-    }
-    g=f.createRadialGradient(vx,vy,0,vx,vy,W*.40);g.addColorStop(0,'rgba(229,240,194,.82)');g.addColorStop(1,'rgba(195,218,169,0)');f.fillStyle=g;f.fillRect(0,0,W,H*.48);
-    // Road and two faint wheel tracks converge at exactly (vx, vy).
-    g=f.createLinearGradient(0,vy,0,H);g.addColorStop(0,'#adb493');g.addColorStop(.45,'#8f906c');g.addColorStop(1,'#69654a');
-    const bottomP=(H-vy)/(H*GROUND_SPAN),edge=W*.30;
-    shape([[vx,vy],[vx+edge*bottomP,H],[vx-edge*bottomP,H]],g);
-    for(const side of [-1,1]){
-      shape([[vx,vy],[vx+side*W*.135*bottomP,H],[vx+side*W*.110*bottomP,H]],'rgba(213,206,163,.10)');
-      shape([[vx,vy],[vx+side*edge*bottomP,H],[vx+side*(edge+W*.025)*bottomP,H]],'rgba(145,164,82,.5)');
-    }
-    for(let i=0;i<150;i++){
-      const p=.07+noise(i+150)*1.45,x=vx+(noise(i+340)*2-1)*edge*p*.91,y=ground(p);
-      oval(x,y,(.7+noise(i+540)*2.8)*p,.55*p,i%3?'rgba(224,210,163,.12)':'rgba(33,47,31,.16)');
-    }
-    // Draw trees from far to near. Their bases, height and width all use p.
-    for(let row=0;row<14;row++)for(const side of [-1,1]){
-      const seed=row*31+(side+1)*19,p=.09+row*.093;
-      const x=vx+side*W*(.39+noise(seed)*.13)*p,y=ground(p);
-      const h=H*(.61+noise(seed+1)*.13)*p,w=W*(.031+noise(seed+2)*.026)*p,lean=-side*w*.7;
-      const fade=C(p,0,1),trunk=`rgb(${Math.round(57-28*fade)},${Math.round(76-32*fade)},${Math.round(56-26*fade)})`;
-      oval(x,y+3*p,w*2.5,5*p,'rgba(14,34,22,.30)');
-      shape([[x-w*.6,y],[x-w*.36+lean,y-h],[x+w*.24+lean,y-h],[x+w*.6,y]],trunk);
-      shape([[x-w*.26,y],[x-w*.12+lean,y-h],[x+w*.08+lean,y-h],[x+w*.05,y]],'rgba(175,175,110,.18)');
-      for(let branch=0;branch<3;branch++){
-        const by=y-h*(.51+branch*.16),bx=x+lean*(.5+branch*.15),dir=branch%2?side:-side;
-        f.strokeStyle=trunk;f.lineWidth=Math.max(1,w*(.32-branch*.065));f.lineCap='round';f.beginPath();f.moveTo(bx,by);f.quadraticCurveTo(bx+dir*w*1.6,by-h*.05,bx+dir*w*3,by-h*.18);f.stroke();
-      }
-      // Interlocking leaf masses create a canopy, keeping the central road open.
-      for(let leaf=0;leaf<9;leaf++){
-        const a=noise(seed+leaf+70)*Math.PI*2,cx=x+lean+Math.cos(a)*w*3.4,cy=y-h+Math.sin(a)*h*.075;
-        const colors=['#254e36','#315e3c','#3e6c43','#4d7950'];
-        oval(cx,cy,w*(2.2+noise(seed+leaf+100)*1.4),h*.105,colors[(leaf+row)%4]);
-      }
-      for(let root=0;root<3;root++){
-        shape([[x-w*.4,y-2*p],[x+(root-1)*w*2.3,y+7*p],[x+w*.5,y]],trunk);
-      }
-      // Roadside ferns and grass, outside the three playable lanes.
-      for(let tuft=0;tuft<5;tuft++){
-        const tx=x+(tuft-2)*w*.7,ty=y+noise(seed+tuft+210)*8*p;
-        f.strokeStyle=tuft%2?'#70904a':'#42673b';f.lineWidth=Math.max(.7,1.2*p);
-        for(let blade=-1;blade<=1;blade++){f.beginPath();f.moveTo(tx,ty);f.quadraticCurveTo(tx+blade*5*p,ty-8*p,tx+blade*9*p,ty-12*p);f.stroke()}
-      }
-    }
-    // Gentle shafts of light and far haze add depth without covering combat.
-    shape([[W*.20,0],[W*.26,0],[W*.73,H*.70],[W*.53,H*.70]],'rgba(230,239,171,.045)');
-    shape([[W*.62,0],[W*.64,0],[W*.35,H*.51],[W*.27,H*.51]],'rgba(230,239,171,.035)');
-    forestKey=key;
-  }
-  c.drawImage(forestLayer,0,0,forestLayer.width,forestLayer.height,0,0,W,H);
+  c.fillStyle='#0b1020';c.fillRect(0,0,W,H);
+
 }
 
 function frontline(){let fl=front();if(!Number.isFinite(fl)||fl-S.z>42)return;let r=fl-S.z,y=yy(r),p=perspective(r),half=Math.min(W,520)*.44*p;c.save();c.strokeStyle='rgba(255,225,125,.95)';c.shadowColor='rgba(255,170,50,.9)';c.shadowBlur=4;c.lineWidth=1.5;c.beginPath();c.moveTo(W/2-half,y);c.lineTo(W/2+half,y);c.stroke();c.restore()}
@@ -890,7 +891,7 @@ function draw(){
   c.fillStyle='#eadfb72b';for(let i=0;i<24;i++){let z=((i*2.7-S.z)%64.8+64.8)%64.8-3,p=1/(1+z*.115);c.fillRect(W/2+((i%3)-1)*W*.23*p,H*HORIZON+H*GROUND_SPAN*p,2*p,5*p)}
   frontline();
   for(const e of S.en.filter(e=>(!S.cinematic||!e.boss||(S.cinematic.kind==='victory'&&S.cinematic.t<1.6))&&(!e.dead||e.fade>0)&&e.z-S.z>-2&&e.z-S.z<45).sort((a,b)=>b.z-a.z)){
-    const z=e.z-S.z,p=perspective(z),img=im[e.t],x=lx(e.boss?e.displayLane:e.l,z),y=yy(z),h=D[e.t].h*p*Math.min(1,H/844)*.77*(e.boss?1.45:1);
+    const z=e.z-S.z,p=perspective(z),img=im[e.t],x=lx(e.boss?e.displayLane:e.l,z),y=yy(z),h=e.boss?bossHeight(z):D[e.t].h*p*Math.min(1,H/844)*.77;
     if(!img.complete||!img.naturalWidth)continue;const rect=crop(img),w=h*rect[2]/rect[3];
     c.save();c.translate(x,y);c.globalAlpha=e.boss&&S.cinematic?.kind==='victory'?1-E(C(S.cinematic.t/1.6,0,1)):e.dead?e.fade/.4:1;
     c.fillStyle='#07171966';c.beginPath();c.ellipse(0,0,w*.33,8*p,0,0,7);c.fill();
@@ -952,7 +953,15 @@ function end(ok){
   // BGM continues through results and the next run.
 }
 function beginRun(){reset();S.en=[];S.introRun=1;S.run=1;sound('battleStart');}
-function start(){if(window.GameSFX)window.GameSFX.start();beginRun();last=performance.now();$('#intro').classList.add('hide');if(window.GameBGM)window.GameBGM.start()}$('#start').onclick=start;$('#retry').onclick=()=>{if(window.GameSFX)window.GameSFX.start();beginRun();last=performance.now();$('#result').classList.add('hide');if(window.GameBGM)window.GameBGM.restart()};// Own each gesture by pointerId; button fingers cannot finish a canvas swipe.
+function waitForForest(){return Promise.all([im.forestTrees,im.forestGround].map(img=>{
+  if(img.complete&&img.naturalWidth)return Promise.resolve();
+  return new Promise((resolve,reject)=>{img.onload=resolve;img.onerror=()=>reject(new Error('背景を読み込めません'));if(img.complete)img.src=img.src;});
+}));}
+function forestReady(){return [im.forestTrees,im.forestGround].every(img=>img.complete&&img.naturalWidth);}
+function prepareStart(){const button=$('#start');button.disabled=true;button.setAttribute('aria-label','背景を読み込み中');
+waitForForest().then(()=>{button.disabled=false;button.setAttribute('aria-label','ゲームを開始');},()=>{button.disabled=false;button.setAttribute('aria-label','背景を再読み込み');});}
+prepareStart();
+function start(){if(!forestReady()){prepareStart();return;}if(window.GameSFX)window.GameSFX.start();beginRun();last=performance.now();$('#intro').classList.add('hide');if(window.GameBGM)window.GameBGM.start()}$('#start').onclick=start;$('#retry').onclick=()=>{if(window.GameSFX)window.GameSFX.start();beginRun();last=performance.now();$('#result').classList.add('hide');if(window.GameBGM)window.GameBGM.restart()};// Own each gesture by pointerId; button fingers cannot finish a canvas swipe.
 for(const id of ['#guard','#s1','#s2','#ultimate']){
   const button=$(id);
   button.addEventListener('contextmenu',e=>e.preventDefault());

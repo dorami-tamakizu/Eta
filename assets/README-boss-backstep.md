@@ -1,3 +1,0 @@
-# Boss backward step
-
-Built-in GPT Image generated assets/boss-backstep-v1.png (1536 × 1024 RGBA, 4 × 2 atlas) from assets/boss-warlord.png. Prompt: preserve male warlord identity, face, beard, red-black-gold dragon armor, cape and flaming sword; eight distinct front-facing backward-walking poses; alternate planted and rear-reaching feet, bending knees, visible boots, consistent scale, transparent background, no text or grid. Gameplay advances whole-body frames with actual backward world displacement. Idle and pause freeze the cycle; retreat takes precedence over standing attack poses while moving.

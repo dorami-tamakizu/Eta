@@ -1,4 +1,6 @@
-# Ultimate cut-in cue
+# Audio provenance
+
+The historical CC0 cue below is no longer distributed. Its attribution is retained as a development record.
 
 Asset: assets/sword-clash-cc0-v7.m4a
 Source file: sword_clash.6.ogg from sword_clash_-_starninjas_0.zip
