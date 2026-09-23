@@ -13,3 +13,6 @@ Battle start playback volume: 0.12, ultimate: 1.0.
 
 ## Battle start
 User-provided Onoma-Syakiin04-1(Long).mp3, copied without processing as assets/battle-start-syakiin-v8.mp3. Full duration retained. Playback volume 0.12. This upload is separate from the CC0 asset above; no license inference is made.
+
+## Active ultimate cut-in
+User-provided Onoma-Syakiin05-1(Heavy).mp3, copied without processing as assets/ultimate-syakiin-heavy-v9.mp3. Full 3.213-second tail retained; cut-in ending does not stop this audio. Replaces the CC0 clash described above.
