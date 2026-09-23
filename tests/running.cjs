@@ -234,10 +234,13 @@ s=setup();s.phase='boss';s.guard=1;s.l=0;const retreatBoss={t:'boss',boss:true,z
 let slashes=0;for(let i=0;i<2000;i++){g.step(.01);assert(retreatBoss.z-s.z>=9);assert(retreatBoss.z-s.z<=11.50001);if(retreatBoss.action?.kind==='wide'&&retreatBoss.action.done){assert(retreatBoss.backstepActive);slashes++;}}
 assert(Math.abs(retreatBoss.z-15.4)<.001);assert(slashes>0);console.log('PASS: sustained retreat behind center, repeated slashes while stepping');
 
-// New available skill input cancels the active motion immediately.
-s=setup();g.fire(1);tick(22);assert.equal(s.waterFx.length,1);g.fire(2);assert.equal(s.skill.k,2);assert.equal(s.skill.t,0);assert.equal(s.waterFx.length,0);assert.deepEqual(Array.from(s.ch),[3,3]);tick(45);assert(s.waves.some(w=>w.k===2));assert(!s.waves.some(w=>w.k===1));
-s=setup();g.fire(2);tick(10);g.fire(2);assert.equal(s.skill.t,0);assert.equal(s.ch[1],2);s.ch[0]=0;const active=s.skill;g.fire(1);assert.equal(s.skill,active,'unavailable skill cannot cancel');
-s=setup();g.fire(1);tick(34);const emitted=s.waves[0];assert(emitted);g.fire(2);assert(s.waves.includes(emitted),'already emitted attacks persist after motion cancel');console.log('PASS: immediate skill cancel, same-skill restart, no canceled wind-up hit, unavailable input ignored, emitted waves preserved');
+// Both skills ignore early taps without spending charges, then permit cancellation.
+for(const first of [1,2])for(const second of [1,2]){
+ s=setup();g.fire(first);const active=s.skill,charges=Array.from(s.ch);active.t=active.d*.5-.0001;g.fire(second);assert.equal(s.skill,active);assert.deepEqual(Array.from(s.ch),charges);
+ active.t=active.d*.5;g.fire(second);assert.notEqual(s.skill,active);assert.equal(s.skill.k,second);assert.equal(s.skill.t,0);assert.equal(s.ch[second-1],charges[second-1]-1);
+}
+s=setup();g.fire(2);s.skill.t=s.skill.d*.5;s.ch[0]=0;const active=s.skill;g.fire(1);assert.equal(s.skill,active);
+s=setup();g.fire(1);tick(34);const emitted=s.waves[0];assert(emitted);g.fire(2);assert(s.waves.includes(emitted));console.log('PASS: skill input lock before 50%, cancel at 50%, charges and emitted attacks preserved');
 
 s=setup();const cues=[];context.window.GameSFX={play:k=>cues.push(k)};g.fireUltimate();tick(83);assert.equal(cues.filter(k=>k==='ultimateFlight').length,0);tick(5);assert.equal(cues.filter(k=>k==='ultimateFlight').length,1);tick(60);assert.equal(cues.filter(k=>k==='ultimateFlight').length,1);console.log('PASS: flight audio fires once when blade launches');
 

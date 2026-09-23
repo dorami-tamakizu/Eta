@@ -22,3 +22,5 @@ User-provided Motion-Speed_Lines09-4(High-Short).mp3 copied unchanged as assets/
 
 ## Defeat ground contact
 User-provided Motion-Fall02-3(Gentle).mp3 copied unchanged as assets/hero-fall-v11.mp3. Triggered once at ground contact, 0.78s into the defeat animation.
+
+Battle-start level revision: explicit Web Audio GainNode at 0.06 replaces media-element volume control for consistent mobile output.

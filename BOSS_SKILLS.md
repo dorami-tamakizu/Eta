@@ -15,3 +15,5 @@ Correction: restore the same frontline renderer for road and boss enemies. Boss 
 Boss now retreats continuously at 0.65 depth units/s from center depth 9, never forward of center. Camera follows only beyond depth 11.5 to keep the fight visible. Hero can follow without being pulled back. Backstep atlas animates between attacks; sword atlas takes priority during skills while retreat continues. Start cue: original source brightened, echoes extended to 1.85 seconds, full-level dedicated playback.
 
 Slow walk revision: retreat speed 0.32 units/s, backstep cycle 0.55 cycles/s. Battle start uses the exact same original-v5.m4a asset and direct output level as ultimate cut-in.
+
+Movement refinement: continuous stride phase at 0.55 cycles/s drives both alternating foot frames and integrated backward displacement. Average speed remains 0.32 units/s, weight transfer varies speed smoothly. Camera follow eases in at depth 10.8. Central boundary and frontal line remain. Skill inputs ignored until active motion reaches 50%; ignored input spends no charges.
