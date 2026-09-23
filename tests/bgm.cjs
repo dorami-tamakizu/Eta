@@ -7,3 +7,5 @@ media.currentTime=12;b.pause();assert(media.paused);b.resume();assert.equal(medi
 assert(!fs.readFileSync(__dirname+'/../game.js','utf8').includes('GameBGM.fadeOut()'));assert(!media.paused);
 b.start();assert.equal(media.currentTime,12);assert.equal(param.value,.12);assert(!media.paused);assert.equal(timer,null);
 console.log('PASS: theme start, gain, pause/resume, result continuation and retry without rewind');
+
+b.restart();assert.equal(media.currentTime,0);assert(!media.paused);console.log('PASS: result OK explicitly restarts BGM');

@@ -7,6 +7,6 @@ vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../sfx.js'),'utf8'),c);c
 s.start();s.play('ultimateCutin',0);const audio=media.find(x=>x.src.includes('ultimate-cutin'));
 assert(audio);assert.equal(audio.plays,1);assert.equal(audio.currentTime,0);
 s.pause();assert.equal(audio.paused,true);s.play('ultimateCutin');assert.equal(audio.plays,1,'cannot play while paused');
-s.start();s.play('ultimateCutin',.35);assert.equal(audio.currentTime,.35);assert.equal(audio.plays,3);
-audio.currentTime=1.7;s.finish();assert.equal(audio.paused,false,'tail continues after results');s.pause();assert.equal(audio.paused,true);s.start();assert.equal(audio.currentTime,1.7);assert.equal(audio.paused,false,'resume tail after cut-in ends');s.start();assert.equal(audio.currentTime,1.7,'retry does not truncate tail');s.play('ultimateCutin',0);assert.equal(audio.currentTime,0);
+s.start();s.play('ultimateCutin',.05);assert.equal(audio.currentTime,.05);assert.equal(audio.plays,3);
+audio.currentTime=.08;s.finish();assert.equal(audio.paused,false,'tail continues after results');s.pause();assert.equal(audio.paused,true);s.start();assert.equal(audio.currentTime,.08);assert.equal(audio.paused,false,'resume tail after cut-in ends');s.start();assert.equal(audio.currentTime,.08,'retry does not truncate tail');s.play('ultimateCutin',0);assert.equal(audio.currentTime,0);
 console.log('PASS: reference audio playback, pause, resume offset and restart');

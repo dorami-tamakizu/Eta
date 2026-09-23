@@ -19,7 +19,7 @@ s=setup();s.en[0].z=.8;s.en[0].hp=1;g.step(.01);assert(s.normalAttack);assert.eq
 s=setup();s.en[0].z=.8;g.step(.01);g.fire(1);assert.equal(s.normalAttack,null);assert(s.skill);
 s=setup();s.en[0].z=2;s.dashUntil=.5;g.accelerate();tick(10);assert(s.z+s.pd<=s.en[0].z-.7+1e-8);assert.equal(s.dash,null);
 s=setup();s.en[0].z=100;s.dashUntil=.5;g.accelerate();tick(24);assert(s.z+s.pd<=10+1e-8);assert.equal(s.dash,null);
-s=setup();s.t=60;const fast=g.score(1).total;s.t=120;assert(g.score(1).total<fast);s.fin=1;assert.equal(g.score(0).total,49);assert.equal(g.score(1).skill,49);
+s=setup();s.t=60;const fast=g.score(1).total;s.t=120;assert(g.score(1).total<fast);s.fin=1;assert.equal(g.score(0).total,6557);assert.equal(g.score(1).skill,6557);
 g.reset();assert.equal(g.state.dashUntil,-1);assert.equal(g.state.boost,0);assert.equal(g.state.normalAttack,null);assert.equal(g.state.fin,0);
 console.log('PASS: running, boost, both kill types, 0.5s boundary, single-use window, skill dash, pause, normal attack timing, skill interruption, front limit, dash distance, scoring, retry');
 
@@ -63,7 +63,7 @@ s=setup();s.en[0].hp=2;g.hit(s.en[0],3,1);assert.equal(s.dealtDamage,2);assert.e
 g.hit(s.en[0],3,1);assert.equal(s.dealtDamage,2);assert.equal(s.overkill,1);
 s.en.push({t:'slime',hp:1,max:2,l:1,z:101,dead:0,tell:0});g.hit(s.en[1],1,0);
 assert.equal(s.dealtDamage,3);assert.equal(s.overkill,1);assert.equal(s.fin,1);
-const score=g.score(1);assert.equal(score.dealt,28);assert.equal(score.overkill,0);
+const score=g.score(1);assert.equal(score.dealt,1402);assert.equal(score.overkill,0);
 assert.equal(score.total,score.time+score.skill+score.damage+score.dealt+score.overkill);
 s.dmg=4;const healthy=g.score(1).damage;s.dmg=10;assert(g.score(1).damage<healthy);
 const saved=new Map();context.localStorage={getItem:k=>saved.get(k),setItem:(k,v)=>saved.set(k,v)};
@@ -72,7 +72,7 @@ for(const heading of ['クリアタイムスコア','スキルフィニッシュ
 assert(!nodes.get('#resultText').innerHTML.includes('オーバーキル'));
 assert.equal((nodes.get('#resultText').innerHTML.match(/class="score-section"/g)||[]).length,4);
 assert(nodes.get('#resultText').innerHTML.includes('<strong>3</strong>'));
-assert(nodes.get('#resultText').innerHTML.includes('>28</strong>'));
+assert(nodes.get('#resultText').innerHTML.includes('>1,402</strong>'));
 assert(!nodes.get('#resultText').innerHTML.includes('弱点'));
 const best=g.highScore();s=setup();s.t=600;g.end(1);assert.equal(g.highScore(),best);
 s=setup();s.fin=999;g.end(0);assert.equal(g.highScore(),best);
@@ -188,6 +188,18 @@ s=setup();s.t=180;s.fin=30;s.dealtDamage=214;const scoreFast=g.score(1);
 s.t=185;s.fin=31;assert(g.score(1).total<scoreFast.total,'five-second recovery wait is not rewarded');
 s.t=180;s.fin=30;s.dmg=1;assert(g.score(1).total<scoreFast.total,'damage reduces score');
 s.dmg=0;s.overkill=99999;assert.equal(g.score(1).total,scoreFast.total,'overkill cannot farm score');
-s.t=0;s.fin=61;s.dealtDamage=214;assert.equal(g.score(1).total,100000);assert.equal(g.score(0).time,0);assert.equal(g.score(0).damage,0);
+s.t=0;s.fin=61;s.dealtDamage=214;assert.equal(g.score(1).total,4350000);assert.equal(g.score(0).time,0);assert.equal(g.score(0).damage,0);
 s.t=600;const scoreSlow=g.score(1).time;s.t=601;assert(g.score(1).time<scoreSlow,'time still matters on slow runs');
 console.log('PASS: time-focused balance, safe play, score caps, no overkill farming');
+
+// Backward motion drives alternating full-body frames; pause freezes the pose.
+g.beginRun();s=g.state;s.introRun=0;s.en=[];g.step(.01);tick(621);
+const steppingBoss=s.en.find(e=>e.boss);s.guard=1;steppingBoss.action=null;steppingBoss.attackCount=2;steppingBoss.cd=100;steppingBoss.z=s.z+s.pd+1.5;
+g.step(.02);assert.equal(steppingBoss.backstepActive,true);const phaseA=steppingBoss.backstepPhase;tick(15);assert.notEqual(steppingBoss.backstepPhase,phaseA);
+s.pause=1;const frozenStep=steppingBoss.backstepPhase;tick(20);assert.equal(steppingBoss.backstepPhase,frozenStep);s.pause=0;
+steppingBoss.z=s.z+s.pd+8;g.step(.01);assert.equal(steppingBoss.backstepActive,false);
+console.log('PASS: backward movement advances walk frames, pause freezes them, no stepping while stopped');
+
+s=setup();s.t=75.43;assert.equal(g.score(1).time,2996560);s.t=180;const baseTime=g.score(1).time;s.t=185;assert.equal(baseTime-g.score(1).time,40000);
+s.t=299.99;const beforeJoin=g.score(1).time;s.t=300;const atJoin=g.score(1).time;s.t=300.01;const afterJoin=g.score(1).time;assert(beforeJoin>atJoin&&atJoin>afterJoin);assert.equal(atJoin,1200000);
+console.log('PASS: reference scale, 8000 points per second, continuous long-run scoring');
