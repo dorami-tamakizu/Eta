@@ -14,12 +14,12 @@ vm.runInNewContext(code,context);const g=context.test;
  g.reset();g.im.forestTrees.naturalWidth=0;g.prepareStart();g.im.forestTrees.onerror();await new Promise(resolve=>setImmediate(resolve));assert.equal(button.disabled,false);g.start();assert.equal(g.state.run,0);
  g.im.forestTrees.naturalWidth=1024;g.im.forestTrees.onload();await new Promise(resolve=>setImmediate(resolve));assert.equal(button.disabled,false);
  const root=path.join(__dirname,'..'),crypto=require('node:crypto');
- for(const file of ['index.html','game.js','bgm.js','sfx.js']){
+ for(const file of ['index.html','game.js','bgm.js','sfx.js','ranking.js']){
   const text=fs.readFileSync(path.join(root,file),'utf8');
   for(const match of text.matchAll(/["']([^"'<>]+\.(?:png|webp|mp3|m4a|js))["']/g))assert(fs.existsSync(path.join(root,match[1])),'missing '+match[1]);
  }
  const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
- for(const [,base,hash] of html.matchAll(/(game|bgm|sfx)\.([a-f0-9]+)\.js/g)){
+ for(const [,base,hash] of html.matchAll(/(game|bgm|sfx|ranking)\.([a-f0-9]+)\.js/g)){
   const bytes=fs.readFileSync(path.join(root,base+'.js'));assert.equal(crypto.createHash('sha256').update(bytes).digest('hex').slice(0,12),hash);assert.deepEqual(bytes,fs.readFileSync(path.join(root,base+'.'+hash+'.js')));
  }
  console.log('PASS: background loading gate, failure/retry, asset references and published bundle hashes');

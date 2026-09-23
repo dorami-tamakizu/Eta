@@ -957,9 +957,6 @@ function score(ok){
 }
 function highScore(){try{const n=Number(localStorage.getItem(SCORE_KEY));return Number.isFinite(n)&&n>=0?n:0}catch{return 0}}
 function saveHighScore(n){try{localStorage.setItem(SCORE_KEY,String(n))}catch{}}
-const RANK_KEY='eta.local-ranking.v1';
-function readRanking(){try{const rows=JSON.parse(localStorage.getItem(RANK_KEY)||'[]');return Array.isArray(rows)?rows.filter(r=>r&&Number.isFinite(r.score)&&r.score>=0&&Number.isFinite(r.time)&&r.time>=0).sort((a,b)=>b.score-a.score||a.time-b.time).slice(0,10):[];}catch{return [];}}
-function saveRanking(points){try{const rows=readRanking();rows.push({score:points,time:S.t});rows.sort((a,b)=>b.score-a.score||a.time-b.time);localStorage.setItem(RANK_KEY,JSON.stringify(rows.slice(0,10)));}catch{}}
 let titleMenuFocus=null;
 let guidePage=0,guideOpen=false;
 const GUIDE_PAGES=[
@@ -973,16 +970,15 @@ $('#guidePrev').onclick=()=>showGuidePage(guidePage-1);$('#guideNext').onclick=(
 function openTitlePanel(kind){
  if(S.run)return;titleMenuFocus=kind==='help'?$('#gameHelp'):$('#ranking');
  if(kind==='help'){guideOpen=true;$('#guidePanel').classList.remove('hide');showGuidePage(0);return;}
- $('#titlePanelHeading').textContent='ランキング';$('#titlePanelBody').innerHTML=rankingHTML();
+ $('#titlePanelHeading').textContent='ランキング';if(window.GameRanking)window.GameRanking.open($('#titlePanelBody'));else $('#titlePanelBody').textContent='ランキングを読み込めませんでした。画面を再読み込みしてください。';
  $('#titlePanel').classList.remove('hide');$('#titlePanelClose').focus?.();
 }
-function rankingHTML(){const rows=readRanking(),best=highScore();return '<p class="rank-note">この端末のランキング · クリア記録 上位10件</p><p>自己ベスト：'+best.toLocaleString('ja-JP')+'</p>'+(rows.length?'<table class="rank-table"><thead><tr><th>順位</th><th>スコア</th><th>タイム</th></tr></thead><tbody>'+rows.map((r,i)=>'<tr><td>'+(i+1)+'</td><td>'+r.score.toLocaleString('ja-JP')+'</td><td>'+r.time.toFixed(2)+'秒</td></tr>').join('')+'</tbody></table>':'<p>まだクリア記録がありません。クリアするとここに記録されます。</p>')+'<p class="rank-note">記録はこのブラウザに保存されます。全プレイヤー共通のランキングではありません。</p>';}
 function closeTitlePanel(){$('#titlePanel').classList.add('hide');titleMenuFocus?.focus?.();titleMenuFocus=null;}
 $('#gameHelp').onclick=()=>openTitlePanel('help');$('#ranking').onclick=()=>openTitlePanel('ranking');$('#titlePanelClose').onclick=closeTitlePanel;
 addEventListener('keydown',e=>{if(!titleMenuFocus)return;
  if(e.key==='Escape'){e.preventDefault();if(guideOpen)closeGuide();else closeTitlePanel();}
  if(guideOpen&&(e.key==='ArrowRight'||e.key==='ArrowLeft')){e.preventDefault();showGuidePage(guidePage+(e.key==='ArrowRight'?1:-1));}
- if(e.key==='Tab'){e.preventDefault();if(guideOpen){const buttons=[$('#guidePrev'),$('#guideNext'),$('#guideExit')].filter(b=>!b.hidden),i=buttons.indexOf(document.activeElement);buttons[(i+(e.shiftKey?-1:1)+buttons.length)%buttons.length].focus?.();}else $('#titlePanelClose').focus?.();}
+ if(e.key==='Tab'){e.preventDefault();if(guideOpen){const buttons=[$('#guidePrev'),$('#guideNext'),$('#guideExit')].filter(b=>!b.hidden),i=buttons.indexOf(document.activeElement);buttons[(i+(e.shiftKey?-1:1)+buttons.length)%buttons.length].focus?.();}else {const buttons=Array.from($('#titlePanel').querySelectorAll('button:not(:disabled),summary'));const i=buttons.indexOf(document.activeElement);buttons[(i+(e.shiftKey?-1:1)+buttons.length)%buttons.length].focus();}}
 });
 
 function fitResult(){
@@ -1004,8 +1000,8 @@ function resultRow(title,label,value,points,extra=''){
 function end(ok){
   if(window.GameSFX)window.GameSFX.finish();S.run=0;S.ptr=null;S.guard=0;S.cinematic=null;$('#gameViewport').classList.remove('cinematic');hideNotice();
   const points=score(ok),previous=highScore();
-  if(ok&&!S.rankSaved){saveRanking(points.total);S.rankSaved=true;}
   if(ok&&points.total>previous)saveHighScore(points.total);
+  if(window.GameRanking)window.GameRanking.setResult(ok,{clear_time:S.t,skill_finishes:S.fin,damage_taken:S.dmg,damage_dealt:totalDealtDamage(),overkill:S.overkill,time_score:points.time,skill_score:points.skill,damage_taken_score:points.damage,damage_dealt_score:points.dealt});
   $('#resultTitle').textContent=ok?'クエスト結果':'クエスト失敗';
   $('#resultText').innerHTML=
     resultRow('クリアタイムスコア','クリアタイム（秒）',ok?S.t.toFixed(2):'—',points.time)+
@@ -1065,7 +1061,7 @@ cv.onpointerup=e=>{
 ['pointercancel','lostpointercapture'].forEach(v=>cv.addEventListener(v,e=>{if(S.ptr&&S.ptr.id===e.pointerId)S.ptr=null}));
 // iOS rubber-band scrolling needs a non-passive touchmove cancellation.
 // Do not cancel touchstart/end: START, STOP and skill taps must stay native.
-document.addEventListener('touchmove',e=>{if(e.target.closest&&e.target.closest('#result,#titlePanel'))return;if(e.cancelable)e.preventDefault()},{passive:false});
+document.addEventListener('touchmove',e=>{if(e.target.closest&&e.target.closest('#result,#titlePanel,#scoreEntry'))return;if(e.cancelable)e.preventDefault()},{passive:false});
 cv.addEventListener('contextmenu',e=>e.preventDefault());
 cv.addEventListener('dragstart',e=>e.preventDefault());
 document.addEventListener('visibilitychange',()=>{if(document.hidden&&(S.run||(S.defeat&&!S.defeat.finished))&&!S.pause)$('#stop').click()});
