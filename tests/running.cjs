@@ -63,7 +63,7 @@ s=setup();s.en[0].hp=2;g.hit(s.en[0],3,1);assert.equal(s.dealtDamage,2);assert.e
 g.hit(s.en[0],3,1);assert.equal(s.dealtDamage,2);assert.equal(s.overkill,1);
 s.en.push({t:'slime',hp:1,max:2,l:1,z:101,dead:0,tell:0});g.hit(s.en[1],1,0);
 assert.equal(s.dealtDamage,3);assert.equal(s.overkill,1);assert.equal(s.fin,1);
-const score=g.score(1);assert.equal(score.dealt,1402);assert.equal(score.overkill,0);
+const score=g.score(1);assert.equal(score.dealt,1869);assert.equal(score.overkill,0);
 assert.equal(score.total,score.time+score.skill+score.damage+score.dealt+score.overkill);
 s.dmg=4;const healthy=g.score(1).damage;s.dmg=10;assert(g.score(1).damage<healthy);
 const saved=new Map();context.localStorage={getItem:k=>saved.get(k),setItem:(k,v)=>saved.set(k,v)};
@@ -71,8 +71,8 @@ g.end(1);assert.equal(g.highScore(),g.score(1).total);
 for(const heading of ['クリアタイムスコア','スキルフィニッシュスコア','被ダメージスコア','与ダメージスコア'])assert(nodes.get('#resultText').innerHTML.includes('<h3>'+heading+'</h3>'));
 assert(!nodes.get('#resultText').innerHTML.includes('オーバーキル'));
 assert.equal((nodes.get('#resultText').innerHTML.match(/class="score-section"/g)||[]).length,4);
-assert(nodes.get('#resultText').innerHTML.includes('<strong>3</strong>'));
-assert(nodes.get('#resultText').innerHTML.includes('>1,402</strong>'));
+assert(nodes.get('#resultText').innerHTML.includes('<strong>4</strong>'));
+assert(nodes.get('#resultText').innerHTML.includes('>1,869</strong>'));
 assert(!nodes.get('#resultText').innerHTML.includes('弱点'));
 const best=g.highScore();s=setup();s.t=600;g.end(1);assert.equal(g.highScore(),best);
 s=setup();s.fin=999;g.end(0);assert.equal(g.highScore(),best);
@@ -187,10 +187,10 @@ console.log('PASS: ultimate requires exactly 90 effective normal/skill damage');
 s=setup();s.t=180;s.fin=30;s.dealtDamage=214;const scoreFast=g.score(1);
 s.t=185;s.fin=31;assert(g.score(1).total<scoreFast.total,'five-second recovery wait is not rewarded');
 s.t=180;s.fin=30;s.dmg=1;assert(g.score(1).total<scoreFast.total,'damage reduces score');
-s.dmg=0;s.overkill=99999;assert.equal(g.score(1).total,scoreFast.total,'overkill cannot farm score');
+s.dmg=0;s.overkill=99999;assert(g.score(1).total>scoreFast.total,'overkill contributes to damage score');s.overkill=0;
 s.t=0;s.fin=61;s.dealtDamage=214;assert.equal(g.score(1).total,4350000);assert.equal(g.score(0).time,0);assert.equal(g.score(0).damage,0);
 s.t=600;const scoreSlow=g.score(1).time;s.t=601;assert(g.score(1).time<scoreSlow,'time still matters on slow runs');
-console.log('PASS: time-focused balance, safe play, score caps, no overkill farming');
+console.log('PASS: time-focused balance, safe play, damage scoring includes overkill once');
 
 // Backward motion drives alternating full-body frames; pause freezes the pose.
 g.beginRun();s=g.state;s.introRun=0;s.en=[];g.step(.01);tick(621);

@@ -945,13 +945,14 @@ function draw(){
   drawCinematic();
 }
 const SCORE_KEY='eta.score.v5.reference';
+function totalDealtDamage(){return S.dealtDamage+S.overkill;}
 function score(ok){
   // Reference-inspired scale: time is dominant; retain the existing four categories.
   const seconds=Math.max(0,S.t);
   const time=ok?Math.round(seconds<=300?3600000-8000*seconds:1200000*Math.exp(-(seconds-300)/150)):0;
   const damage=ok?Math.round(250000*C(1-S.dmg/20,0,1)):0;
   const skill=Math.round(400000*C(S.fin/61,0,1));
-  const dealt=Math.round(100000*C(S.dealtDamage/214,0,1)),overkill=0;
+  const dealt=Math.round(100000*Math.max(0,totalDealtDamage())/214),overkill=0;
   return{skill,time,damage,dealt,overkill,total:skill+time+damage+dealt};
 }
 function highScore(){try{const n=Number(localStorage.getItem(SCORE_KEY));return Number.isFinite(n)&&n>=0?n:0}catch{return 0}}
@@ -1010,7 +1011,7 @@ function end(ok){
     resultRow('クリアタイムスコア','クリアタイム（秒）',ok?S.t.toFixed(2):'—',points.time)+
     resultRow('スキルフィニッシュスコア','スキルフィニッシュ回数',S.fin,points.skill)+
     resultRow('被ダメージスコア','被ダメージ',S.dmg.toLocaleString('ja-JP'),points.damage)+
-    resultRow('与ダメージスコア','与ダメージ',S.dealtDamage.toLocaleString('ja-JP'),points.dealt+points.overkill);
+    resultRow('与ダメージスコア','与ダメージ',totalDealtDamage().toLocaleString('ja-JP'),points.dealt);
   $('#totalScore').textContent=points.total.toLocaleString('ja-JP');
   $('#overkillValue').textContent=S.overkill.toLocaleString('ja-JP');
   $('#roadTime').textContent=(S.roadTime===null?S.t:S.roadTime).toFixed(2);
