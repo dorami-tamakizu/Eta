@@ -446,17 +446,17 @@ function step(dt){
     }
     if(S.skill.t>=S.skill.d)S.skill=null;
   }
-  let con=S.en.find(e=>!e.dead&&e.l===S.l&&distance(e)<=(e.boss?5:1.05)&&distance(e)>=-.1);
+  const atFront=S.en.some(e=>!e.dead&&distance(e)<=(e.boss?5:1.05)&&distance(e)>=-.1);
   S.norm=Math.max(0,S.norm-dt);
   if(S.skill||S.ultimate||S.guard)S.normalAttack=null;
-  if(con&&!S.skill&&!S.ultimate&&!S.guard&&!S.normalAttack&&S.norm<=1e-9){
-    S.normalAttack={k:2,t:0,d:.5,done:0,target:con};S.norm=1;
+  if(atFront&&!S.skill&&!S.ultimate&&!S.guard&&!S.normalAttack&&S.norm<=1e-9){
+    S.normalAttack={k:2,t:0,d:.5,done:0};S.norm=1;
   }
   if(S.normalAttack){
     const a=S.normalAttack;a.t+=dt;
     if(!a.done&&a.t>=a.d*.48){
-      a.done=1;const e=a.target;
-      if(!e.dead&&e.l===S.l&&distance(e)>=-.1&&distance(e)<=(e.boss?5:1.05)){S.normalFlash=.18;hit(e,1,0)}
+      a.done=1;const e=S.en.find(e=>!e.dead&&e.l===S.l&&distance(e)>=-.1&&distance(e)<=(e.boss?5:1.05));
+      if(e){S.normalFlash=.18;hit(e,1,0)}
     }
     if(a.t>=a.d)S.normalAttack=null;
   }
@@ -1027,7 +1027,7 @@ function forestReady(){return [im.forestTrees,im.forestGround].every(img=>img.co
 function prepareStart(){const button=$('#start');button.disabled=true;button.setAttribute('aria-label','背景を読み込み中');
 waitForForest().then(()=>{button.disabled=false;button.setAttribute('aria-label','ゲームを開始');},()=>{button.disabled=false;button.setAttribute('aria-label','背景を再読み込み');});}
 prepareStart();
-function start(){if(!forestReady()){prepareStart();return;}if(window.GameSFX)window.GameSFX.start();beginRun();last=performance.now();$('#intro').classList.add('hide');if(window.GameBGM)window.GameBGM.start()}$('#start').onclick=start;$('#retry').onclick=()=>{if(window.GameSFX)window.GameSFX.start();beginRun();last=performance.now();$('#result').classList.add('hide');if(window.GameBGM)window.GameBGM.restart()};// Own each gesture by pointerId; button fingers cannot finish a canvas swipe.
+function start(){if(!forestReady()){prepareStart();return;}if(window.GameSFX)window.GameSFX.start();beginRun();last=performance.now();$('#intro').classList.add('hide');if(window.GameBGM)window.GameBGM.start()}$('#start').onclick=start;$('#retry').onclick=()=>{if(window.GameSFX)window.GameSFX.pause();reset();$('#result').classList.add('hide');$('#intro').classList.remove('hide');$('#start').focus?.()};// Own each gesture by pointerId; button fingers cannot finish a canvas swipe.
 for(const id of ['#guard','#s1','#s2','#ultimate']){
   const button=$(id);
   button.addEventListener('contextmenu',e=>e.preventDefault());
