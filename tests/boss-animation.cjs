@@ -33,3 +33,10 @@ for(let i=0;i<4500;i++){const z=mover.z,l=mover.displayLane;g.updateBoss(mover,.
 assert(left&&right&&forward&&back,'restored patrol moves in all four directions');
 for(const kind of ['wide','dragon']){mover.action=null;mover.wideCd=kind==='wide'?0:100;mover.dragonCd=kind==='dragon'?0:100;g.updateBoss(mover,.01);assert.equal(mover.action.impact,.38);assert.equal(mover.action.duration,.76);g.updateBoss(mover,.38);assert.equal(g.bossVisual(mover).frame,kind==='dragon'?2:7);}
 console.log('PASS: four-direction patrol, fixed camera, independent scale, faster skill impact and synchronized frames');
+
+// Remain in contact through multiple old melee cooldowns without a skill.
+g.reset();const contact=g.state;contact.run=1;contact.phase='boss';contact.en=[];
+const touch={boss:true,z:9,l:1,displayLane:1,cd:0,wideCd:100,dragonCd:100,attackCount:0};
+for(let i=0;i<1000;i++){contact.pd=touch.z-.7;contact.l=touch.l;g.updateBoss(touch,.01);}
+assert.equal(contact.hp,20);assert.equal(contact.dmg,0);assert.equal(touch.attackCount,0);
+console.log('PASS: ten seconds of boss contact cause no damage or invisible attacks');

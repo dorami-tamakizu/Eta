@@ -214,10 +214,10 @@ for(let lane=0;lane<3;lane++){
 s=setup();s.phase='boss';s.guard=1;const arenaBoss={t:'boss',boss:true,z:9,l:1,displayLane:1,hp:40,max:40,attackCount:0,cd:0,wideCd:1,dragonCd:99};s.en=[arenaBoss];
 const fixedCamera=s.z;tick(400);assert.equal(s.z,fixedCamera);assert(arenaBoss.z>=s.z+9);assert(arenaBoss.wideCd<=4.4);
 s=setup();s.pd=8;s.pt=8;s.en=[];const instant={t:'boss',boss:true,z:9,l:1,displayLane:1,hp:40,max:40,attackCount:0,cd:0,wideCd:3,dragonCd:99};
-g.updateBoss(instant,.01);assert.equal(s.hp,18);assert.equal(instant.action,undefined);assert.equal(instant.tell,0);assert.equal(g.bossAuraProgress(instant),-1);
-s.guard=1;instant.cd=0;g.updateBoss(instant,.01);assert.equal(s.hp,18);
+g.updateBoss(instant,.01);assert.equal(s.hp,20);assert.equal(instant.action,undefined);assert.equal(instant.tell,0);assert.equal(g.bossAuraProgress(instant),-1);
+s.guard=1;instant.cd=0;g.updateBoss(instant,.01);assert.equal(s.hp,20);
 instant.wideCd=0;g.updateBoss(instant,.01);assert.equal(instant.action.kind,'wide');assert.equal(instant.action.impact,.38);assert(instant.wideCd>=2.0&&instant.wideCd<=3.3);
-console.log('PASS: centered boss, fixed arena camera, immediate normal attacks, independent randomized skill interval');
+console.log('PASS: centered boss, fixed arena camera, no contact damage, independent randomized skill interval');
 
 s=setup();s.phase='boss';s.pd=4.7;s.en=[{t:'boss',boss:true,z:9,l:1,displayLane:1,hp:40,max:40,attackCount:0,cd:100,wideCd:100,dragonCd:100,fl:0}];s.l=1;
 tick(30);assert(s.en[0].hp<40,'hero can still hit centered boss');assert.equal(s.z,0);assert(s.en[0].z>=9);
