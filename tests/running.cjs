@@ -232,7 +232,7 @@ console.log('PASS: no automatic boss pushback, voluntary retreat preserved');
 // Sustained retreat stays beyond center and attacks during backward stepping.
 s=setup();s.phase='boss';s.guard=1;s.l=0;const retreatBoss={t:'boss',boss:true,z:9,l:1,displayLane:1,hp:40,max:40,attackCount:0,cd:100,wideCd:.1,dragonCd:100};s.en=[retreatBoss];
 let slashes=0;for(let i=0;i<2000;i++){g.step(.01);assert(retreatBoss.z-s.z>=9);assert.equal(s.z,0);if(retreatBoss.action?.kind==='wide'&&retreatBoss.action.done){assert(retreatBoss.moveActive);slashes++;}}
-assert(retreatBoss.z>=9&&retreatBoss.z<=13);assert(slashes>0);console.log('PASS: sustained retreat behind center, repeated slashes while stepping');
+assert(retreatBoss.z>=9&&retreatBoss.z<=15);assert(slashes>0);console.log('PASS: sustained retreat behind center, repeated slashes while stepping');
 
 // Both skills ignore early taps without spending charges, then permit cancellation.
 for(const first of [1,2])for(const second of [1,2]){
@@ -257,5 +257,8 @@ for(const pd of [0,3,5]){s=setup();s.pd=pd;s.pt=pd;s.en=[];const e={t:'boss',bos
 s=setup();s.phase='boss';s.pd=7;s.pt=7;s.en=[{t:'boss',boss:true,z:12,l:1,displayLane:1,hp:999,cd:100,wideCd:100,dragonCd:100}];s.shots=[{kind:'fireDragon',l:1,z:5,d:4}];tick(1);assert.equal(s.hp,20,'already passed missile cannot hit');console.log('PASS: distant melee immunity and no projectile hits from behind');
 
 // Patrol reverses naturally without crossing the center boundary; dash closes long boss gaps.
-s=setup();s.phase='boss';s.guard=1;const patrol={t:'boss',boss:true,z:9,l:1,displayLane:1,hp:999,cd:100,wideCd:100,dragonCd:100};s.en=[patrol];let back=false,forward=false,lastZ=9;for(let i=0;i<2400;i++){g.step(.01);back ||= patrol.z>lastZ+.00001;forward ||= patrol.z<lastZ-.00001;assert(patrol.z>=s.z+9-1e-9&&patrol.z<=s.z+13+1e-9);lastZ=patrol.z;}assert(back&&forward);
+s=setup();s.phase='boss';s.guard=1;const patrol={t:'boss',boss:true,z:9,l:1,displayLane:1,hp:999,cd:100,wideCd:100,dragonCd:100};s.en=[patrol];let back=false,forward=false,lastZ=9;for(let i=0;i<2400;i++){g.step(.01);back ||= patrol.z>lastZ+.00001;forward ||= patrol.z<lastZ-.00001;assert(patrol.z>=s.z+9-1e-9&&patrol.z<=s.z+15+1e-9);lastZ=patrol.z;}assert(back&&forward);
 s=setup();s.phase='boss';s.pd=0;s.pt=0;s.l=0;s.en=[{t:'boss',boss:true,z:13,l:1,displayLane:1,hp:999,cd:100,wideCd:100,dragonCd:100}];s.dashUntil=.5;g.accelerate();tick(40);assert.equal(s.dash,null);assert(s.en[0].z-s.z-s.pd<.8);console.log('PASS: boss patrol forward/back boundary and superdash reaches boss contact');
+
+// Boss visibly visits all three lanes and spans near/far depths.
+s=setup();s.phase='boss';s.guard=1;const mover={t:'boss',boss:true,z:9,l:1,displayLane:1,hp:999,cd:100,wideCd:100,dragonCd:100};s.en=[mover];const visited=new Set();let minZ=99,maxZ=0,previousLane=1;for(let i=0;i<1800;i++){g.step(.01);visited.add(mover.l);minZ=Math.min(minZ,mover.z);maxZ=Math.max(maxZ,mover.z);assert(Math.abs(mover.displayLane-previousLane)<.03);previousLane=mover.displayLane;}assert.equal(visited.size,3);assert(maxZ-minZ>5);assert.equal(s.z,0);console.log('PASS: visible three-lane and six-unit depth patrol, smooth movement, no auto camera tracking');

@@ -25,3 +25,5 @@ Range correction: ordinary boss hits require same lane and forward distance 0..B
 Ultimate label is now a small outlined gold single line near top with no background panels.
 
 Patrol revision: boss smoothly moves forward and backward between depths 9 and 13, never ahead of center. Walking frames follow signed displacement. Superdash no longer uses a fixed distance budget; it ends at the nearest enemy frontline contact gap, on both road and boss stages.
+
+Visible lane/depth movement: replace center-lane lock with smooth waypoints (left depth12, right15, center9, right12, left9, center14). Each leg lasts at least3seconds and uses smooth acceleration/deceleration. Display position and collision lane follow movement; depth remains at least9. No camera following is added.
