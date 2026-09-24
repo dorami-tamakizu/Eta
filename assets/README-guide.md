@@ -9,3 +9,5 @@ Page 3 prompt: match page 1; ハイスコアを狙おう; four readable panels d
 The 閉じる button on every page closes the guide and restores title-menu focus. It does not start combat.
 
 Page 4: ChatGPT Image, 1024 × 1536, navy/gold style reference from page 3. Explains entering a name after clearing, pressing 登録, shared rankings, top-100 storage, and score details. Packaged as WebP quality 90. All four page counts and arrows are native HTML overlays.
+
+Page 2 updated 2026-09-24 using built-in GPT Image: same navy/gold layout, knight dashing from upper-right background toward lower-left foreground; copy: 敵を撃破し上へスワイプ‼︎ / スーパーダッシュを決めよう. 1024×1536.
