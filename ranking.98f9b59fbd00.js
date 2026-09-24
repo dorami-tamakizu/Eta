@@ -59,7 +59,7 @@
   const HONORS=[['gold','覇者'],['silver','英雄'],['bronze','達人']];
   function cup(metal){return '<span class="rank-cup cup-'+metal+'" aria-hidden="true"></span>';}
   function rankingHTML(rows){
-    return '<p class="rank-note">全プレイヤー共通 · 上位100件</p>'+(rows.length?'<ol class="shared-ranking">'+rows.map((r,i)=>{
+    return (rows.length?'<ol class="shared-ranking">'+rows.map((r,i)=>{
       const honor=HONORS[i],title=honor?honor[1]:i<10?'十傑':i<30?'英傑':'';
       const icon=honor?cup(honor[0]):i<10?'<span class="rank-medal" aria-hidden="true">🎖️</span>':'';
       return '<li class="rank-card '+(honor?honor[0]:'standard')+'"><div class="rank-card-header">'+icon+'<span class="rank-position">'+(i+1)+'位</span><span class="rank-name" style="--name-length:'+Math.max(1,Array.from(String(r.name)).length)+'">'+esc(r.name)+'</span></div><details><summary aria-label="'+esc(r.name)+' のスコア詳細"><span class="rank-score-label">'+(title?title+' ':'')+'トータルスコア</span><strong class="rank-total">'+number(r.total_score).replace(/,/g,'.')+'</strong><span class="rank-detail-button">詳細</span></summary><div class="rank-detail-body">'+detail(r)+'</div></details></li>';
