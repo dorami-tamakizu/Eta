@@ -62,7 +62,7 @@
     return (rows.length?'<ol class="shared-ranking">'+rows.map((r,i)=>{
       const honor=HONORS[i],title=honor?honor[1]:i<10?'十傑':i<30?'英傑':'';
       const icon=honor?cup(honor[0]):i<10?'<span class="rank-medal" aria-hidden="true">🎖️</span>':i<30?'<span class="rank-medal" aria-hidden="true">🚩</span>':'';
-      return '<li class="rank-card '+(honor?honor[0]:'standard')+'"><div class="rank-card-header">'+icon+'<span class="rank-position">'+(i+1)+'位</span><span class="rank-name" style="--name-length:'+Math.max(1,Array.from(String(r.name)).length)+'">'+esc(r.name)+'</span></div><details><summary aria-label="'+esc(r.name)+' のスコア詳細"><span class="rank-score-label">'+(title?(i<10?'<span class="rank-honor">'+title+'</span> ':title+' '):'')+'トータルスコア</span><strong class="rank-total">'+number(r.total_score).replace(/,/g,'.')+'</strong><span class="rank-detail-button">詳細</span></summary><div class="rank-detail-body">'+detail(r)+'</div></details></li>';
+      return '<li class="rank-card '+(honor?honor[0]:'standard')+'"><div class="rank-card-header">'+icon+'<span class="rank-position">'+(i+1)+'位</span><span class="rank-name" style="--name-length:'+Math.max(1,Array.from(String(r.name)).length)+'">'+esc(r.name)+'</span></div><div class="rank-score-row"><span class="rank-score-label">'+(title?(i<10?'<span class="rank-honor">'+title+'</span> ':title+' '):'')+'トータルスコア</span><strong class="rank-total">'+number(r.total_score).replace(/,/g,'.')+'</strong><button type="button" class="rank-detail-button" aria-label="'+esc(r.name)+' のスコア詳細" aria-expanded="false" aria-controls="rank-detail-'+i+'">詳細</button></div><div id="rank-detail-'+i+'" class="rank-detail-body" hidden>'+detail(r)+'</div></li>';
     }).join('')+'</ol>':'<p class="rank-empty">まだ登録された記録はありません。<br>クリアして最初の記録を登録しよう！</p>')+'<button type="button" class="btn rank-refresh">更新</button>';
   }
   async function open(body){
@@ -72,6 +72,13 @@
       if(!Array.isArray(rows))throw new Error('Invalid ranking');
       if(id!==loadId)return;body.innerHTML=rankingHTML(rows);
     }catch(_){if(id!==loadId)return;body.innerHTML='<p role="alert">ランキングを読み込めませんでした。通信状態を確認して再度お試しください。</p><button type="button" class="btn rank-refresh">再読み込み</button>';}
+    body.onclick=e=>{
+      const button=e.target.closest('.rank-detail-button');
+      if(!button||!body.contains(button))return;
+      const panel=button.closest('.rank-card').querySelector('.rank-detail-body');
+      const expanded=button.getAttribute('aria-expanded')==='true';
+      button.setAttribute('aria-expanded',String(!expanded));panel.hidden=expanded;
+    };
     body.querySelector('.rank-refresh').onclick=()=>open(body);
   }
   $('#registerScore').onclick=openEntry;$('#scoreEntryClose').onclick=closeEntry;$('#scoreEntryForm').onsubmit=submit;
