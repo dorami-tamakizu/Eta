@@ -62,7 +62,7 @@
     return (rows.length?'<ol class="shared-ranking">'+rows.map((r,i)=>{
       const honor=HONORS[i],title=honor?honor[1]:i<10?'十傑':i<30?'英傑':'';
       const icon=honor?cup(honor[0]):i<10?'<span class="rank-medal" aria-hidden="true">🎖️</span>':i<30?'<span class="rank-medal" aria-hidden="true">🚩</span>':'';
-      return '<li class="rank-card '+(honor?honor[0]:'standard')+'"><div class="rank-card-header">'+icon+'<span class="rank-position">'+(i+1)+'位</span><span class="rank-name" style="--name-length:'+Math.max(1,Array.from(String(r.name)).length)+'">'+esc(r.name)+'</span></div><details><summary aria-label="'+esc(r.name)+' のスコア詳細"><span class="rank-score-label">'+(title?title+' ':'')+'トータルスコア</span><strong class="rank-total">'+number(r.total_score).replace(/,/g,'.')+'</strong><span class="rank-detail-button">詳細</span></summary><div class="rank-detail-body">'+detail(r)+'</div></details></li>';
+      return '<li class="rank-card '+(honor?honor[0]:'standard')+'"><div class="rank-card-header">'+icon+'<span class="rank-position">'+(i+1)+'位</span><span class="rank-name" style="--name-length:'+Math.max(1,Array.from(String(r.name)).length)+'">'+esc(r.name)+'</span></div><details><summary aria-label="'+esc(r.name)+' のスコア詳細"><span class="rank-score-label">'+(title?'<span class="rank-honor">'+title+'</span> ':'')+'トータルスコア</span><strong class="rank-total">'+number(r.total_score).replace(/,/g,'.')+'</strong><span class="rank-detail-button">詳細</span></summary><div class="rank-detail-body">'+detail(r)+'</div></details></li>';
     }).join('')+'</ol>':'<p class="rank-empty">まだ登録された記録はありません。<br>クリアして最初の記録を登録しよう！</p>')+'<button type="button" class="btn rank-refresh">更新</button>';
   }
   async function open(body){
