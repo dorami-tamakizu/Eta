@@ -1,8 +1,8 @@
 const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
 const nodes=new Map(),node=()=>({hidden:false,disabled:false,value:'',textContent:'',innerHTML:'',classList:{add(){},remove(){}},focus(){},addEventListener(){},querySelector(){return node();}}),$=s=>{if(!nodes.has(s))nodes.set(s,node());return nodes.get(s);};
-let calls=[],resolvePost,mode='ok';
+let calls=[],resolvePost,mode='ok',rankingRows;
 const record={id:'record-one',name:'<img src=x onerror=alert(1)>',clear_time:50,road_time:23.77,skill_finishes:60,damage_taken:12,damage_dealt:308,overkill:94,time_score:3200000,skill_score:393443,damage_taken_score:100000,damage_dealt_score:143925,total_score:3837368};
-const context={window:{},document:{querySelector:$},AbortController,setTimeout,clearTimeout,fetch:async(url,opts)=>{calls.push({url,opts});if(opts.method==='POST')return new Promise(r=>resolvePost=r);if(mode==='error')throw Error('offline');return{ok:true,json:async()=>[record]};}};
+const context={window:{},document:{querySelector:$},AbortController,setTimeout,clearTimeout,fetch:async(url,opts)=>{calls.push({url,opts});if(opts.method==='POST')return new Promise(r=>resolvePost=r);if(mode==='error')throw Error('offline');return{ok:true,json:async()=>rankingRows||[record]};}};
 vm.runInNewContext(fs.readFileSync(__dirname+'/../ranking.js','utf8'),context);const g=context.window.GameRanking;
 (async()=>{
  const data={...record};delete data.name;delete data.id;delete data.total_score;
@@ -20,5 +20,6 @@ vm.runInNewContext(fs.readFileSync(__dirname+'/../ranking.js','utf8'),context);c
  g.setResult(true,data);const old=$('#scoreEntryForm').onsubmit({preventDefault(){}});g.setResult(true,data);resolvePost({ok:true,json:async()=>[{id:'old'}]});await old;assert.equal($('#registerScore').disabled,false);
  g.setResult(true,data);const merged=$('#scoreEntryForm').onsubmit({preventDefault(){}});resolvePost({ok:true,json:async()=>[]});await merged;assert.equal($('#registerScore').disabled,true);assert($('#entryStatus').textContent.includes('高い場合だけ'));
  g.setResult(true,data);const fallback=$('#scoreEntryForm').onsubmit({preventDefault(){}});resolvePost({ok:false,status:400,json:async()=>({code:'PGRST204',message:'road_time missing'})});await new Promise(r=>setImmediate(r));assert.equal(JSON.parse(calls.at(-1).opts.body).road_time,undefined);resolvePost({ok:true,json:async()=>[{id:'legacy'}]});await fallback;assert.equal($('#registerScore').disabled,true);
+ mode='ok';rankingRows=Array.from({length:100},(_,i)=>({...record,id:String(i),name:'名前'+(i+1)}));const snapshot=JSON.stringify(rankingRows);await g.open(body);const cards=body.innerHTML.split('<li class=\"rank-card ').slice(1);assert.equal(cards.length,100);for(const [i,title] of [[0,'覇者'],[1,'英雄'],[2,'達人'],[3,'十傑'],[9,'十傑'],[10,'英傑'],[29,'英傑']])assert(cards[i].includes(title+' トータルスコア'));for(const i of [30,99])assert(cards[i].includes('rank-score-label\">トータルスコア'));assert.equal((body.innerHTML.match(/🎖️/g)||[]).length,7);assert.equal((body.innerHTML.match(/<svg/g)||[]).length,3);assert.equal(JSON.stringify(rankingRows),snapshot);
  console.log('PASS: public leaderboard/details, escaped names, exact breakdown, optional submission, duplicate guard, errors, stale responses');
 })().catch(e=>{console.error(e);process.exitCode=1});
