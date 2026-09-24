@@ -57,11 +57,11 @@
     return '<table class="rank-breakdown"><thead><tr><th>項目</th><th>記録</th><th>スコア</th></tr></thead><tbody>'+rows.map(([label,value,points])=>'<tr><th>'+label+'</th><td>'+value+'</td><td>'+number(points)+'</td></tr>').join('')+'</tbody></table><p>道中クリアタイム：'+(r.road_time!=null&&Number.isFinite(Number(r.road_time))?Number(r.road_time).toFixed(2)+'秒':'未記録')+'</p><p>オーバーキル分：'+number(r.overkill)+'（与ダメージに含む）</p><p>トータルスコア：'+number(r.total_score)+'</p>';
   }
   const HONORS=[['gold','覇者'],['silver','英雄'],['bronze','達人']];
-  function cup(){return '<svg class="rank-cup" viewBox="0 0 64 64" aria-hidden="true"><path d="M32 2 62 32 32 62 2 32Z" fill="#647575" stroke="#e2e9df" stroke-width="2"/><path d="M32 8 56 32 32 56 8 32Z" fill="none" stroke="#c7d2c9" stroke-width="2"/><g stroke="#49321e" stroke-width="2.5" stroke-linejoin="round"><path d="M15 19C1 8 0 35 21 35M49 19C63 8 64 35 43 35" fill="none" stroke="currentColor" stroke-width="6"/><path d="M13 16H51L48 29Q46 39 35 41V47H40V51H46L49 56H15L18 51H24V47H29V41Q18 39 16 29Z" fill="currentColor"/><path d="M14 16H50V21H14Z" fill="currentColor"/></g><path d="M18 24H46Q43 34 32 34Q23 34 18 24Z" fill="#fff" opacity=".28"/><path d="M17 18H47M27 48H37M20 53H44" stroke="#fff9da" stroke-width="2" opacity=".8"/></svg>';}
+  function cup(metal){return '<span class="rank-cup cup-'+metal+'" aria-hidden="true"></span>';}
   function rankingHTML(rows){
     return '<p class="rank-note">全プレイヤー共通 · 上位100件</p>'+(rows.length?'<ol class="shared-ranking">'+rows.map((r,i)=>{
       const honor=HONORS[i],title=honor?honor[1]:i<10?'十傑':i<30?'英傑':'';
-      const icon=honor?cup():i<10?'<span class="rank-medal" aria-hidden="true">🎖️</span>':'';
+      const icon=honor?cup(honor[0]):i<10?'<span class="rank-medal" aria-hidden="true">🎖️</span>':'';
       return '<li class="rank-card '+(honor?honor[0]:'standard')+'"><div class="rank-card-header">'+icon+'<span class="rank-position">'+(i+1)+'位</span><span class="rank-name" style="--name-length:'+Math.max(1,Array.from(String(r.name)).length)+'">'+esc(r.name)+'</span></div><details><summary aria-label="'+esc(r.name)+' のスコア詳細"><span class="rank-score-label">'+(title?title+' ':'')+'トータルスコア</span><strong class="rank-total">'+number(r.total_score).replace(/,/g,'.')+'</strong><span class="rank-detail-button">詳細</span></summary><div class="rank-detail-body">'+detail(r)+'</div></details></li>';
     }).join('')+'</ol>':'<p class="rank-empty">まだ登録された記録はありません。<br>クリアして最初の記録を登録しよう！</p>')+'<button type="button" class="btn rank-refresh">更新</button>';
   }
