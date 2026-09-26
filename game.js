@@ -1,4 +1,4 @@
-(()=>{const $=s=>document.querySelector(s),cv=$('#game'),c=cv.getContext('2d');let W,H,last=0,S,combatSeed=17319;function random(){combatSeed=(Math.imul(combatSeed,1664525)+1013904223)>>>0;return combatSeed/4294967296}const C=(v,a,b)=>Math.max(a,Math.min(b,v)),R=(a,b)=>a+random()*(b-a),RI=(a,b)=>Math.floor(R(a,b+1)),E=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;const D={slime:{hp:2,d:1,r:0,h:205},skeleton:{hp:3,d:2,r:0,h:220},mage:{hp:3,d:2,r:1,h:228},bonobo:{hp:4,d:4,r:0,h:245},dragon:{hp:4,d:3,r:1,h:215},boss:{hp:40,d:3,r:0,h:300}},im={};const src={heroBlade:'assets/hero-blade-v2.webp',normalSlash:'assets/hero-normal-slash-v1.webp',bossFlame:'assets/boss-horizontal-flame-v2.webp',bossOverhead:'assets/boss-slide-v3.webp',bossSkills:'assets/boss-skills-contact-v6.webp',heroDefeat:'assets/hero-defeat-v2.webp',ultimateFace:'assets/hero-ultimate-cutin-v1.png',boss:'assets/boss-warlord.png',fireDragon:'assets/boss-fire-dragon-v2.webp',hero:'assets/hero.webp',slime:'assets/suraimu.png',skeleton:'assets/がいこつ.png',mage:'assets/mahoutukai.png',bonobo:'assets/bonobo.png',dragon:'assets/minidoragonn.png',body:'hero_body.png.png',upper:'hero_arm1.png',fore:'hero_arm2.png',hand:'hero_hand.png',shoulder:'hero_shoulder.png',sword:'assets/hero_sword_motion.png',forestTrees:'assets/forest-trees-gpt-v1.9d6d5503daf1.webp',forestGround:'assets/forest-ground-gpt-v1.095875d20497.webp',poses:'assets/hero-motion-sheet.png',waterSheet:'assets/water-slash-gpt-v3.webp',earthSheet:'assets/earth-slash-gpt-v1.webp',heroSkills:'assets/hero-skills-gpt-v1.webp',heroRun:'assets/hero-run-female-v2.png',heroGuard:'assets/hero-guard-gpt-v1.webp',guardImpact:'assets/guard-impact-gpt-v1.webp',dashTrail:'assets/superdash-gpt-v1.webp'};for(const k in src){im[k]=new Image;im[k].src=src[k]}
+(()=>{const $=s=>document.querySelector(s),cv=$('#game'),c=cv.getContext('2d');let W,H,last=0,S,combatSeed=17319;function random(){combatSeed=(Math.imul(combatSeed,1664525)+1013904223)>>>0;return combatSeed/4294967296}const C=(v,a,b)=>Math.max(a,Math.min(b,v)),R=(a,b)=>a+random()*(b-a),RI=(a,b)=>Math.floor(R(a,b+1)),E=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;const D={slime:{hp:2,d:1,r:0,h:205},skeleton:{hp:3,d:2,r:0,h:220},mage:{hp:3,d:2,r:1,h:228},bonobo:{hp:4,d:4,r:0,h:245},dragon:{hp:4,d:3,r:1,h:215},boss:{hp:40,d:3,r:0,h:300}},im={};const src={heroBlade:'assets/hero-blade-v2.webp',normalSlash:'assets/hero-normal-slash-v1.webp',bossFlame:'assets/boss-horizontal-flame-v2.webp',bossOverhead:'assets/boss-slide-v3.webp',bossSkills:'assets/boss-skills-contact-v6.webp',heroDefeat:'assets/hero-defeat-v2.webp',ultimateFace:'assets/hero-ultimate-cutin-v1.png',boss:'assets/boss-warlord.png',fireDragon:'assets/boss-fire-dragon-v2.webp',hero:'assets/hero.webp',slime:'assets/suraimu.png',skeleton:'assets/がいこつ.png',mage:'assets/mahoutukai.png',bonobo:'assets/bonobo.png',dragon:'assets/minidoragonn.png',forestTrees:'assets/forest-trees-gpt-v1.9d6d5503daf1.webp',forestGround:'assets/forest-ground-gpt-v1.095875d20497.webp',waterSheet:'assets/water-slash-gpt-v3.webp',earthSheet:'assets/earth-slash-gpt-v1.webp',heroSkills:'assets/hero-skills-gpt-v1.webp',heroRun:'assets/hero-run-female-v2.png',heroGuard:'assets/hero-guard-gpt-v1.webp',guardImpact:'assets/guard-impact-gpt-v1.webp',dashTrail:'assets/superdash-gpt-v1.webp'};for(const k in src){im[k]=new Image;im[k].src=src[k]}
 function size(){const v=window.visualViewport;W=v?v.width:innerWidth;H=v?v.height:innerHeight;const frame=$('#gameViewport');frame.style.width=W+'px';frame.style.height=H+'px';frame.style.top=(v?v.offsetTop:0)+'px';frame.style.left=(v?v.offsetLeft:0)+'px';let d=Math.min(devicePixelRatio||1,2);cv.width=W*d;cv.height=H*d;c.setTransform(d,0,0,d,0,0)}addEventListener('resize',size);if(window.visualViewport){window.visualViewport.addEventListener('resize',size);window.visualViewport.addEventListener('scroll',size)}size();function sh(a){for(let i=a.length-1;i;i--){let j=RI(0,i);[a[i],a[j]]=[a[j],a[i]]}return a}function mk(t,z){return{t,z,l:RI(0,2),hp:D[t].hp,max:D[t].hp,dead:0,cd:R(1.8,3.8),tell:0,mv:R(.7,2),fl:0}}function roster(){let a=[],e=sh([...Array(3).fill('slime'),...Array(3).fill('skeleton')]),r=sh([...Array(6).fill('slime'),...Array(6).fill('skeleton'),...Array(6).fill('mage'),...Array(3).fill('bonobo'),...Array(3).fill('dragon')]);[...e,...r,...sh([...Array(9).fill('slime'),...Array(9).fill('skeleton'),...Array(6).fill('mage'),...Array(3).fill('bonobo'),...Array(3).fill('dragon')])].forEach((t,i)=>{const group=Math.floor(i/6),row=Math.floor(i%6/3);const enemy=mk(t,18+group*ENEMY_GROUP_GAP+row*ENEMY_ROW_GAP);enemy.l=i%3;enemy.group=group;a.push(enemy)});return a}function reset(){$('#gameViewport').classList.remove('cinematic');combatSeed=17319;S={run:0,pause:0,t:0,phase:'road',defeat:null,cinematic:null,roadTime:null,bossStartedAt:null,hp:20,dmg:0,dealtDamage:0,ultimateCharge:90,ultimate:null,overkill:0,z:0,l:1,guard:0,guardPose:0,guardImpact:0,introRun:0,ch:[4,4],fr:[0,0],skill:null,fin:0,dashUntil:-1,dash:null,boost:0,normalAttack:null,norm:0,en:roster(),shots:[],ptr:null,hit:0,pd:0,pt:0,notice:null,ll:1,fx:[],waves:[],waterFx:[],earthFx:[],combo:0,comboTime:0,shake:0,speed:0,runPhase:0,retreat:0};hideNotice();ui()}function ui(){updateUltimateUI();const hpRatio=C(S.hp/20,0,1),hpColor='hsl('+(120*hpRatio)+',100%,50%)';$('#hp').textContent=Math.ceil(C(S.hp,0,20))+'/20';$('#hpf').style.width=(hpRatio*100)+'%';$('#hpf').style.background=hpColor;$('#hpbar').style.background=hpRatio===0?'#ff0000':'#17212b';$('#hpbar').style.borderColor=hpColor;$('#time').textContent=S.t.toFixed(1);$('#fin').textContent=S.fin;const boss=S.en.find(e=>e.boss);$('#bossHud').classList.toggle('hide',S.phase!=='boss'||!!S.cinematic);$('#bossHp').textContent=boss?Math.max(0,boss.hp)+' / '+boss.max:'';for(let i=0;i<2;i++){
   // The original five charges remain unchanged; show partial recharge too.
   const fill=C((S.ch[i]+(S.ch[i]<4?S.fr[i]:0))/4,0,1);
@@ -683,119 +683,10 @@ function bg(){
 }
 
 function frontline(){let fl=front();if(!Number.isFinite(fl)||fl-S.z>42)return;let r=fl-S.z,y=yy(r),p=perspective(r),half=Math.min(W,520)*.44*p;c.save();c.strokeStyle='rgba(255,225,125,.95)';c.shadowColor='rgba(255,170,50,.9)';c.shadowBlur=4;c.lineWidth=1.5;c.beginPath();c.moveTo(W/2-half,y);c.lineTo(W/2+half,y);c.stroke();c.restore()}
-// Source coordinates are measured on the uploaded sheets, not image centres.
-// Keep original files intact; the cached body layer masks only the old arms.
-let bodyLayer=null;
-function polygon(ctx,points){ctx.beginPath();points.forEach((p,i)=>i?ctx.lineTo(...p):ctx.moveTo(...p));ctx.closePath()}
-function rigReady(){return ['body','upper','fore','hand','shoulder','sword'].every(k=>im[k].complete&&im[k].naturalWidth>0)}
-function makeBodyLayer(){
-  if(bodyLayer)return bodyLayer;
-  const layer=document.createElement('canvas');layer.width=1600;layer.height=1600;
-  const ctx=layer.getContext('2d');ctx.drawImage(im.body,0,0);
-  ctx.globalCompositeOperation='destination-out';
-  for(const points of [
-    [[606,451],[660,449],[683,499],[686,559],[670,605],[646,657],[620,710],[602,766],[608,800],[592,832],[555,835],[534,796],[551,735],[575,655],[592,576]],
-    [[853,449],[887,451],[910,494],[916,555],[920,604],[921,684],[947,737],[966,787],[966,818],[936,836],[910,822],[897,784],[889,733],[879,663],[853,588],[844,520]]
-  ]){polygon(ctx,points);ctx.fill()}
-  ctx.globalCompositeOperation='source-over';
-  // Restore the scarf where it passes in front of the right arm.
-  ctx.save();polygon(ctx,[[699,423],[843,423],[857,507],[905,591],[968,626],[1100,677],[1180,754],[1180,800],[1100,766],[1122,829],[1180,908],[1157,965],[1070,1005],[970,1050],[980,994],[1029,918],[1029,851],[958,766],[886,701],[837,653],[777,595],[737,509]]);ctx.clip();ctx.drawImage(im.body,0,0);ctx.restore();
-  bodyLayer=layer;return layer;
-}
-const REST={upper:-.14,fore:-.12,wrist:Math.PI,flat:1,left:.16};
-function rigPose(progress){
-  if(!S.skill){const q=(S.normalFlash||0)/.18;return {...REST,upper:REST.upper+Math.sin(q*Math.PI)*.55,fore:REST.fore-Math.sin(q*Math.PI)*.3,behind:false}}
-  const p=progress===undefined?C(S.skill.t/S.skill.d,0,1):progress,water=S.skill.k===1;
-  // Fold the elbow with the sword on the camera-facing/back side first.
-  // Then lift it clear of the torso at the right shoulder before cutting forward.
-  const wind=water?{upper:-.85,fore:2.2,wrist:Math.PI,flat:.75,left:.5}:{upper:-2.2,fore:2.6,wrist:Math.PI,flat:1,left:.05};
-  const ready=water?{upper:-1.8,fore:.25,wrist:Math.PI,flat:.48,left:.5}:{upper:-2.5,fore:-.55,wrist:Math.PI,flat:1,left:.05};
-  const follow=water?{upper:1.3,fore:.2,wrist:Math.PI,flat:.48,left:-.15}:{upper:-.1,fore:.1,wrist:Math.PI,flat:1,left:.3};
-  const windEnd=water?.22:.24,frontStart=water?.34:.38,cutEnd=water?.56:.60,holdEnd=water?.67:.70;
-  let from,to,q;
-  if(p<windEnd){from=REST;to=wind;q=E(p/windEnd)}
-  else if(p<frontStart){from=wind;to=ready;q=E((p-windEnd)/(frontStart-windEnd))}
-  else if(p<cutEnd){from=ready;to=follow;q=E((p-frontStart)/(cutEnd-frontStart))}
-  else if(p<holdEnd){from=follow;to=follow;q=0}
-  else{from=follow;to=REST;q=E((p-holdEnd)/(1-holdEnd))}
-  const pose={behind:p<frontStart};
-  for(const key in REST)pose[key]=from[key]+(to[key]-from[key])*q;
-  return pose;
-}
-function segment(img,rect,pivot,end,length){
-  const dx=end[0]-pivot[0],dy=end[1]-pivot[1],s=length/Math.hypot(dx,dy);
-  c.save();c.rotate(Math.atan2(dx,dy));
-  c.drawImage(img,...rect,(rect[0]-pivot[0])*s,(rect[1]-pivot[1])*s,rect[2]*s,rect[3]*s);c.restore();
-}
-function arm(right,pose){
-  const upper=right?pose.upper:pose.left,fore=right?pose.fore:.12;
-  c.save();c.translate(right?866:650,478);if(right)c.scale(1,pose.flat);
-  c.rotate(upper);
-  segment(im.upper,right?[925,438,350,683]:[329,438,350,683],right?[1060,500]:[539,500],right?[1134,1063]:[465,1063],118);
-  c.translate(0,118);c.rotate(fore);
-  segment(im.fore,right?[879,321,355,930]:[368,321,354,930],right?[1022,449]:[578,449],right?[1140,1201]:[460,1201],146);
-  c.translate(0,146);
-  if(right){
-    // Wrist/grip is local to the forearm. Select one sword view from its sheet.
-    c.save();c.translate(4,40);c.rotate(pose.wrist);
-    const side=S.skill&&S.skill.k===2,rect=side?[620,27,94,1444]:[194,27,338,1444],grip=side?667:363,scale=.39;
-    c.drawImage(im.sword,...rect,(rect[0]-grip)*scale,(rect[1]-1240)*scale,rect[2]*scale,rect[3]*scale);c.restore();
-  }
-  segment(im.hand,right?[974,509,277,596]:[347,509,277,596],right?[1082,565]:[518,565],right?[1160,1061]:[440,1061],68);
-  c.restore();
-}
-function shoulder(right,pose){
-  const upper=right?pose.upper:pose.left;
-  // Shoulder caps stay attached on the camera-facing side of the torso.
-  c.save();c.translate(right?866:650,478);c.rotate(upper*.3);
-  const rect=right?[929,521,398,560]:[275,521,398,560],px=right?1040:560,s=.20;
-  c.drawImage(im.shoulder,...rect,(rect[0]-px)*s,(rect[1]-620)*s,rect[2]*s,rect[3]*s);c.restore();
-}
-// The supplied PNG is preserved intact. Rectangles select its 16 poses at runtime.
-// Anchor is the midpoint of the planted feet, independent of sword bounds.
-const POSES=[
-  {r:[46,39,244,273],a:[122,309]},
-  {r:[314,47,192,265],a:[395,309]},
-  {r:[547,20,194,292],a:[649,309]},
-  {r:[774,59,235,253],a:[936,309]},
-  {r:[26,382,266,253],a:[138,632]},
-  {r:[288,377,245,257],a:[401,631]},
-  {r:[555,380,204,259],a:[643,636]},
-  {r:[782,374,238,268],a:[873,639]},
-  {r:[39,952,242,264],a:[125,1213]},
-  {r:[297,880,187,334],a:[395,1213]},
-  {r:[523,901,215,313],a:[651,1213]},
-  {r:[806,868,190,348],a:[913,1213]},
-  {r:[46,1269,179,238],a:[141,1505]},
-  {r:[294,1296,204,208],a:[397,1503]},
-  {r:[521,1244,248,264],a:[619,1505]},
-  {r:[782,1248,221,260],a:[866,1505]}
-];
 function poseFrame(k,p){
   const beats=k===1?[0,.13,.27,.39,.48,.59,.73,.88]:[0,.13,.28,.43,.54,.64,.77,.90];
   let frame=0;for(let i=1;i<beats.length;i++)if(p>=beats[i])frame=i;
   return (k===2?8:0)+frame;
-}
-function posesReady(){return im.poses.complete&&im.poses.naturalWidth>0}
-function drawPoseFrame(index,h){
-  const pose=POSES[index],r=pose.r,a=pose.a,scale=h/268;
-  c.drawImage(im.poses,...r,(r[0]-a[0])*scale,(r[1]-a[1])*scale,r[2]*scale,r[3]*scale);
-}
-function drawRunningHero(h){
-  const phase=S.runPhase,bob=Math.sin(phase*2)*2.5;
-  c.save();c.scale(h/268,h/268);c.translate(-122,-309+bob);
-  // Two-joint leg animation, using the existing transparent body sheet.
-  // Draw legs first; the pelvis covers their shoulder-like cut boundaries.
-  for(const right of [false,true]){
-    const wave=Math.sin(phase+(right?Math.PI:0));
-    c.save();c.translate(right?139:104,174);c.rotate((right?-.06:.06)+wave*.025);
-    segment(im.poses,right?[124,171,39,66]:[67,171,59,65],right?[138,175]:[104,175],right?[149,231]:[85,231],59*(1-.12*Math.abs(wave)));
-    c.translate(0,59*(1-.12*Math.abs(wave)));c.scale(1,1-.55*Math.max(0,wave));
-    segment(im.poses,right?[143,230,52,80]:[49,226,48,62],right?[150,237]:[83,231],right?[177,298]:[63,275],65);
-    c.restore();
-  }
-  c.drawImage(im.poses,46,39,244,144,46,39,244,144);
-  c.restore();
 }
 // GPT Image sheets preserve the supplied knight's costume and rear view.
 const ARMORED_ANCHORS=[[157, 310], [163, 310], [172, 310], [156, 311], [151, 309], [146, 310], [154, 311], [158, 310], [158, 310], [152, 311], [164, 310], [152, 311], [154, 304], [182, 305], [152, 305], [158, 310]];
@@ -856,60 +747,6 @@ function drawNormalSlash(){
  const q=(a.t-.16)/.26;if(q<0||q>1)return;
  const h=playerHeight(),size=h*.95;c.save();c.globalAlpha=Math.min(1,q/.30,(1-q)/.45);
  c.drawImage(img,playerX()-size*.52,playerY()-h*1.04,size,size);c.restore();
-}
-function drawPoseHero(h){
-  const skill=S.skill||S.normalAttack,p=skill?C(skill.t/skill.d,0,1):0;
-  if(!skill&&!S.guard&&S.speed>.05)drawRunningHero(h);else drawPoseFrame(skill?poseFrame(skill.k,p):0,h);
-  if(!skill||skill===S.normalAttack)return;
-  if(skill.k===1)return; // The shared rear/front water passes own all water visuals.
-  if(earthSheetReady()){
-    const q=(p-.30)/.24;
-    if(q>=0&&q<1){c.save();c.translate(h*.07,-h*.02);earthSprite(q<.40?0:1,h*1.45,Math.min(1,q*4));c.restore()}
-    return;
-  }
-  const q=(p-.43)/.25;if(q<0||q>1)return;
-  // A filled vertical crescent follows the overhead sword down to the ground.
-  c.save();c.globalAlpha=Math.sin(q*Math.PI);c.shadowColor='#80f4ff';c.shadowBlur=12;
-  const edge=h*(.14+.20*q);
-  const fill=c.createLinearGradient(-edge,-h*1.35,edge,0);
-  fill.addColorStop(0,'#5dd8ff00');fill.addColorStop(.5,'#c6ffffee');fill.addColorStop(1,'#ffffff');
-  c.fillStyle=fill;c.beginPath();c.moveTo(h*.08,-h*1.40);
-  c.bezierCurveTo(-h*.65,-h*1.03,-h*.52,-h*.18,h*.25,-h*.04);
-  c.bezierCurveTo(-h*.19,-h*.28,-h*.22,-h*.90,h*.08,-h*1.40);
-  c.fill();c.restore();
-}
-function drawRig(h){
-  const pose=rigPose();
-  skillEffect(h,h/Math.min(H*.285,238));
-  c.save();c.scale(h/1104,h/1104);c.translate(-750,-1344);
-  arm(false,pose);
-  if(!pose.behind)arm(true,pose);
-  c.drawImage(makeBodyLayer(),0,0);
-  // During windup the right arm/blade is behind the character, facing us.
-  // Switch to the enemy-facing layer only once the raised blade clears the body.
-  if(pose.behind)arm(true,pose);
-  shoulder(false,pose);shoulder(true,pose);c.restore();
-}
-function swordPoints(pose,h){
-  const rot=(x,y,a)=>[x*Math.cos(a)-y*Math.sin(a),x*Math.sin(a)+y*Math.cos(a)];
-  function point(x,y){
-    let v=rot(x,y,pose.wrist);v=rot(v[0]+4,v[1]+186,pose.fore);v=rot(v[0],v[1]+118,pose.upper);
-    return [(866+v[0]-750)*h/1104,(478+v[1]*pose.flat-1344)*h/1104];
-  }
-  return {grip:point(0,0),tip:point(0,-470.7)};
-}
-function skillEffect(h,sc){
-  if(!S.skill||S.skill.k===1)return;
-  const p=S.skill.t/S.skill.d,water=S.skill.k===1;
-  const begin=water?.35:.39,end=water?.67:.70;if(p<begin||p>end)return;
-  const q=(p-begin)/(end-begin),now=swordPoints(rigPose(p),h),before=swordPoints(rigPose(Math.max(begin,p-.09)),h);
-  c.save();c.globalAlpha=Math.sin(q*Math.PI)*.6;
-  c.strokeStyle=water?'#d7f8ff':'#fff5cf';c.fillStyle=water?'#b6edff':'#ffe8ae';
-  c.shadowColor=water?'#69cfff':'#f6c77c';c.shadowBlur=9;c.lineWidth=3*sc;c.lineCap='round';
-  c.beginPath();c.moveTo(...before.tip);c.lineTo(...now.tip);c.stroke();
-  c.globalAlpha*=.28;c.beginPath();c.moveTo(...before.grip);c.lineTo(...before.tip);c.lineTo(...now.tip);c.lineTo(...now.grip);c.closePath();c.fill();
-  if(!water&&p>.59){c.globalAlpha=(end-p)/(end-.59)*.5;c.lineWidth=2*sc;c.beginPath();c.ellipse(now.tip[0],Math.min(0,now.tip[1]),h*.2*(p-.59)/.11,h*.04,0,0,Math.PI*2);c.stroke()}
-  c.restore();
 }
 function drawDefeatedHero(h){
   const sheet=im.heroDefeat,t=S.defeat.t;
