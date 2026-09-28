@@ -17,17 +17,22 @@
 
 ## 検証
 
+Node.js 24 で、リポジトリのルートから通常回帰テストをまとめて実行します。npmパッケージのインストールは不要です。
+
 ```sh
-node tests/release.cjs
-node tests/damage-total.cjs
-node tests/title-menu.cjs
-node tests/boss-hitbox.cjs
-node tests/boss-random.cjs
-node tests/running.cjs
-node tests/boss-animation.cjs
-node tests/swipe-movement.cjs
-node tests/bgm.cjs
-node tests/ultimate-audio.cjs
+node scripts/test.cjs
+```
+
+`scripts/test.cjs` に列挙した12本（`tests/frontline-title.cjs`、`tests/shared-ranking.cjs` を含む）を独立したNodeプロセスで順に実行し、1本でも失敗すれば終了コード1を返します。通常回帰テストを追加するときは、この一覧にも追加してください。
+通常回帰はGit履歴や外部通信に依存しません。ランキングの通信はテスト内の模擬実装を使います。GitHub Actionsの `Regression tests` も、push / pull_request 時に同じ入口を実行します。
+
+### 旧素材削除の履歴比較（手動実行のみ）
+
+`tests/cleanup-equivalence.cjs` は、旧素材削除前の `fde1f3a:game.js` と作業ツリーの `game.js` について、状態・描画命令・得点を固定比較するためのテストです。通常回帰12本および恒常CIには含めません。
+当時の素材整理を再検証する場合だけ、`fde1f3a` を含むGit履歴を取得したチェックアウトで、リポジトリのルートから実行してください（浅いcloneでは履歴の追加取得が必要です）。以後の意図的なゲーム変更に対する一般的な回帰判定には使いません。
+
+```sh
+node tests/cleanup-equivalence.cjs
 ```
 
 ローカル起動：`python -m http.server 8765`
@@ -49,7 +54,7 @@ node tests/ultimate-audio.cjs
 
 共有ランキング：`ranking.js` が公開用キーとRLSで `public.rankings` に接続します。個人の過去の端末内記録は共有ランキングへ自動送信しません。投稿ボタンの二重操作を防止し、通信結果不明時は再送せずランキングで確認します。匿名投稿のため、改ざんされた値や別ブラウザからの連続投稿を完全には防止しません。
 
-検証：`node tests/shared-ranking.cjs`（投稿、二重送信、詳細、名前のHTMLエスケープ、通信失敗、古い応答）。
+共有ランキングの検証（投稿、二重送信、詳細、名前のHTMLエスケープ、通信失敗、古い応答）は、上記の通常回帰テストに含まれます。
 
 ランキングは赤地・金枠・明るい記録カードのデザインです。現在の表示順位に応じ、1位は金杯と「覇者」、2位は銀杯と「英雄」、3位は銅杯と「達人」を表示します。称号は名前や保存データを変更せず表示時に付けます。
 
