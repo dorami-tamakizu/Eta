@@ -1,0 +1,746 @@
+{
+  "source": "https://tamashii-soul-bond.dorami-tamakizu.chatgpt.site",
+  "commit": "46d8372e7e8ad3ea1f7e10659e4747f8d5b2d715",
+  "files": [
+    {
+      "path": "ex/assets/back.webp",
+      "sha256": "aa0d38d3a6480149b3a1a13a03eef2a41bf34d4324478e50bd2bb29dbff3dbd0",
+      "bytes": 553932
+    },
+    {
+      "path": "ex/assets/boss-description.png",
+      "sha256": "b620583f1476fd42235895bb7ac17e91bc76897b0aedcf52d28e264855ff57ee",
+      "bytes": 1870501
+    },
+    {
+      "path": "ex/assets/boss-intro-poster.jpg",
+      "sha256": "864a762cdb485af02616920710c831a502e6d04ee4344a5047b599822df519f2",
+      "bytes": 89079
+    },
+    {
+      "path": "ex/assets/boss-intro.mp4",
+      "sha256": "756c4677173ba20da21e1f9792fc111f38ec1e812b1a3e9092b4d75910aecac4",
+      "bytes": 1705479
+    },
+    {
+      "path": "ex/assets/effect1.webp",
+      "sha256": "fef718619e887a716438a1c2d4652b43f12a207f73b3c68336a4fd4a3a9bac34",
+      "bytes": 317046
+    },
+    {
+      "path": "ex/assets/effect2.webp",
+      "sha256": "47fed572be1afb75dd778a12d23407616c5cd788f46c2b5ba219b2a4a25d52a8",
+      "bytes": 619774
+    },
+    {
+      "path": "ex/assets/effect3.webp",
+      "sha256": "47d64740e5a6e6debf5b77c8c640c0a32fd6845cff7cc0fa6869f1e977f4c766",
+      "bytes": 938450
+    },
+    {
+      "path": "ex/assets/effect4.webp",
+      "sha256": "c925bf50695caa47b67e70f436886f66f23d1303af3ebfc1426ed895ebb3bdd9",
+      "bytes": 815602
+    },
+    {
+      "path": "ex/assets/effect5.webp",
+      "sha256": "bebdf293ef11f787b41e8494caaa3f922b694f43d697f5d548a74e7ae3e5aa13",
+      "bytes": 287038
+    },
+    {
+      "path": "ex/assets/front.webp",
+      "sha256": "845b9eb2cd81fc72c22ce307420626eb884e2b897858b55d239e950cb6f977a3",
+      "bytes": 562118
+    },
+    {
+      "path": "ex/assets/hero-burst-triple.png",
+      "sha256": "a0d9f622c0069b10a7418ce68977c33ad5082f2b57693f5752c64609b0979e53",
+      "bytes": 1512186
+    },
+    {
+      "path": "ex/assets/hero-defeat-v10.jpg",
+      "sha256": "33911e82d19acf1d28b2eae341a44c22d14e1b2dbcdf647ec742e2911bb112be",
+      "bytes": 707072
+    },
+    {
+      "path": "ex/assets/left.webp",
+      "sha256": "0686924e9e2da9605dfad3b921ed36a257cfdb33f71e6c770b1a6e8de0abad12",
+      "bytes": 535250
+    },
+    {
+      "path": "ex/assets/motion1.webp",
+      "sha256": "49837ebe4977b723a5783e13fbef617455d346274b4894fc36b15bdd929a8fe0",
+      "bytes": 739982
+    },
+    {
+      "path": "ex/assets/motion2.webp",
+      "sha256": "9bce856ccac67477e7032b5eee86481aef99858b415d3d0ac87735614ed7faad",
+      "bytes": 617064
+    },
+    {
+      "path": "ex/assets/motion3.webp",
+      "sha256": "f9f2e14a3a2269d1f069f99e51384165f5669a1ad27337ff9425531ec81b7e27",
+      "bytes": 728214
+    },
+    {
+      "path": "ex/assets/motion4.webp",
+      "sha256": "daf8289f8c69fd85c959b0ca2bca8d375984c07c9918ecde873063bc56057fb9",
+      "bytes": 701808
+    },
+    {
+      "path": "ex/assets/motion5.webp",
+      "sha256": "c012eac39892b33413d0a3ded82465a5a830576875a2c83729ddf14acbd7b03f",
+      "bytes": 875672
+    },
+    {
+      "path": "ex/assets/pillar.webp",
+      "sha256": "99a574705ab1e164b1e8bc2f1f203ac229e458ae4764cc410a6cc163ade00f78",
+      "bytes": 647860
+    },
+    {
+      "path": "ex/assets/right.webp",
+      "sha256": "c7b2e2696d3e80c452d8cbee34a7df03e0480d5166181dd24dd255eec1bfae6f",
+      "bytes": 548340
+    },
+    {
+      "path": "ex/assets/ruins-ground.webp",
+      "sha256": "3af0a1cebc94896f930a9f72d54207d614168f2222ed5135d9910f023fd4e0ce",
+      "bytes": 341584
+    },
+    {
+      "path": "ex/assets/ruins-objects.webp",
+      "sha256": "2cd6ad2ab143886289d1008e42d7b0490b1fa8e3f1894daa1fd983a16ce16547",
+      "bytes": 286424
+    },
+    {
+      "path": "ex/assets/ruins-sky.webp",
+      "sha256": "21725b3840da9121114ce15b78797ec468a4984e4c0cd0d58c5e493fa4d62247",
+      "bytes": 35552
+    },
+    {
+      "path": "ex/assets/sources.json",
+      "sha256": "092602120eb51bc675cf5f210c34eae01c068367bf9e8e96422e56a5b2e1b3e5",
+      "bytes": 739
+    },
+    {
+      "path": "ex/assets/ultimate-burst-icon.png",
+      "sha256": "2de9bdd1a3790dccb74a2470bbfc5db6d25fa785fa0512c75047cd408b88adde",
+      "bytes": 3258988
+    },
+    {
+      "path": "ex/audio/bossDragonFlight.mp3",
+      "sha256": "874b86de0e55c2b724bd6a156ceb8eceeaf68bcc67d95da464cd96fd36190381",
+      "bytes": 32832
+    },
+    {
+      "path": "ex/audio/bossFallDrop.mp3",
+      "sha256": "ce05b02096051f06f056cec703b7eb79254773d13a2058f0385dc31a464c32f6",
+      "bytes": 85888
+    },
+    {
+      "path": "ex/audio/bossFallRaise.mp3",
+      "sha256": "b2c56e47babb1dcd8f622697e1ac1a7b300c4768ff01719162702f83b2cecbf3",
+      "bytes": 13791
+    },
+    {
+      "path": "ex/audio/bossLaser.mp3",
+      "sha256": "c719d31facfeb48d99a4022358ebb5dcd89ff65e379430b119626486c8510db0",
+      "bytes": 103444
+    },
+    {
+      "path": "ex/audio/bossPillarFlight.mp3",
+      "sha256": "1b2c576281e955413e0fb77af706314801974b698d17b699b7a40591bf4d0706",
+      "bytes": 73152
+    },
+    {
+      "path": "ex/audio/bossPillarImpact.mp3",
+      "sha256": "ad3b633d728548136f277b45e2c2a2b708a83217abdb3a4ad4d25609b7b17ad5",
+      "bytes": 28544
+    },
+    {
+      "path": "ex/audio/bossPillarRaise.mp3",
+      "sha256": "912108c4345db85df6abb2ad4b5473669bab04b7e3f850cf3e5df7f48e488dd7",
+      "bytes": 45765
+    },
+    {
+      "path": "ex/audio/bossWide.mp3",
+      "sha256": "fd83e66ed21df28896dc0cb19351a342ce05677488bab9f2f01146f2e0ac6e45",
+      "bytes": 25344
+    },
+    {
+      "path": "ex/audio/burstLoop.mp3",
+      "sha256": "61ffa1f68889b7244c1018277f1b55dbe7530c6ce61db1f7f4e1a834e390ac48",
+      "bytes": 77739
+    },
+    {
+      "path": "ex/audio/burstTriple.mp3",
+      "sha256": "a5739961a8e76331094549b455f81a08e2af7f0f77dcfcbdab2121755fcbb7f6",
+      "bytes": 25725
+    },
+    {
+      "path": "ex/bgm.js",
+      "sha256": "171063ddbf885848eb87349b99e8a47bd6d5d2810e2b60199f78c308b1448730",
+      "bytes": 1445
+    },
+    {
+      "path": "ex/boss.webp",
+      "sha256": "b82d347fc463074ba6945f3c6c1d844b4887e9a9f3d555cd08fd1fed5e430315",
+      "bytes": 594610
+    },
+    {
+      "path": "ex/config.js",
+      "sha256": "b9c2c632260c0da5319e2bc72e349a1c6911f30f22685c9a6e7f7dc9880cf597",
+      "bytes": 1240
+    },
+    {
+      "path": "ex/game.js",
+      "sha256": "3f47568f307a718abfe4619212751bf46b4ccba5bcc1b68ac517a2cc806ad22e",
+      "bytes": 79764
+    },
+    {
+      "path": "ex/index.html",
+      "sha256": "aaea9ed787d90f7f0dca9900f964590d8d7a69110aade09dc694572748237014",
+      "bytes": 32884
+    },
+    {
+      "path": "ex/sfx.js",
+      "sha256": "79fe1310ac08ac28d9463f5c463e5f0bd97c09cfc4f68a871947abccc5abdd31",
+      "bytes": 10688
+    },
+    {
+      "path": "ex/sprites.js",
+      "sha256": "d593e3360d7d3e60ad23e40c1adc0a339a6917c1b82c7bc8279cbdcdde6fe01b",
+      "bytes": 5513
+    },
+    {
+      "path": "favicon.svg",
+      "sha256": "e6d2e59b7b5bbb0342e0fb496dfc262decbfe4426bbb7b047aec8d467d1dc6f7",
+      "bytes": 712
+    },
+    {
+      "path": "file.svg",
+      "sha256": "1e0ae4d1a1ddfa36752988647b731e4abf150c414d069ec83c96fb0aaeff0307",
+      "bytes": 392
+    },
+    {
+      "path": "frame-after.js",
+      "sha256": "075f2a7d9d30d54a7cd07a64d7e2e2cf3a837f32e76295e980bdab5ce116b190",
+      "bytes": 850
+    },
+    {
+      "path": "frame-before.js",
+      "sha256": "c671b23c59727e41bdcf407b22acd8c2b984bd0b477f513f1f29f4405f54dc72",
+      "bytes": 905
+    },
+    {
+      "path": "globe.svg",
+      "sha256": "d051a8c47936990a9085693d307bb7cea1bc1b6d7ed956bcbaacf674f4ec96b9",
+      "bytes": 1036
+    },
+    {
+      "path": "index.html",
+      "sha256": "13b95d3d83e654fb2b8ab4728d792a4558c25b968c2b4dc949e3809c8cfb8c22",
+      "bytes": 274
+    },
+    {
+      "path": "maintenance.html",
+      "sha256": "a39127ab31b9a1e8ef708754a50701cb1d72645385f5ecd2b7e66c54af25031c",
+      "bytes": 1211
+    },
+    {
+      "path": "maintenance.webp",
+      "sha256": "99dc7894c1fed1b205de172adc6c99f48115b2dd7d63329905eb4f9d6a587e59",
+      "bytes": 743384
+    },
+    {
+      "path": "menu.css",
+      "sha256": "f7b9c589c1bd1ba57e7910c609523c286a8b09a7581a48dd6a01ce31c709084c",
+      "bytes": 9488
+    },
+    {
+      "path": "menu.html",
+      "sha256": "629de92d3762b3acf8197c9b4e8c14e92205b319fc505656c574d7b62b2630a1",
+      "bytes": 3206
+    },
+    {
+      "path": "menu.js",
+      "sha256": "ae4dda57c2094a2abb8e3622ba6f64795f5f2a7b67cd043eeecc32277ccd56df",
+      "bytes": 8317
+    },
+    {
+      "path": "ranking.css",
+      "sha256": "ce5cdf8ac5d47fc19102b78cb64706b823aa4ac416fa76dd413a1b68215f9167",
+      "bytes": 5019
+    },
+    {
+      "path": "ranking.js",
+      "sha256": "12663be8b0db56a0a311fffaaec2d28b18cd3b55bd51a2322591126f24ffc7a2",
+      "bytes": 9119
+    },
+    {
+      "path": "sample-ranking.js",
+      "sha256": "12663be8b0db56a0a311fffaaec2d28b18cd3b55bd51a2322591126f24ffc7a2",
+      "bytes": 9119
+    },
+    {
+      "path": "spear/assets/boss-b-1.png",
+      "sha256": "bdde797c73e8c8530ac85c83550ca2ce14e74b560c9076ba4d45deed4a4c4471",
+      "bytes": 2204550
+    },
+    {
+      "path": "spear/assets/boss-b-2.png",
+      "sha256": "548ddc7a8191a433274901a6081641c73da295d72b6db27254149a5f401927a6",
+      "bytes": 2065404
+    },
+    {
+      "path": "spear/assets/boss-b-3.png",
+      "sha256": "0aae21b340bf1e9031215cdf651a12c6b303d53d8566645347f46057c1375e84",
+      "bytes": 1940452
+    },
+    {
+      "path": "spear/assets/boss-b-4.png",
+      "sha256": "53317d69f9b2eee871a029dd0feaf7a647f44b496e6b1b76e76e32daf3fbc4ae",
+      "bytes": 1921795
+    },
+    {
+      "path": "spear/assets/boss-b-5.png",
+      "sha256": "caa9ba7d64cfbb6b462c13aff2e2363efe00cf37351e69eb53b0ef36eaf0b122",
+      "bytes": 1854426
+    },
+    {
+      "path": "spear/assets/boss-b-6.png",
+      "sha256": "1a9c63e0a05dede1a79e41fe6fd9c5aa723fffee1df44224b4f848fbc67c8e1d",
+      "bytes": 1797317
+    },
+    {
+      "path": "spear/assets/boss-b-7.png",
+      "sha256": "e5d4e1775f5ff99c18aabf2f35dc4bad7988cc266f7e93a986322faf02b84b27",
+      "bytes": 2204590
+    },
+    {
+      "path": "spear/assets/boss-b-8.png",
+      "sha256": "69f79b7ff2da6a2a011bb3ebb9a2f533f37f90cd3212369e2c06b65a821b9d4d",
+      "bytes": 2276669
+    },
+    {
+      "path": "spear/assets/boss-b-earth-1.png",
+      "sha256": "5bbc06ff46040d0d7255458792fe10d9e3aedb5052d39d63778d0de618841b65",
+      "bytes": 319321
+    },
+    {
+      "path": "spear/assets/boss-b-earth-2.png",
+      "sha256": "a020d0910a60ef3db43b5bfb2af9cefdde496c12edb510d39522161909415472",
+      "bytes": 450986
+    },
+    {
+      "path": "spear/assets/boss-b-earth-3.png",
+      "sha256": "682fc161e2906e36b78c953b6521530764a3621471d99e97b32df19310237623",
+      "bytes": 445925
+    },
+    {
+      "path": "spear/assets/boss-b-earth-4.png",
+      "sha256": "ed429121a49b40186c304b0803943cdbe8151cccbb2b55c9e93eda0e42703714",
+      "bytes": 378606
+    },
+    {
+      "path": "spear/assets/boss-b-impact.png",
+      "sha256": "7ebe8319c8addc65ca4e27354865e482f3a0309406b149124d05786dc6627df1",
+      "bytes": 1623667
+    },
+    {
+      "path": "spear/assets/boss-b-sweep.png",
+      "sha256": "bc880f5eb1410c0c8e326b13d968eef8220f58244b55c5c1445048181d631ab2",
+      "bytes": 1487695
+    },
+    {
+      "path": "spear/assets/character.webp",
+      "sha256": "94f6ed0f3df9cc58f2402c84d29456fcf3255e92f8acd5d96e2b081535f891e6",
+      "bytes": 226718
+    },
+    {
+      "path": "spear/assets/cutin.webp",
+      "sha256": "1a3a0991dea56a80b8754006518b025a99066c5b71b6ab570a813948f2ac05d5",
+      "bytes": 504110
+    },
+    {
+      "path": "spear/assets/ground.webp",
+      "sha256": "57f381613c3a16332989fc2802d1b4c16dfd8ea619696737e0913b7d6815d6cd",
+      "bytes": 847752
+    },
+    {
+      "path": "spear/assets/hikari-no-mukou-game.mp3",
+      "sha256": "1b1ca72755e89984d4fddb282cd00c7e51c6a29617a4a80a8118a4623befb9cb",
+      "bytes": 4340897
+    },
+    {
+      "path": "spear/assets/portrait.webp",
+      "sha256": "8c28ed501bd34234332351c07617f8fd60475cd60d2e44ae0d01e38db018b062",
+      "bytes": 337380
+    },
+    {
+      "path": "spear/assets/ruins.webp",
+      "sha256": "f032996efeb83923197ac5eedf715b5cfd378dc6ba0917f1714fec6c152b6b85",
+      "bytes": 459730
+    },
+    {
+      "path": "spear/assets/run.webp",
+      "sha256": "35fd8f611301533380a54cdb8a933fedc0421b21f92626bfb587c0445c55f497",
+      "bytes": 424272
+    },
+    {
+      "path": "spear/assets/samidare-icon.webp",
+      "sha256": "6b4b491cfb1c8d624a6c32655d9a7ca40481649b5d2847205f44f3f958692c73",
+      "bytes": 328056
+    },
+    {
+      "path": "spear/assets/samidare.webp",
+      "sha256": "bdfe2b7db5e0af6c54f91b4e706a6e4e849a0acf1cb0ecc673c52cb662c63f8b",
+      "bytes": 456182
+    },
+    {
+      "path": "spear/assets/spin-icon.webp",
+      "sha256": "40e23947d5f109029bec97be7ce20a75ee2a049bee77f004f53855a32294ef4a",
+      "bytes": 393950
+    },
+    {
+      "path": "spear/assets/spin.webp",
+      "sha256": "7a331b0021daeb8368362955374c162f7cae85cb37184555fe92925d1dc6947d",
+      "bytes": 496526
+    },
+    {
+      "path": "spear/assets/stage2-gremlin.png",
+      "sha256": "7fa1e89aa25aa8bcd5e85acbd030c7ebf4c71b65d5d6aa073e23f3705094dc40",
+      "bytes": 2006671
+    },
+    {
+      "path": "spear/assets/stage2-jellyfish.png",
+      "sha256": "c9fc8b3c2883f19977f02f75ab39d241975ce59bae35365ea588da481f0804d9",
+      "bytes": 1646998
+    },
+    {
+      "path": "spear/assets/stage2-mage.png",
+      "sha256": "133583601f8e4fe1f4c1165e8d520c9fa2ef5741062eee1e54137d7f6b2af4d5",
+      "bytes": 2115169
+    },
+    {
+      "path": "spear/assets/stage2-mandrill.png",
+      "sha256": "d445749a8d0cd5a402d637a762a1778bda3024ec723b15df0c69b5cc8ca488cd",
+      "bytes": 2477782
+    },
+    {
+      "path": "spear/assets/stage2-skeleton.png",
+      "sha256": "ead989da7da0b859d44fcf41523103c8e430c4f70a24e7b8258f94adb8504a3b",
+      "bytes": 1800520
+    },
+    {
+      "path": "spear/assets/ultimate-approved-20261011.png",
+      "sha256": "8e8f1b11fad735bcc24aa13e49c3ebddc15367e73cb7392f87b2bc8896d114fc",
+      "bytes": 3185261
+    },
+    {
+      "path": "spear/assets/ultimate-icon.webp",
+      "sha256": "5974bcd738395ee948f23b06957685959cdc52bb168287fa79bace4865916a34",
+      "bytes": 321518
+    },
+    {
+      "path": "spear/assets/ultimate.webp",
+      "sha256": "4e5186be5d6f40e013eb5566f265457b0607946707073e028e42704c809dc27b",
+      "bytes": 400126
+    },
+    {
+      "path": "spear/assets/vfx-samidare-reference.png",
+      "sha256": "d0a0a5110e44b820fbed523f9c2740bf4edede3549c773528fb54ff62a2a32f8",
+      "bytes": 1499169
+    },
+    {
+      "path": "spear/assets/vfx-spin-reference.png",
+      "sha256": "8a2964d77aeb76008a8da514d162185a9094abafa183986a71d6d4cd04f40f7e",
+      "bytes": 1721861
+    },
+    {
+      "path": "spear/assets/vfx-ultimate-reference.png",
+      "sha256": "7ee2bfbe6f62c7d47dbd11a9abc895ad36b31d76779757d5d9ff75b9ec439e35",
+      "bytes": 1900530
+    },
+    {
+      "path": "spear/bgm.js",
+      "sha256": "ab825cc2c8c8afd459a8a130fd310b85c68c04ab304364a1a58bfacc06eef70a",
+      "bytes": 1448
+    },
+    {
+      "path": "spear/game.js",
+      "sha256": "69117538994a03219a8382995592f51c0a62f65095414065c598b938ef79e806",
+      "bytes": 63668
+    },
+    {
+      "path": "spear/index.html",
+      "sha256": "d2dc2c9a8c6f9d56114a94821f2cc8e2ced02929623da881fc0423323eff087c",
+      "bytes": 32467
+    },
+    {
+      "path": "spear/sfx.js",
+      "sha256": "3113f0bf01e7d50d32f92ee44a0c20277f733003a05ae1d528bf84c2e235abef",
+      "bytes": 7818
+    },
+    {
+      "path": "sword/assets/battle-start-syakiin-v8.mp3",
+      "sha256": "59f2f831ff2578b5ebb7f1e09baf84e277394d19b0f80220b9e4b9e0a6a6d8b5",
+      "bytes": 70531
+    },
+    {
+      "path": "sword/assets/bonobo.png",
+      "sha256": "2238812d7a32c651abf96847e0376fd026f56f36a0e400b86b3223824cd09728",
+      "bytes": 794519
+    },
+    {
+      "path": "sword/assets/boss-fire-dragon-v2.webp",
+      "sha256": "ec8c82bf5dfd8dcaef965cb0f987fa94b934c4db7415358ce2ac49cdebfdf5fa",
+      "bytes": 470694
+    },
+    {
+      "path": "sword/assets/boss-horizontal-flame-v2.webp",
+      "sha256": "d7b54579688b9217155513d4ac0f2bcfce806792936cb6f23f1f4d7dd474b59f",
+      "bytes": 601504
+    },
+    {
+      "path": "sword/assets/boss-skills-contact-v6.webp",
+      "sha256": "42c40b4759c9036cc8c77adcd5c38ae351ef7027a15c66d9f3facdc519b893f4",
+      "bytes": 670944
+    },
+    {
+      "path": "sword/assets/boss-slide-v3.webp",
+      "sha256": "5901f8cb77134def9173a886ef7cd8fd8f9488a3feac53df582c9c6bcd648ef1",
+      "bytes": 471844
+    },
+    {
+      "path": "sword/assets/boss-warlord.png",
+      "sha256": "aeee38e10c15d2b0df5dfe98c2717a4a806e1ea7c2d29eacc51471cd2db13e1e",
+      "bytes": 2404435
+    },
+    {
+      "path": "sword/assets/earth-slash-gpt-v1.webp",
+      "sha256": "a73d94af09dae35577c3776309ee41c77799098c478ec9b93b2aca160a99b389",
+      "bytes": 509454
+    },
+    {
+      "path": "sword/assets/earth-slash-icon.png",
+      "sha256": "3fea2ecd603197314e1b66f27d8213ab1d2e242135adc55e624e730bb385724b",
+      "bytes": 515744
+    },
+    {
+      "path": "sword/assets/forest-ground-gpt-v1.095875d20497.webp",
+      "sha256": "095875d20497867522ee1698f47cab386f19559afdf6e4fb71e6fa5d226287cd",
+      "bytes": 746516
+    },
+    {
+      "path": "sword/assets/forest-trees-gpt-v1.9d6d5503daf1.webp",
+      "sha256": "9d6d5503daf168adf031fa864b0429fd8ad8bf8ed0c2c9c52a2068ac75279eb6",
+      "bytes": 838056
+    },
+    {
+      "path": "sword/assets/guard-icon.png",
+      "sha256": "86dddb9227049ac7fc045cbcf6aa96b66d9072c0c64bf63db014e87a239d4f23",
+      "bytes": 484673
+    },
+    {
+      "path": "sword/assets/guard-impact-gpt-v1.webp",
+      "sha256": "8456bab5f0a40b1aaa58e54ca57a45d27ff48f19bd13eba14dc738d09b427f32",
+      "bytes": 554130
+    },
+    {
+      "path": "sword/assets/guide-page-1.webp",
+      "sha256": "bf605ca603569b965e0f6b5fd58db04a139b43c760e828e9b03cd13856899aa6",
+      "bytes": 493564
+    },
+    {
+      "path": "sword/assets/guide-page-2-v2.webp",
+      "sha256": "fcfab32a57de170c38eaf8ceaf2745df9867b8f65f487d4b3b992f6371e5d99d",
+      "bytes": 438644
+    },
+    {
+      "path": "sword/assets/guide-page-3.webp",
+      "sha256": "ccaec6783ddacbe8efe05a8d303908c590ed360df3c27560d3e90eb9a16653c1",
+      "bytes": 452020
+    },
+    {
+      "path": "sword/assets/guide-page-4.webp",
+      "sha256": "724cd497c6ed9034c41b3671388d6bc24ae759b315db2e8726c76724461e5fc1",
+      "bytes": 417564
+    },
+    {
+      "path": "sword/assets/hero-blade-v2.webp",
+      "sha256": "3a9b664d31250e27d7a95fb85e32d15152ac4a0cb1d5a12c7a670e91cc56d486",
+      "bytes": 50650
+    },
+    {
+      "path": "sword/assets/hero-defeat-v2.webp",
+      "sha256": "a67d5bcd7764c1a4ff999fa86ce74cbf5e5efae17d66c9f0edcb1924c2f0c4c5",
+      "bytes": 313136
+    },
+    {
+      "path": "sword/assets/hero-fall-v11.mp3",
+      "sha256": "8ee5409fa7e4a99259d9c515bd586413debd31c2290155bbdb1d489e1172c729",
+      "bytes": 18466
+    },
+    {
+      "path": "sword/assets/hero-guard-gpt-v1.webp",
+      "sha256": "cd5d10bdf1ba484e300361b64e1fa77a14769e95a9cdd6e9f90fd0ab7e4b451f",
+      "bytes": 362268
+    },
+    {
+      "path": "sword/assets/hero-normal-slash-v1.webp",
+      "sha256": "de55600c9d6b6a490206dad19f14dbc3663551e925399b4631c09c137756ee8e",
+      "bytes": 179352
+    },
+    {
+      "path": "sword/assets/hero-run-female-v2.png",
+      "sha256": "dc28bb193b911749e757c544abcbf93e3e136040022ffededd60951a7676351e",
+      "bytes": 2179971
+    },
+    {
+      "path": "sword/assets/hero-skills-gpt-v1.webp",
+      "sha256": "865d93666bd839b2fbdae1f12f288723e66f29d89f457f28831d9b5128df9596",
+      "bytes": 512238
+    },
+    {
+      "path": "sword/assets/hero-ultimate-cutin-v1.png",
+      "sha256": "3b5f3f49b4f7e7e49226b07c8533daccb63020221307ac00a2f8b1c5b43bb8b5",
+      "bytes": 2477536
+    },
+    {
+      "path": "sword/assets/hero.webp",
+      "sha256": "6b5dc8a21b7fdbd19134381c1ff20621411e116f8697761819b5adcfad6364e6",
+      "bytes": 95498
+    },
+    {
+      "path": "sword/assets/mahoutukai.png",
+      "sha256": "1c21a0d725986ef361619ffd7f78c96ab1c992691781f7c7f14a8ba44e3d8567",
+      "bytes": 942553
+    },
+    {
+      "path": "sword/assets/minidoragonn.png",
+      "sha256": "f9b51ecea50d9a2cbb3d5ce4f20df71418417de1cdbd93afb4fc8cdc8ae5f19f",
+      "bytes": 604821
+    },
+    {
+      "path": "sword/assets/ranking-cups-v1.webp",
+      "sha256": "77a5f168fcfab658f06a4938b6b45b3719ea1c02d540f07ac384e206d4daa3c7",
+      "bytes": 41654
+    },
+    {
+      "path": "sword/assets/superdash-gpt-v1.webp",
+      "sha256": "598cf2dd16f459acbb46c9ad32c9aebcc2ee067e3df08260d43dcc606ce1d059",
+      "bytes": 635020
+    },
+    {
+      "path": "sword/assets/suraimu.png",
+      "sha256": "29ca28db2a42207d80fae01b705a9fa052bfdfd33c8e964d96897c9a699897e0",
+      "bytes": 223355
+    },
+    {
+      "path": "sword/assets/theme-song.mp3",
+      "sha256": "9447383c11cea578858d2ad0ff400ada9341d7bf1f29817a11f361c06d98a6af",
+      "bytes": 2697761
+    },
+    {
+      "path": "sword/assets/title-screen-v3.webp",
+      "sha256": "e51c262921663b3ce0c9d2e1b6a6066b88c3c5a15d8bfeecaf5709b730db04f4",
+      "bytes": 658036
+    },
+    {
+      "path": "sword/assets/ultimate-approved-20261011.png",
+      "sha256": "569b49a6eaf4c5f75adea027e48ba6a7a29fb886bc25e8c6c1450338644af02f",
+      "bytes": 3142249
+    },
+    {
+      "path": "sword/assets/ultimate-icon-v1.png",
+      "sha256": "bd927057d8ab50f92d78787a3bee6ac67195c27daabfe0bf5977b5314306eb3c",
+      "bytes": 1939286
+    },
+    {
+      "path": "sword/assets/ultimate-sword-flight-v10.mp3",
+      "sha256": "88e95495a9fe99bad6d87783a1d7548e785d1a54c76542ba79ccd8d8cded347c",
+      "bytes": 43384
+    },
+    {
+      "path": "sword/assets/ultimate-syakiin-heavy-v9.mp3",
+      "sha256": "542440aba1ac2bbd4b626ee4de97f33974658d140badb76a52e0f86cc445dbc0",
+      "bytes": 43705
+    },
+    {
+      "path": "sword/assets/water-slash-gpt-v3.webp",
+      "sha256": "c2d53fa93d7f0f1c60fc454c2c735f3eea6c3f76d43ff0b7702795eaf8f5132b",
+      "bytes": 242370
+    },
+    {
+      "path": "sword/assets/water-slash-icon.png",
+      "sha256": "246ac15547971fbd773e08f3ed64838e81df6bbd1d0e25fa3e7fde5d89644882",
+      "bytes": 589910
+    },
+    {
+      "path": "sword/assets/がいこつ.png",
+      "sha256": "698cade1b23d717f9cb3916f74cf93e2d363c96cd2f0098cd40e46705499f357",
+      "bytes": 764715
+    },
+    {
+      "path": "sword/bgm.js",
+      "sha256": "4f829867785129991baf1a6d437a647e11408662879b8f6f4fcac14b8dda13fe",
+      "bytes": 1438
+    },
+    {
+      "path": "sword/game.js",
+      "sha256": "6fc646ab6ff24fdc06b3290bd5abc49fe9042d9467bcf7a45bb14526d44b6530",
+      "bytes": 63365
+    },
+    {
+      "path": "sword/index.html",
+      "sha256": "7d60e1f02ba3be3093f8d41ffc726388ec0f35fb166985a68716ac44d3b09664",
+      "bytes": 31284
+    },
+    {
+      "path": "sword/sfx.js",
+      "sha256": "b8620bb142d64b00a4fc998d70b60aba47bb0d745dc7422b9baf237ac40d0bfa",
+      "bytes": 7790
+    },
+    {
+      "path": "ui/guard-approved-20261011.png",
+      "sha256": "6cc12133dd0d979ae0745e0a8f357d54e99276f56ca1ec4e80c9238af3055ec7",
+      "bytes": 2205166
+    },
+    {
+      "path": "ui/skill-icons-approved-20261011.png",
+      "sha256": "50504f50e8e4291416e2010fb7ee34867dc166795827fce02530a40f77f3342f",
+      "bytes": 2217810
+    },
+    {
+      "path": "ui/spear-48ae05afb869.png",
+      "sha256": "48ae05afb869c2cb0b70905d6aaff7946bc509205bae50a416bb7d8c59717139",
+      "bytes": 328376
+    },
+    {
+      "path": "ui/spear-icon.png",
+      "sha256": "48bd5db47ab56c3df89e530ca3362021575cea8d1e80f36ba0a667fbd763aa3b",
+      "bytes": 2026567
+    },
+    {
+      "path": "ui/start.png",
+      "sha256": "46e1644aaf6e0e91dd88f8f106c4472196f5316837da44f8e6144bac8158d2b5",
+      "bytes": 3595535
+    },
+    {
+      "path": "ui/sword-8c37e5d1eda9.png",
+      "sha256": "8c37e5d1eda92634e2e38de58d17f670e0bae9924f7f1ea08fa37fb6f7b7d1da",
+      "bytes": 2005919
+    },
+    {
+      "path": "ui/sword-icon.png",
+      "sha256": "571ba563c94f361a3e27ac82580a9ae19d4efbc4a434b701ed8ade7f2c90f0f1",
+      "bytes": 127802
+    },
+    {
+      "path": "window.svg",
+      "sha256": "decf1cf7bb22b5c99c4857cfcd5718ce5465c4454166317589c83fc73df74b66",
+      "bytes": 386
+    }
+  ]
+}
