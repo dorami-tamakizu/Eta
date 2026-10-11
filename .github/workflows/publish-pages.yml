@@ -19,6 +19,7 @@ jobs:
         with:
           node-version: '24'
       - run: node scripts/check-pages-origin.cjs
+      - run: node scripts/test.cjs
       - run: node scripts/package-pages.cjs
       - run: node scripts/check-pages-origin.cjs _site
       - uses: actions/upload-pages-artifact@v3

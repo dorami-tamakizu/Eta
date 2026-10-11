@@ -2,7 +2,7 @@ const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/st
 const nodes=new Map(),node=()=>({hidden:false,disabled:false,value:'',textContent:'',innerHTML:'',classList:{add(){},remove(){}},focus(){},addEventListener(){},querySelector(){return node();}}),$=s=>{if(!nodes.has(s))nodes.set(s,node());return nodes.get(s);};
 let calls=[],resolvePost,mode='ok',rankingRows;
 const record={id:'record-one',name:'<img src=x onerror=alert(1)>',clear_time:50,road_time:23.77,skill_finishes:60,damage_taken:12,damage_dealt:308,overkill:94,time_score:3200000,skill_score:393443,damage_taken_score:100000,damage_dealt_score:143925,total_score:3837368};
-const context={window:{},document:{querySelector:$},AbortController,setTimeout,clearTimeout,fetch:async(url,opts)=>{calls.push({url,opts});if(opts.method==='POST')return new Promise(r=>resolvePost=r);if(mode==='error')throw Error('offline');return{ok:true,json:async()=>rankingRows||[record]};}};
+const context={window:{GAME_STAGE:'sword'},document:{querySelector:$},AbortController,setTimeout,clearTimeout,fetch:async(url,opts)=>{calls.push({url,opts});if(opts.method==='POST')return new Promise(r=>resolvePost=r);if(mode==='error')throw Error('offline');return{ok:true,json:async()=>rankingRows||[record]};}};
 vm.runInNewContext(fs.readFileSync(__dirname+'/../ranking.js','utf8'),context);const g=context.window.GameRanking;
 (async()=>{
  const data={...record};delete data.name;delete data.id;delete data.total_score;

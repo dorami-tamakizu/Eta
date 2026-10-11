@@ -16,7 +16,7 @@ vm.runInNewContext(code,context);const g=context.test;
  const root=path.join(__dirname,'..'),crypto=require('node:crypto');
  for(const file of ['index.html','game.js','bgm.js','sfx.js','ranking.js']){
   const text=fs.readFileSync(path.join(root,file),'utf8');
-  for(const match of text.matchAll(/["']([^"'<>]+\.(?:png|webp|mp3|m4a|js))["']/g))assert(fs.existsSync(path.join(root,match[1])),'missing '+match[1]);
+  for(const match of text.matchAll(/["']([^"'<>]+\.(?:png|webp|mp3|m4a|js))["']/g))assert(fs.existsSync(path.join(root,match[1].replace(/^\/Eta\//,''))),'missing '+match[1]);
  }
  const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
  for(const [,base,hash] of html.matchAll(/(game|bgm|sfx|ranking)\.([a-f0-9]+)\.js/g)){
