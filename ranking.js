@@ -1,6 +1,9 @@
 // Public client key. Database RLS permits only public reads and new submissions.
 (()=>{
-  const API='https://vowuqobawshmobylzxas.supabase.co/rest/v1/rankings';
+  const STAGE=window.GAME_STAGE;
+  const TABLE={sword:'rankings',spear:'rankings_spear',ex:'rankings_sword_ex'}[STAGE];
+  if(!TABLE)throw new Error('Unsupported ranking stage');
+  const API='https://vowuqobawshmobylzxas.supabase.co/rest/v1/'+TABLE;
   const KEY='sb_publishable_ToJdN1C3qeyYphxZj0ESMA_owNBV9kg';
   const $=s=>document.querySelector(s),esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const number=n=>Number(n).toLocaleString('ja-JP');
