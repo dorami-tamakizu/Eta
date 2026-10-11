@@ -9,7 +9,10 @@ function digest(data){return crypto.createHash('sha256').update(data).digest('he
 function adapt(file,data){
   if(!textExtensions.has(path.extname(file)))return data;
   let text=data.toString('utf8');
-  text=text.replace(/(["'])\/(?!\/)/g,'$1'+prefix).replace(/url\(\/(?!\/)/g,'url('+prefix);
+  const roots='(?:ui|sword|spear|ex)/|(?:menu\\.(?:html|css|js)|ranking\\.css|frame-(?:before|after)\\.js|sample-ranking\\.js|maintenance\\.webp)(?=[?"\u0027#)])';
+  text=text.replace(new RegExp('(["\u0027])/(?='+roots+')','g'),'$1'+prefix)
+    .replace(new RegExp('url\\(/(?='+roots+')','g'),'url('+prefix);
+  if(file==='menu.js')text=text.replace("'/'+stage+'/index.html'","'/Eta/'+stage+'/index.html'");
   return Buffer.from(text);
 }
 async function get(entry){
