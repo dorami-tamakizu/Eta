@@ -6,7 +6,12 @@ const context={window:{GAME_STAGE:'sword'},document:{querySelector:$},AbortContr
 vm.runInNewContext(fs.readFileSync(__dirname+'/../ranking.js','utf8'),context);const g=context.window.GameRanking;
 (async()=>{
  const data={...record};delete data.name;delete data.id;delete data.total_score;
- g.setResult(false,data);assert.equal($('#registerScore').hidden,true);
+ const unfinished={...data,time_score:0,damage_taken_score:0,damage_taken:20,damage_dealt:42,overkill:0};
+ g.setResult(false,unfinished);assert.equal($('#registerScore').hidden,false);$('#registerScore').onclick();
+ assert.equal($('#entryTotal').textContent,(unfinished.skill_score+unfinished.damage_dealt_score).toLocaleString('ja-JP'));
+ $('#playerName').value='未クリア検証';const unfinishedPost=$('#scoreEntryForm').onsubmit({preventDefault(){}});
+ assert.deepEqual(JSON.parse(calls[0].opts.body),{name:'未クリア検証',...unfinished});
+ resolvePost({ok:true,json:async()=>[{id:'unfinished'}]});await unfinishedPost;calls=[];
  g.setResult(true,data);assert.equal($('#registerScore').hidden,false);$('#registerScore').onclick();assert.equal($('#entryTotal').textContent,'3,837,368');
  $('#playerName').value=' ';await $('#scoreEntryForm').onsubmit({preventDefault(){}});assert.equal(calls.length,0);
  $('#playerName').value=' A ';const pending=$('#scoreEntryForm').onsubmit({preventDefault(){}});await $('#scoreEntryForm').onsubmit({preventDefault(){}});assert.equal(calls.length,1);assert.equal(JSON.parse(calls[0].opts.body).name,'A');assert.equal(JSON.parse(calls[0].opts.body).overkill,94);assert.equal(JSON.parse(calls[0].opts.body).road_time,23.77);assert.equal(JSON.parse(calls[0].opts.body).total_score,undefined);

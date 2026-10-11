@@ -33,8 +33,8 @@
     }finally{clearTimeout(timer);}
   }
   function setResult(ok,data){
-    result=ok?{data:{...data},state:'ready',message:''}:null;
-    $('#registerScore').hidden=!ok;
+    result={data:{...data},state:'ready',message:''};
+    $('#registerScore').hidden=false;
     $('#registerScore').textContent='名前を入力してランキング登録';
     $('#registerScore').disabled=false;
     $('#scoreEntry').classList.add('hide');
