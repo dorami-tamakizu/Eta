@@ -14,6 +14,7 @@ function adapt(file,data){
 }
 async function get(entry){
   if(sourceRoot)return fs.readFileSync(path.join(sourceRoot,entry.path));
+  if(entry.sourceText!==undefined)return Buffer.from(entry.sourceText);
   let last;
   for(let attempt=0;attempt<3;attempt++){
     try{
