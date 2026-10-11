@@ -258,5 +258,5 @@ s=setup();s.phase='boss';s.pd=7;s.pt=7;s.en=[{t:'boss',boss:true,z:12,l:1,displa
 
 // The boss and camera remain fixed while time, player input, and attacks advance.
 s=setup();s.phase='boss';s.guard=1;const stationary={t:'boss',boss:true,z:9,l:1,displayLane:1,hp:999,cd:100,wideCd:100,dragonCd:100};s.en=[stationary];tick(2400);assert(stationary.z>=9&&stationary.z<=15);assert(stationary.stepClock>0);assert.equal(s.z,0);
-s=setup();s.phase='boss';s.pd=0;s.pt=0;s.l=0;s.en=[{t:'boss',boss:true,z:9,l:1,displayLane:1,hp:999,cd:100,wideCd:100,dragonCd:100}];s.dashUntil=.5;g.accelerate();tick(40);assert.equal(s.dash,null);assert(s.en[0].z-s.z-s.pd<2);assert.equal(s.z,0);assert(s.en[0].z>=9);
+s=setup();s.phase='boss';s.pd=0;s.pt=0;s.l=0;s.en=[{t:'boss',boss:true,z:9,l:1,displayLane:1,hp:999,cd:100,wideCd:100,dragonCd:100}];s.dashUntil=.5;g.accelerate();for(let i=0;i<40&&s.dash;i++)tick(1);assert.equal(s.dash,null);assert(s.en[0].z-s.z-s.pd<2);assert.equal(s.z,0);assert(s.en[0].z>=9);
 console.log('PASS: moving boss, fixed arena camera, and dash stops at contact');
