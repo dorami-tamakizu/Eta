@@ -141,11 +141,12 @@ function fire(k){
   // A skill button press ends an active superdash immediately, before cast checks.
   if(S.dash){S.dash=null;S.boost=0;S.speed=0;S.dashUntil=-1;}
   if(S.ch[k-1]<1)return;
-  if(S.skill&&S.skill.t<(S.skill.k===1?.6:S.skill.d*.5)-1e-9)return;
+  // A different skill immediately cancels the current motion.
+  if(S.skill&&S.skill.k===k&&S.skill.t<(S.skill.k===1?.6:S.skill.d*.5)-1e-9)return;
   if(S.skill&&!S.skill.done&&S.skill.waterVisual)S.waterFx=S.waterFx.filter(f=>f!==S.skill.waterVisual);
-  S.guard=0;S.normalAttack=null;S.normalFlash=0;S.ch[k-1]--;S.skill={k,l:S.l,t:0,d:k===1?.98:1.05,done:0,emitted:0,hitCounts:new Map()};
+  S.guard=0;S.normalAttack=null;S.normalFlash=0;S.ch[k-1]--;S.skill={k,l:S.l,t:0,d:k===1?.98:.8,done:0,emitted:0,hitCounts:new Map()};
   sound(k===1?'waterStart':'continentStart');
-  notice(k===1?'五月雨':'回転閃',k===1?.98:1.05);
+  notice(k===1?'五月雨':'回転閃',k===1?.98:.8);
 }
 function lane(d){
   if(S.cinematic||ultimateCutinActive())return;
@@ -741,7 +742,7 @@ function drawArmoredHero(h){
    const a=S.skill,p=C(a.t/a.d,0,.999);
    let frame=Math.min(15,p*16);
    if(a.k===1){const t=a.t;frame=t<.28?Math.min(3,t/.07):t<.48?4+Math.min(3,(t-.28)/.05):t<.68?8+Math.min(3,(t-.48)/.05):12+Math.min(3,(t-.68)/.05);}
-   c.save();const lift=a.k===2?Math.sin(Math.PI*C((a.t-.1)/.72,0,1))*h*.09:0;c.translate(0,-lift);bPose(a.k===1?im.heroSkills:im.bSpin,frame,h,a.k===1?'samidare':'spin');c.restore();return;
+   c.save();const lift=a.k===2?Math.sin(Math.PI*C((a.t-.1*(a.d/1.05))/(.72*(a.d/1.05)),0,1))*h*.09:0;c.translate(0,-lift);bPose(a.k===1?im.heroSkills:im.bSpin,frame,h,a.k===1?'samidare':'spin');c.restore();return;
  }
  if(S.normalAttack){
    const p=C(S.normalAttack.t/S.normalAttack.d,0,.999);
