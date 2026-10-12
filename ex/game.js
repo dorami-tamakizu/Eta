@@ -48,7 +48,7 @@ function adv(n){
   if(!S.retreat)S.pt=target;
   return moved;
 }
-function sound(kind,type){if(window.GameSFX)window.GameSFX.play(kind,type)}function hurt(n){if(S.defeat||S.t<S.burstInvulnerableUntil||S.ultimate)return;if(S.guard){S.guardImpact=.38;sound('guardBlock');return;}S.combo=0;S.shake=.18;burst(S.l,S.z+S.pd,'#ff7563',12);sound('hurt');S.hp-=n;S.dmg+=n;S.hit=.15;if(S.hp<=0)beginDefeat()}function hit(e,n,sk,source=sk?'skill':'normal'){if(e.dead)return;n=exDamage(n,source);const dealt=Math.min(Math.max(0,e.hp),Math.max(0,n));S.dealtDamage+=dealt;if(S.t>=S.burstUntil&&!S.ultimate&&(source==='normal'||source==='skill'))S.ultimateCharge=C(S.ultimateCharge+dealt,0,ULTIMATE.capacity);S.overkill+=Math.max(0,n-Math.max(0,e.hp));if(source!=='ultimate')sound('hit',e.t);e.hp-=n;e.fl=.12;S.combo++;S.comboTime=2;S.fx.push({kind:'number',l:e.l,z:e.z,n:n,t:0,life:.8,color:sk?'#fff079':'#ffffff'});burst(e.l,e.z,sk?'#b5f7ff':'#ffffff',9);S.shake=sk?.08:.035;if(e.tell>0&&!e.boss){e.tell=0;e.cd=R(1.8,3.8)}if(e.boss)exKnockback(e,dealt);if(e.hp<=0){e.dead=1;e.fade=.4;burst(e.l,e.z,'#ffdfa0',18);sound('down',e.t);S.dashUntil=S.t+.5;if(sk)S.fin++}}function hideNotice(){const n=$('#actionName');n.style.opacity='0';n.classList.remove('moveArrow');if(S)S.notice=null}
+function sound(kind,type){if(window.GameSFX)window.GameSFX.play(kind,type)}function hurt(n){if(S.defeat||S.t<S.burstInvulnerableUntil||S.ultimate)return;if(S.guard){S.guardImpact=.38;sound('guardBlock');return;}S.combo=0;S.shake=.18;burst(S.l,S.z+S.pd,'#ff7563',12);sound('hurt');S.hp-=n;S.dmg+=n;S.hit=.15;if(S.hp<=0)beginDefeat()}function hit(e,n,sk,source=sk?'skill':'normal'){if(e.dead)return;n=exDamage(n,source);const dealt=Math.min(Math.max(0,e.hp),Math.max(0,n));S.dealtDamage+=dealt;if(S.t>=S.burstUntil&&!S.ultimate&&(source==='normal'||source==='skill'))S.ultimateCharge=C(S.ultimateCharge+dealt,0,ULTIMATE.capacity);S.overkill+=Math.max(0,n-Math.max(0,e.hp));if(source!=='ultimate')sound('hit',e.t);e.hp-=n;e.fl=.12;S.combo++;S.comboTime=2;S.fx.push({kind:'number',l:e.l,z:e.z,n:n,t:0,life:.8,color:sk?'#fff079':'#ffffff'});burst(e.l,e.z,sk?'#b5f7ff':'#ffffff',9);S.shake=sk?.08:.035;if(e.tell>0&&!e.boss){e.tell=0;e.cd=R(1.8,3.8)}if(e.boss)exKnockback(e,dealt);if(e.hp<=0){e.dead=1;e.fade=.4;burst(e.l,e.z,'#ffdfa0',18);sound('down',e.t);if(!e.boss)S.dashUntil=S.t+.5;if(sk)S.fin++}}function hideNotice(){const n=$('#actionName');n.style.opacity='0';n.classList.remove('moveArrow');if(S)S.notice=null}
 // Compact skill label, styled to match the forest HUD.
 function notice(text,seconds,arrow=false){
   const plate=text==='水波斬'||text==='大陸斬';
@@ -864,16 +864,15 @@ function exEntryStep(dt){S.cinematic.t+=dt;if(S.cinematic.t>=EX.entry.duration)e
 
 function exDamage(base,source){return base*(source==='ultimate'&&S.ultimate?S.ultimate.damageMultiplier:S.t<S.burstUntil?EX.burst.damageMultiplier:1);}
 function exKnockback(e,damage){
-  if(damage>0){
-    // Refresh the hit window without erasing the player's retreat within it.
-    if(!S.dashGate||S.t>S.dashUntil)S.dashGate={depth:S.pd,retreat:false};
-    S.dashUntil=S.t+EX.dash.window;
-  }
   const before=e.z,amount=damage*S.knockUnit;
   e.z+=amount;
   // Move both patrol endpoints: interpolation must not erase the knockback next frame.
   if(e.patrol){e.patrol.fromDepth+=amount;e.patrol.target[1]+=amount;}
-
+  // Open the window only after actual backward displacement.
+  if(e.z>before){
+    if(!S.dashGate||S.t>S.dashUntil)S.dashGate={depth:S.pd,retreat:false};
+    S.dashUntil=S.t+EX.dash.window;
+  }
 }
 function updateUltimate(dt){
   const a=S.ultimate;if(!a)return;a.t+=dt;
