@@ -80,17 +80,19 @@ function updateUltimateUI(){
  $('#ultimateFill').style.strokeDashoffset=String(100*(1-(active?left/EX.burst.duration:value/ULTIMATE.capacity)));
  $('#ultimateFill').style.stroke=active?'#ffce65':'#e8c4ff';
  button.setAttribute('aria-label',active?'バースト三連撃：残り'+left.toFixed(1)+'秒':'バースト開始：ゲージ'+Math.floor(value)+'/'+ULTIMATE.capacity);
- button.setAttribute('aria-disabled',String(!S.run||!!S.pause||!!S.cinematic||!!S.ultimate||(!active&&value<ULTIMATE.capacity)));
+ button.setAttribute('aria-disabled',String(!S.run||!!S.pause||!!S.cinematic||(!active&&value<ULTIMATE.capacity)));
  button.classList.toggle('burst-active',!!active);
  $('#burstCountdown').textContent=active?left.toFixed(1):'';
  $('#burstCountdown').hidden=!active;
 }
+function cancelAttackMotion(){
+  if(S.skill&&!S.skill.done&&S.skill.waterVisual)S.waterFx=S.waterFx.filter(f=>f!==S.skill.waterVisual);
+  S.skill=null;S.ultimate=null;S.normalAttack=null;S.normalFlash=0;
+}
 function fireUltimate(){
- if(!S.run||S.pause||S.cinematic||S.ultimate)return false;
+ if(!S.run||S.pause||S.cinematic)return false;
  if(S.t>=S.burstUntil&&S.ultimateCharge<ULTIMATE.capacity)return false;
- // A valid ultimate tap takes priority over an unfinished normal skill.
- if(S.skill&&!S.skill.done&&S.skill.waterVisual)S.waterFx=S.waterFx.filter(f=>f!==S.skill.waterVisual);
- S.skill=null;S.normalAttack=null;
+ cancelAttackMotion();
  if(S.t>=S.burstUntil){
   if(S.ultimateCharge<ULTIMATE.capacity)return false;
   S.guard=0;S.retreat=0;S.pt=S.pd;
@@ -102,9 +104,9 @@ function fireUltimate(){
 }
 function ultimateCutinActive(){return !!S.ultimate&&S.ultimate.t<ULTIMATE.cutin;}
 function fire(k){
-  if(!S.run||S.pause||S.cinematic||S.ultimate||S.ch[k-1]<1)return;
-  if(S.skill&&S.skill.t<S.skill.d*.5-1e-9)return;
-  if(S.skill&&!S.skill.done&&S.skill.waterVisual)S.waterFx=S.waterFx.filter(f=>f!==S.skill.waterVisual);
+  if(!S.run||S.pause||S.cinematic||S.ch[k-1]<1)return;
+  // The newest available skill tap cancels and replaces the current motion.
+  cancelAttackMotion();
   S.guard=0;S.normalAttack=null;S.ch[k-1]--;S.skill={k,l:S.l,t:0,d:k===1?.68:.82,done:0};
   sound(k===1?'waterStart':'continentStart');
   notice(k===1?'水波斬':'大陸斬',k===1?.68:.82);
@@ -843,7 +845,7 @@ document.addEventListener('touchmove',e=>{if(e.target.closest&&e.target.closest(
 cv.addEventListener('contextmenu',e=>e.preventDefault());
 cv.addEventListener('dragstart',e=>e.preventDefault());
 document.addEventListener('visibilitychange',()=>{if(document.hidden&&(S.run||(S.defeat&&!S.defeat.finished))&&!S.pause)$('#stop').click()});
-addEventListener('keydown',e=>{if(!S.run||S.pause||S.cinematic||ultimateCutinActive())return;if(['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','1','2','3',' '].includes(e.key))e.preventDefault();if(e.repeat)return;if(e.key==='ArrowLeft')lane(-1);if(e.key==='ArrowRight')lane(1);if(e.key==='ArrowUp')accelerate();if(e.key==='ArrowDown')depth(-MAX_DEPTH/4);if(e.key==='1')fire(1);if(e.key==='2')fire(2);if(e.key==='3')fireUltimate();if(e.key===' '&&!S.ultimate){S.guard=1;sound('guardRaise')}});addEventListener('keyup',e=>{if(e.key===' ')S.guard=0});
+addEventListener('keydown',e=>{if(!S.run||S.pause||S.cinematic||(ultimateCutinActive()&&!['1','2','3'].includes(e.key)))return;if(['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','1','2','3',' '].includes(e.key))e.preventDefault();if(e.repeat)return;if(e.key==='ArrowLeft')lane(-1);if(e.key==='ArrowRight')lane(1);if(e.key==='ArrowUp')accelerate();if(e.key==='ArrowDown')depth(-MAX_DEPTH/4);if(e.key==='1')fire(1);if(e.key==='2')fire(2);if(e.key==='3')fireUltimate();if(e.key===' '&&!S.ultimate){S.guard=1;sound('guardRaise')}});addEventListener('keyup',e=>{if(e.key===' ')S.guard=0});
 // EX-only behavior. Original sword and spear engines remain separate and unchanged.
 function exBegin(){
   reset();S.en=[];S.run=1;S.hp=EX.playerHP;S.pd=RUN_DEPTH;S.pt=S.pd;

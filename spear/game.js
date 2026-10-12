@@ -79,8 +79,13 @@ function updateUltimateUI(){
   button.setAttribute('aria-label','奥義・渾身の急所突き：ゲージ'+Math.floor(value)+'/'+ULTIMATE.capacity);
   button.setAttribute('aria-disabled',String(value<ULTIMATE.capacity));
 }
+function cancelAttackMotion(){
+  if(S.skill&&!S.skill.done&&S.skill.waterVisual)S.waterFx=S.waterFx.filter(f=>f!==S.skill.waterVisual);
+  S.skill=null;S.ultimate=null;S.normalAttack=null;S.normalFlash=0;
+}
 function fireUltimate(){
-  if(!S.run||S.pause||S.cinematic||S.skill||S.ultimateCharge<ULTIMATE.capacity||S.ultimate)return false;
+  if(!S.run||S.pause||S.cinematic||S.ultimateCharge<ULTIMATE.capacity)return false;
+  cancelAttackMotion();
   S.ultimateCharge=0;S.guard=0;S.normalAttack=null;S.normalFlash=0;
   S.ptr=null;S.dash=null;S.boost=0;S.ultimate={t:0,origin:S.z+S.pd,far:S.z+S.pd+45,l:S.l,seen:new Set()};hideNotice();sound('ultimateCutin',0);updateUltimateUI();return true;
 }
@@ -137,13 +142,12 @@ function drawUltimate(){
  paintVfx(im.vfxUltimate,frame,lx(a.l,S.pd),(top+bottom)/2,height*.75,height,alpha);
 }
 function fire(k){
-  if(!S.run||S.pause||S.cinematic||S.ultimate)return;
+  if(!S.run||S.pause||S.cinematic)return;
   // A skill button press ends an active superdash immediately, before cast checks.
   if(S.dash){S.dash=null;S.boost=0;S.speed=0;S.dashUntil=-1;}
   if(S.ch[k-1]<1)return;
-  // A different skill immediately cancels the current motion.
-  if(S.skill&&S.skill.k===k&&S.skill.t<(S.skill.k===1?.6:S.skill.d*.5)-1e-9)return;
-  if(S.skill&&!S.skill.done&&S.skill.waterVisual)S.waterFx=S.waterFx.filter(f=>f!==S.skill.waterVisual);
+  // The newest available skill tap cancels and replaces the current motion.
+  cancelAttackMotion();
   S.guard=0;S.normalAttack=null;S.normalFlash=0;S.ch[k-1]--;S.skill={k,l:S.l,t:0,d:k===1?.98:.8,done:0,emitted:0,hitCounts:new Map()};
   sound(k===1?'waterStart':'continentStart');
   notice(k===1?'五月雨':'回転閃',k===1?.98:.8);
@@ -901,5 +905,5 @@ document.addEventListener('touchmove',e=>{if(e.target.closest&&e.target.closest(
 cv.addEventListener('contextmenu',e=>e.preventDefault());
 cv.addEventListener('dragstart',e=>e.preventDefault());
 document.addEventListener('visibilitychange',()=>{if(document.hidden&&(S.run||(S.defeat&&!S.defeat.finished))&&!S.pause)$('#stop').click()});
-addEventListener('keydown',e=>{if(!S.run||S.pause||S.cinematic||ultimateCutinActive())return;if(['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','1','2','3',' '].includes(e.key))e.preventDefault();if(e.repeat)return;if(e.key==='ArrowLeft')lane(-1);if(e.key==='ArrowRight')lane(1);if(e.key==='ArrowUp')accelerate();if(e.key==='ArrowDown')depth(-MAX_DEPTH/4);if(e.key==='1')fire(1);if(e.key==='2')fire(2);if(e.key==='3')fireUltimate();if(e.key===' '&&!S.ultimate){S.guard=1;sound('guardRaise')}});addEventListener('keyup',e=>{if(e.key===' ')S.guard=0});
+addEventListener('keydown',e=>{if(!S.run||S.pause||S.cinematic||(ultimateCutinActive()&&!['1','2','3'].includes(e.key)))return;if(['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','1','2','3',' '].includes(e.key))e.preventDefault();if(e.repeat)return;if(e.key==='ArrowLeft')lane(-1);if(e.key==='ArrowRight')lane(1);if(e.key==='ArrowUp')accelerate();if(e.key==='ArrowDown')depth(-MAX_DEPTH/4);if(e.key==='1')fire(1);if(e.key==='2')fire(2);if(e.key==='3')fireUltimate();if(e.key===' '&&!S.ultimate){S.guard=1;sound('guardRaise')}});addEventListener('keyup',e=>{if(e.key===' ')S.guard=0});
 reset();function loop(t){let dt=last?Math.min(.033,(t-last)/1000):0;last=t;step(dt);draw();requestAnimationFrame(loop)}requestAnimationFrame(loop)})();
