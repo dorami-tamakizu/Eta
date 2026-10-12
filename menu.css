@@ -37,3 +37,12 @@ button.ex-face{padding:0;flex-shrink:0;cursor:pointer}
 
 #character[data-stage=ex] .description th:nth-child(2){width:34%}
 #character[data-stage=ex] .description th:nth-child(3){width:52%}
+
+/* The guide fills the visible viewport; navigation overlays the complete artwork. */
+#panel.guide-fullscreen{position:fixed;inset:0;width:100vw;height:var(--app-height,100dvh);padding:0;background:#071522;z-index:10}
+#panel.guide-fullscreen:before{display:none}
+#panel.guide-fullscreen>header{position:absolute;inset:0 0 auto;height:0;margin:0;z-index:3;pointer-events:none}
+#panel.guide-fullscreen #panelTitle{display:none}
+#panel.guide-fullscreen #closePanel{top:max(8px,env(safe-area-inset-top));left:max(8px,env(safe-area-inset-left));min-width:48px;min-height:40px;pointer-events:auto}
+#panel.guide-fullscreen #panelBody{width:100%;height:100%;padding:0}
+#panel.guide-fullscreen .help-art{width:min(100vw,calc(var(--app-height,100dvh)*.6666666667));max-height:100%;aspect-ratio:2 / 3}

@@ -13,7 +13,7 @@
  document.querySelectorAll('[data-character]').forEach(button=>button.onclick=()=>openCharacter(button.dataset.character));
  document.querySelectorAll('[data-start]').forEach(button=>button.onclick=()=>{const stage=button.dataset.start;preload([stage]);const frame=frames[stage];if(!ready[stage]){button.disabled=true;button.textContent='読込中…';return;}frame.classList.add('active');document.body.classList.add('playing');frame.contentWindow.dispatchEvent(new Event('resize'));if(!frame.contentWindow.GameBridge.start()){frame.classList.remove('active');document.body.classList.remove('playing');$('#loadStatus').textContent='素材の読み込みを待って、もう一度スタートしてください。';}else frame.contentWindow.focus();});
  addEventListener('message',event=>{if(event.origin!==location.origin)return;const data=event.data,frame=frames[data?.stage];if(!frame||event.source!==frame.contentWindow)return;if(data.type==='game-ready'){ready[data.stage]=true;const b=$('[data-start="'+data.stage+'"]');b.disabled=false;b.textContent='スタート';}if(data.type==='game-return'){frame.classList.remove('active');document.body.classList.remove('playing');select();}});
- function panel(title){returnView=view;$('#panelTitle').textContent=title;$('#panelBody').replaceChildren();$('#panelBody').className='';show('panel');}
+ function panel(title){$('#panel').classList.remove('guide-fullscreen');returnView=view;$('#panelTitle').textContent=title;$('#panelBody').replaceChildren();$('#panelBody').className='';show('panel');}
  $('#closePanel').onclick=()=>show(returnView);
  function openRanking(stage){
   panel(names[stage]+' ランキング');preload([stage]);
@@ -37,7 +37,7 @@
   $('#helpPrev').hidden=guidePage===0;$('#helpNext').hidden=guidePage===guidePages.length-1;$('#helpCount').textContent=(guidePage+1)+' / '+guidePages.length;
  }
  function openGuide(){
-  panel('ゲーム説明');$('#panelBody').className='help-images';
+  panel('');$('#panel').classList.add('guide-fullscreen');$('#panelBody').className='help-images';
   $('#panelBody').innerHTML='<div class="help-art"><img id="helpImage" alt=""><button id="helpPrev" aria-label="前のページ"><span aria-hidden="true">‹</span></button><button id="helpNext" aria-label="次のページ"><span aria-hidden="true">›</span></button><output id="helpCount" aria-live="polite"></output></div>';
   $('#helpPrev').onclick=()=>showGuidePage(guidePage-1);$('#helpNext').onclick=()=>showGuidePage(guidePage+1);showGuidePage(0);
  }
