@@ -54,3 +54,8 @@ button.ex-face{padding:0;flex-shrink:0;cursor:pointer}
 
 #totalRanking.total-ranking-entry{display:block;width:100%;min-height:58px;text-align:left;padding:14px 18px;font-size:15px}
 .total-stage-list{list-style:disc;margin:0;padding-left:1.3em;line-height:1.8}.total-stage-list li{margin:8px 0;overflow-wrap:anywhere}
+
+/* One compact line per stage in the overall-ranking detail box. */
+.total-ranking .rank-detail-body{container-type:inline-size}
+.total-ranking .total-stage-list{font-size:clamp(9px,2.9vw,12px);font-size:clamp(9px,3.8cqw,12px);line-height:1.7}
+.total-ranking .total-stage-list li{white-space:nowrap;overflow-wrap:normal;margin:6px 0}
