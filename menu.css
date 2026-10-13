@@ -59,3 +59,5 @@ button.ex-face{padding:0;flex-shrink:0;cursor:pointer}
 .total-ranking .rank-detail-body{container-type:inline-size}
 .total-ranking .total-stage-list{font-size:clamp(9px,2.9vw,12px);font-size:clamp(9px,3.8cqw,12px);line-height:1.7}
 .total-ranking .total-stage-list li{white-space:nowrap;overflow-wrap:normal;margin:6px 0}
+
+.total-stage-row{display:grid;grid-template-columns:7.2em 1em 7.5em auto;align-items:baseline}.total-stage-score{text-align:right;font-variant-numeric:tabular-nums}
