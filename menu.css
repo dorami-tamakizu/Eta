@@ -51,3 +51,6 @@ button.ex-face{padding:0;flex-shrink:0;cursor:pointer}
 #panel:has(.shared-ranking)>header{display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:16px;align-items:center;height:auto;min-height:52px;padding:0 8px}
 #panel:has(.shared-ranking) #closePanel{position:static;min-width:48px;min-height:40px}
 #panel:has(.shared-ranking) #panelTitle{min-width:0;text-align:center;line-height:1.35;overflow-wrap:anywhere}
+
+#totalRanking.total-ranking-entry{display:block;width:100%;min-height:58px;text-align:left;padding:14px 18px;font-size:15px}
+.total-stage-list{list-style:disc;margin:0;padding-left:1.3em;line-height:1.8}.total-stage-list li{margin:8px 0;overflow-wrap:anywhere}

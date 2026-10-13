@@ -28,6 +28,53 @@
  }
  document.querySelectorAll('[data-ranking]').forEach(button=>button.onclick=()=>openRanking(button.dataset.ranking));
 
+ const totalStages=[['sword','rankings'],['spear','rankings_spear'],['ex','rankings_sword_ex']];
+ function combineStageRecords(groups){
+  const players=new Map();
+  groups.forEach((records,index)=>{const stage=totalStages[index][0];for(const record of records){
+   if(typeof record.name!=='string'||!Number.isFinite(Number(record.total_score)))throw Error('Invalid record');
+   let player=players.get(record.name);if(!player){player={name:record.name,stages:{},total:0};players.set(record.name,player);}
+   const prior=player.stages[stage];
+   if(!prior||Number(record.total_score)>Number(prior.total_score))player.stages[stage]=record;
+  }});
+  for(const player of players.values())player.total=Object.values(player.stages).reduce((sum,r)=>sum+Number(r.total_score),0);
+  return [...players.values()].sort((a,b)=>b.total-a.total||a.name.localeCompare(b.name,'ja')).slice(0,100);
+ }
+ async function readTotalStage(table,signal){
+  const result=[];let offset=0;
+  for(;;){
+   const response=await fetch('https://vowuqobawshmobylzxas.supabase.co/rest/v1/'+table+'?select=name,total_score,road_time,id,created_at&order=created_at.asc,id.asc&limit=100&offset='+offset,{headers:{apikey:'sb_publishable_ToJdN1C3qeyYphxZj0ESMA_owNBV9kg'},signal});
+   if(!response.ok)throw Error('Ranking read failed');const rows=await response.json();if(!Array.isArray(rows))throw Error('Invalid response');
+   result.push(...rows);if(rows.length<100)return result;offset+=rows.length;
+  }
+ }
+ function totalRankingHTML(players){
+  const escape=value=>String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const number=value=>Number(value).toLocaleString('ja-JP');
+  return '<ol class="shared-ranking total-ranking">'+players.map((player,index)=>{
+   const metal=['gold','silver','bronze'][index],id='total-detail-'+index;
+   const detail=totalStages.map(([stage])=>{const record=player.stages[stage];const time=!record?'未登録':stage==='ex'?'道中なし':record.road_time!=null&&Number.isFinite(Number(record.road_time))?'道中'+Number(record.road_time).toFixed(2)+'秒':'道中未記録';return '<li>'+names[stage]+'：'+number(record?record.total_score:0)+'点（'+time+'）</li>';}).join('');
+   return '<li class="rank-card '+(metal||'standard')+'"><div class="rank-card-header">'+(metal?'<span class="rank-cup cup-'+metal+'" aria-hidden="true"></span>':'')+'<span class="rank-position">'+(index+1)+'位</span><span class="rank-name" style="--name-length:'+Math.max(1,Array.from(player.name).length)+'">'+escape(player.name)+'</span></div><div class="rank-score-row"><span class="rank-score-label">合計スコア</span><strong class="rank-total">'+number(player.total)+'</strong><button type="button" class="rank-detail-button" aria-label="'+escape(player.name)+' の総合スコア詳細" aria-expanded="false" aria-controls="'+id+'">詳細</button></div><div id="'+id+'" class="rank-detail-body" hidden><ul class="total-stage-list">'+detail+'</ul></div></li>';
+  }).join('')+'</ol>'+(!players.length?'<p>まだ登録された記録はありません。</p>':'')+'<button type="button" class="btn rank-refresh">更新</button>';
+ }
+ function openTotalRanking(){
+  panel('総合ランキング');const body=document.createElement('div');$('#panelBody').append(body);let requestId=0,controller;
+  async function refresh(){
+   const id=++requestId;controller?.abort();controller=new AbortController();const active=controller;const timer=setTimeout(()=>active.abort(),20000);
+   body.innerHTML='<p role="status">総合ランキングを読み込み中…</p>';
+   try{const groups=await Promise.all(totalStages.map(([,table])=>readTotalStage(table,active.signal)));if(id!==requestId||!body.isConnected)return;body.innerHTML=totalRankingHTML(combineStageRecords(groups));}
+   catch(error){active.abort();if(id!==requestId||!body.isConnected)return;body.innerHTML='<p role="alert">総合ランキングを読み込めませんでした。</p><button type="button" class="btn rank-refresh">再読み込み</button>';}
+   finally{clearTimeout(timer);}
+  }
+  body.onclick=event=>{
+   const button=event.target.closest('button');if(!button||!body.contains(button))return;
+   if(button.classList.contains('rank-refresh')){refresh();return;}
+   if(button.classList.contains('rank-detail-button')){const expanded=button.getAttribute('aria-expanded')==='true';button.setAttribute('aria-expanded',String(!expanded));button.closest('.rank-card').querySelector('.rank-detail-body').hidden=expanded;}
+  };
+  refresh();
+ }
+ $('#totalRanking').onclick=openTotalRanking;
+
  const guidePages=[['guide-page-1.webp','ゲーム概要'],['guide-page-2-v2.webp','スーパーダッシュ'],['guide-page-3.webp','ハイスコアを狙おう'],['guide-page-4.webp','ランキングに登録しよう']];
  let guidePage=0;
  function showGuidePage(index){
