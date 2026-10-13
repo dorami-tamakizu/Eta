@@ -91,7 +91,7 @@
  document.querySelectorAll('[data-panel]').forEach(button=>button.onclick=()=>{
   if(button.dataset.panel==='help')openGuide();
   else if(button.dataset.panel==='x-post'){panel('Xポスト');$('#panelBody').textContent='更新待ち';}
-  else{panel('更新情報');$('#panelBody').innerHTML='<ul class="release-list"><li><span class="release-date">2026/09/23</span><span>初回リリース・剣ステージ実装</span></li><li><span class="release-date">2026/10/03</span><span>槍ステージ実装</span></li><li><span class="release-date">2026/10/11</span><span>剣EXステージ実装</span></li></ul>';}
+  else{panel('更新情報');$('#panelBody').innerHTML='<ul class="release-list"><li><span class="release-date">2026/09/23</span><span>初回リリース・剣ステージ実装</span></li><li><span class="release-date">2026/10/03</span><span>槍ステージ実装</span></li><li><span class="release-date">2026/10/11</span><span>剣EXステージ実装</span></li><li><span class="release-date">2026/10/13</span><span>総合ランキング実装</span></li></ul>';}
  });
  addEventListener('keydown',event=>{if(view!=='panel'||!$('#panelBody').classList.contains('help-images'))return;if(event.key==='ArrowRight'){event.preventDefault();showGuidePage(guidePage+1);}if(event.key==='ArrowLeft'){event.preventDefault();showGuidePage(guidePage-1);}});
  if(location.hash==='#stages')select();
