@@ -683,7 +683,7 @@ function draw(){
   if(S.shake)c.translate(Math.sin(S.t*110)*S.shake*22,Math.cos(S.t*93)*S.shake*12);
   // Motion flecks on the path use the same perspective as the combatants.
   c.fillStyle='#eadfb72b';for(let i=0;i<24;i++){let z=((i*2.7-S.z)%64.8+64.8)%64.8-3,p=1/(1+z*.115);c.fillRect(W/2+((i%3)-1)*W*.23*p,H*HORIZON+H*GROUND_SPAN*p,2*p,5*p)}
-  frontline();exDrawArena();
+  frontline();exDrawArena();exDrawFallGround();
   for(const e of S.en.filter(e=>(!S.cinematic||!e.boss||(S.cinematic.kind==='victory'&&S.cinematic.t<1.6))&&(!e.dead||e.fade>0)&&e.z-S.z>-2&&e.z-S.z<45).sort((a,b)=>b.z-a.z)){
     const z=e.z-S.z,p=perspective(z),img=im[e.t],x=lx(e.boss?e.displayLane:e.l,z),y=yy(z),h=e.boss?bossHeight(z):D[e.t].h*p*Math.min(1,H/844)*.77;
     if(!img.complete||!img.naturalWidth)continue;const rect=crop(img),w=h*rect[2]/rect[3];
@@ -1132,17 +1132,26 @@ function exDrawWide(e,a){
  const frame=Math.min(7,Math.floor(q*8)),r=window.EX_SPRITES.effect1.frames[frame];
  exFrame('effect1',frame,W/2,yy(z)-bossHeight(e.z-S.z)*.10,w*r[3]/r[2],q>.8?(1-q)/.2:1);
 }
+function exFallEffectEnd(a){
+ const cfg=EX.attacks.fall;
+ return Math.min(a.duration,a.impact+cfg.warning+cfg.flight+.2);
+}
+function exDrawFallGround(){
+ const e=S.en.find(e=>e.boss&&!e.dead),a=e?.action;
+ if(!a||a.kind!=='fall'||S.cinematic||a.age<a.impact||a.age>=exFallEffectEnd(a))return;
+ for(const cell of a.cells){
+  const z=cell.z-S.z,near=z-cell.size/2,far=z+cell.size/2;
+  c.save();c.fillStyle='#ff252563';c.strokeStyle='#ff7777';c.lineWidth=1.5;c.beginPath();
+  const corners=[exFallPoint(cell.l-.5,near),exFallPoint(cell.l+.5,near),exFallPoint(cell.l+.5,far),exFallPoint(cell.l-.5,far)];
+  corners.forEach((p,i)=>i?c.lineTo(p.x,p.y):c.moveTo(p.x,p.y));c.closePath();c.fill();c.stroke();c.restore();
+ }
+}
 function exDrawFall(a){
- const cfg=EX.attacks.fall;if(a.age<a.impact)return;
+ const cfg=EX.attacks.fall;if(a.age<a.impact+cfg.warning||a.age>=exFallEffectEnd(a))return;
  const t=a.age-a.impact;
  for(const cell of a.cells){
   const z=cell.z-S.z,{x,y}=exFallPoint(cell.l,z);
-  if(t<cfg.warning){
-   const near=z-cell.size/2,far=z+cell.size/2;
-   c.save();c.fillStyle='#ff252563';c.strokeStyle='#ff7777';c.lineWidth=1.5;c.beginPath();
-   const corners=[exFallPoint(cell.l-.5,near),exFallPoint(cell.l+.5,near),exFallPoint(cell.l+.5,far),exFallPoint(cell.l-.5,far)];
-   corners.forEach((p,i)=>i?c.lineTo(p.x,p.y):c.moveTo(p.x,p.y));c.closePath();c.fill();c.stroke();c.restore();
-  }else if(t<cfg.warning+cfg.flight){
+  if(t<cfg.warning+cfg.flight){
    const q=(t-cfg.warning)/cfg.flight,h=170*perspective(z)*Math.min(1,H/844),img=im.fireDragon;
    if(img.complete&&img.naturalWidth)c.drawImage(img,x-h/3,y-h-(1-q)*H*.65,h*2/3,h);
   }else{
