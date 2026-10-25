@@ -1,0 +1,56 @@
+{
+  "videoFireCast": {
+    "frames": 6,
+    "columns": 4,
+    "cell": 384,
+    "source": "１(1).mp4",
+    "start": 0.88,
+    "end": 0.98,
+    "duration": 0.09999999999999998
+  },
+  "videoFireFlight": {
+    "frames": 12,
+    "columns": 4,
+    "cell": 384,
+    "source": "１(1).mp4",
+    "start": 1.07,
+    "end": 1.37,
+    "duration": 0.30000000000000004
+  },
+  "videoFireImpact": {
+    "frames": 11,
+    "columns": 4,
+    "cell": 384,
+    "source": "１(1).mp4",
+    "start": 1.47,
+    "end": 1.79,
+    "duration": 0.32000000000000006
+  },
+  "videoIceCast": {
+    "frames": 11,
+    "columns": 4,
+    "cell": 384,
+    "source": "２(1).mp4",
+    "start": 0.7,
+    "end": 1.04,
+    "duration": 0.3400000000000001
+  },
+  "videoIceFlight": {
+    "frames": 11,
+    "columns": 4,
+    "cell": 384,
+    "source": "２(1).mp4",
+    "start": 1.08,
+    "end": 1.4,
+    "duration": 0.31999999999999984
+  },
+  "videoIceImpact": {
+    "frames": 24,
+    "columns": 4,
+    "cell": 384,
+    "source": "２(1).mp4",
+    "start": 1.43,
+    "end": 2.4,
+    "duration": 0.97
+  }
+}

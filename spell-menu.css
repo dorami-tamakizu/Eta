@@ -1,0 +1,15 @@
+/* Align the face/eye line with the existing sword, spear and EX portraits.
+   The horse's mane extends far above its face, so the artwork top is not the
+   alignment anchor. */
+#character[data-stage=spell] #characterArt {
+ height:130%; width:auto; max-width:none;
+ top:-4.5%; left:68%; right:auto;
+ transform:translateX(-20.5%);
+}
+#character[data-stage=spell] #skillRows tr:nth-child(3) td:nth-child(4) {
+ white-space:pre-line;
+}
+#character[data-stage=spear] #skillRows tr:nth-child(2) td:nth-child(3),
+#character[data-stage=spear] #skillRows tr:nth-child(3) td:nth-child(3) {
+ white-space:pre-line;
+}

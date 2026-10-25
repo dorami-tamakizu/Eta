@@ -1,0 +1,11 @@
+{
+  "videoIceRise": {
+    "frames": 24,
+    "columns": 4,
+    "cell": 384,
+    "source": "２(1).mp4",
+    "start": 1.4,
+    "end": 2.4,
+    "duration": 1.0
+  }
+}
