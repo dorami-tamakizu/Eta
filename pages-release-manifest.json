@@ -240,9 +240,9 @@
     },
     {
       "path": "index.html",
-      "sha256": "13b95d3d83e654fb2b8ab4728d792a4558c25b968c2b4dc949e3809c8cfb8c22",
-      "bytes": 274,
-      "sourceText": "<!doctype html><html lang=\"ja\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>魂の結束</title><script>location.replace('/menu.html')</script></head><body><a href=\"/menu.html\">魂の結束を開く</a></body></html>\n"
+      "sha256": "72bc98f8803ee55de1bd1e56caf18f32dd9cce5742a86b1a699b893bb6b92d33",
+      "bytes": 3291,
+      "sourceText": "<!doctype html><html lang=\"ja\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1,viewport-fit=cover\"><title>魂の結束</title><link rel=\"stylesheet\" href=\"/Eta/ranking.css?v=original-ranking-20261003\"><link rel=\"stylesheet\" href=\"/Eta/menu.css?v=total-detail-aligned-20261013\"></head><body>\n<main id=\"shell\">\n<section id=\"title\" class=\"screen\"><div class=\"start-art\"><img src=\"/Eta/ui/start.png\" alt=\"魂の結束\"><button id=\"toStages\" aria-label=\"スタート、ステージ選択へ\"></button></div><nav class=\"title-nav\"><button data-panel=\"help\">ゲーム説明</button><button data-panel=\"updates\">更新情報</button><button type=\"button\" data-panel=\"x-post\">Xポスト</button></nav></section>\n<section id=\"stages\" class=\"screen\" hidden><header><button id=\"toTitle\">戻る</button><h1>ステージ選択</h1></header><p class=\"stage-icon-hint\">※キャラクターアイコンをタップすると説明が見れます</p><div class=\"stage-list\">\n<div class=\"stage-row\"><button class=\"icon\" data-character=\"sword\" aria-label=\"剣ステージのキャラクター説明\"><img src=\"/Eta/ui/sword-icon.png\" alt=\"\"></button><h2>剣ステージ</h2><button data-start=\"sword\">スタート</button><button data-ranking=\"sword\">ランキング</button></div>\n<div class=\"stage-row\"><button class=\"icon\" data-character=\"spear\" aria-label=\"槍ステージのキャラクター説明\"><img src=\"/Eta/ui/spear-icon.png\" alt=\"\"></button><h2>槍ステージ</h2><button data-start=\"spear\">スタート</button><button data-ranking=\"spear\">ランキング</button></div>\n<div class=\"locked\"><span>？</span><h2>？ステージ</h2><small>更新待ち</small></div><button type=\"button\" id=\"totalRanking\" class=\"total-ranking-entry\">総合ランキング</button></div>\n<section class=\"ex-region\" aria-label=\"EXステージ選択\"><div class=\"ex-heading\">EXステージ</div><div class=\"ex-scroll\"><article class=\"ex-card\"><button type=\"button\" class=\"ex-face\" data-character=\"ex\" aria-label=\"剣EXステージの説明\"><img src=\"/Eta/ex/boss.webp\" alt=\"赤眼の炎騎士\"></button><h2>剣EXステージ</h2><div class=\"ex-actions\"><button data-start=\"ex\" disabled>読込中…</button><button data-ranking=\"ex\">ランキング</button></div></article><article class=\"ex-card placeholder\" aria-label=\"追加ステージは更新待ち\"><div class=\"ex-face\">？</div><h2>更新待ち</h2></article></div></section><div id=\"character\" hidden><img id=\"characterArt\" alt=\"\"><section class=\"description\"><div class=\"description-heading\"><h2 id=\"characterTitle\"></h2><button id=\"closeCharacter\" aria-label=\"キャラクター説明を閉じる\">×</button></div><p id=\"characterText\"></p><table><thead><tr><th>種類</th><th>技名</th><th id=\"characterDamageHeading\">与ダメージ</th><th id=\"characterRangeHeading\">攻撃範囲</th></tr></thead><tbody id=\"skillRows\"></tbody></table><p id=\"characterTrait\" hidden></p></section></div><p id=\"loadStatus\" role=\"status\"></p></section>\n<section id=\"panel\" class=\"screen\" hidden><header><button id=\"closePanel\">戻る</button><h1 id=\"panelTitle\"></h1></header><div id=\"panelBody\"></div></section>\n</main><div id=\"games\"></div><script src=\"/Eta/menu.js?v=fall-ground-layer-20261014\"></script></body></html>\n"
     },
     {
       "path": "maintenance.html",
@@ -486,6 +486,376 @@
       "path": "spear/sfx.js",
       "sha256": "3113f0bf01e7d50d32f92ee44a0c20277f733003a05ae1d528bf84c2e235abef",
       "bytes": 7818
+    },
+    {
+      "path": "spell-menu.css",
+      "sha256": "99521275893c428c4aaf1971bc1f80fa63cdae87303b7dcb249c77be01ec8b5a",
+      "bytes": 603
+    },
+    {
+      "path": "spell/assets/blastFireSide.png",
+      "sha256": "26ea78f4b8bc6a2177fe11051f172277a5ee47e78c8b4779177a4517f96ba51f",
+      "bytes": 1574488
+    },
+    {
+      "path": "spell/assets/blastFireUp.png",
+      "sha256": "669e220ddf9d0782c58205ea4d77ed3b999c02a6eb8da8dbe6c6d49e6ff0da11",
+      "bytes": 2418418
+    },
+    {
+      "path": "spell/assets/blastIceSide.png",
+      "sha256": "45438d9f9d711ae1689c21a4c97320afecd67f2533cf8f560b23435564e33840",
+      "bytes": 2107392
+    },
+    {
+      "path": "spell/assets/blastIceUp.png",
+      "sha256": "5f3d7d3ec820dbe69bffa545c7044e86fd64423228c9d0c31b08efce7b5df3fa",
+      "bytes": 2559720
+    },
+    {
+      "path": "spell/assets/boss1.png",
+      "sha256": "e54fc330f6944a0db8c0eefc1a18b80b196c78a30154bc0feb590d0ee1beb816",
+      "bytes": 2993605
+    },
+    {
+      "path": "spell/assets/boss2.png",
+      "sha256": "16459c5a51a8aff0e983e70a470560d6ace5bb09aba7c8b85abc62eb3df30fbf",
+      "bytes": 3086409
+    },
+    {
+      "path": "spell/assets/boss3.png",
+      "sha256": "5295062cb7f34b598a4cbcfae6d6b7ef3042f6a2e031d11aa6f24430c64d2fc1",
+      "bytes": 3058904
+    },
+    {
+      "path": "spell/assets/boss4.png",
+      "sha256": "d5b2e482478a085a586f9a4f990118962062b553fec1c41cf59c43b1a1e96647",
+      "bytes": 3012628
+    },
+    {
+      "path": "spell/assets/bossBlack.png",
+      "sha256": "2afafecb5e606733975c9c981eb5889a7f25a01dd61e143ede2e8db1da0a2390",
+      "bytes": 2155733
+    },
+    {
+      "path": "spell/assets/bossEntrance.jpeg",
+      "sha256": "8d4d5027f16583f8d43fe5785efe617db001b527b2351d2fbec6f507d9d10ccb",
+      "bytes": 413358
+    },
+    {
+      "path": "spell/assets/bossFire.png",
+      "sha256": "9517b3749fd654a40fb159c865a0bef52a18911d4718e429d18b5e64564fc702",
+      "bytes": 2707886
+    },
+    {
+      "path": "spell/assets/bossIce.png",
+      "sha256": "d78b2dc6cf64ef7f3e3d6919f8fd90e26d4a54cdad5a527750cb3e114873585e",
+      "bytes": 3032132
+    },
+    {
+      "path": "spell/assets/bossMove.png",
+      "sha256": "bcd7c934468c1c21268d63c45805f7183217128735b4dcbd4cb940e52671270b",
+      "bytes": 2283329
+    },
+    {
+      "path": "spell/assets/bossParalyzed.jpeg",
+      "sha256": "669e0c91ba540bada3bd8f481448cea71b7f3ce20bce9e5456f126b670dca2fa",
+      "bytes": 423193
+    },
+    {
+      "path": "spell/assets/bossYellow.png",
+      "sha256": "89dcb02e3c8dbed88c8e5950dc5bf80f97c3fe03b6f954eab722c987499d2861",
+      "bytes": 2722603
+    },
+    {
+      "path": "spell/assets/dragon.png",
+      "sha256": "d1a83112a9e6f50475c488445cbc1cb5cef25c565dde72932f8a9ac3f02b854d",
+      "bytes": 1987852
+    },
+    {
+      "path": "spell/assets/flightFire.jpeg",
+      "sha256": "5727807d5e213cce314d33c6d3edb8af919f4dd4d830bcd6d967b2768dc5ef42",
+      "bytes": 275295
+    },
+    {
+      "path": "spell/assets/flightIce.jpeg",
+      "sha256": "5970e6d7ce3211077a5033c43706ac7bf640abe1eea3c3bd0027946dcc598366",
+      "bytes": 236113
+    },
+    {
+      "path": "spell/assets/ground.png",
+      "sha256": "a50974dd21d3bd5eb40adc3cffbfd7f46156294ef722eff7bbe36e48a05a107b",
+      "bytes": 4180892
+    },
+    {
+      "path": "spell/assets/heroBase.png",
+      "sha256": "4aed9b64350db70108e380336b87c0f457438d7728e019939ab152831275d03c",
+      "bytes": 2239610
+    },
+    {
+      "path": "spell/assets/heroBaseCorrect.png",
+      "sha256": "32965cb484090968ab3c57128b54c7a334c358d5eec56f722c697a63a730872a",
+      "bytes": 2591916
+    },
+    {
+      "path": "spell/assets/heroFall.png",
+      "sha256": "8c90cb76782ecff546d26ec5e70759666210d807638354f0aad0dfaecdc8fccc",
+      "bytes": 2361365
+    },
+    {
+      "path": "spell/assets/heroRun.png",
+      "sha256": "f6d4172d3cb38edab9d36934339e85e044978c0e054a1949bb6f23fbe0dfe62c",
+      "bytes": 2512728
+    },
+    {
+      "path": "spell/assets/hyoen-no-kanata-bgm.mp3",
+      "sha256": "615f144a9636c02c274e3550ad802afdd6460fb4fc83cf80722e4409b13b382c",
+      "bytes": 6122209
+    },
+    {
+      "path": "spell/assets/icon1.png",
+      "sha256": "eb73740ae97231392acf6b0d782cd6ca34e6a3d0a35097f86297c134a8060697",
+      "bytes": 2763141
+    },
+    {
+      "path": "spell/assets/icon1SpeedFireV2.png",
+      "sha256": "f8329fdd8ca28d2087ece16e0922879c3a13842310ebc30f5259214bd1ac0140",
+      "bytes": 2840365
+    },
+    {
+      "path": "spell/assets/icon2.png",
+      "sha256": "c0e68d75e5c5f97caa078c5a5851b5c3d65b76f02352b80308c84c5fe454b04c",
+      "bytes": 3221020
+    },
+    {
+      "path": "spell/assets/iconGuard.png",
+      "sha256": "2f930ac714fbeb83b50113a3e8610c4aa0a0c20db205aafea3dd3fd3648b072b",
+      "bytes": 2674562
+    },
+    {
+      "path": "spell/assets/iconReflectBlueHand.png",
+      "sha256": "d13348dfb182b46008fe947499ecc630332779e5db8679a6d5785512a4ad767c",
+      "bytes": 3393543
+    },
+    {
+      "path": "spell/assets/iconReflectPurple.png",
+      "sha256": "15cc93166e6a984312fc08f0ce5c396977698228ec95ca23b683c9fc07ff081f",
+      "bytes": 2587584
+    },
+    {
+      "path": "spell/assets/iconUlt.png",
+      "sha256": "622c0265e540998f836cf13b2ecc17eaa9f6a4e068c885732b41a7bffc4d47e3",
+      "bytes": 3339375
+    },
+    {
+      "path": "spell/assets/iconUltimateBlueHand.png",
+      "sha256": "d13348dfb182b46008fe947499ecc630332779e5db8679a6d5785512a4ad767c",
+      "bytes": 3393543
+    },
+    {
+      "path": "spell/assets/iconUltimateFour.png",
+      "sha256": "7b0df16025ea8c7adec4086a03bfb16f947533cd2e6118a1d19ebba3463294a1",
+      "bytes": 3315067
+    },
+    {
+      "path": "spell/assets/iconUltimateIce.jpeg",
+      "sha256": "df2ebba1eca188d02157d4356da6a768f3343ce603c8c9a4fd8fc8cd26d9d3f0",
+      "bytes": 761689
+    },
+    {
+      "path": "spell/assets/mage.png",
+      "sha256": "f01d62fb1d4bee35d4319983a09d481c2ed40b71b3ab4902f302d9b4c44937b4",
+      "bytes": 2120997
+    },
+    {
+      "path": "spell/assets/portrait.png",
+      "sha256": "2faef01ead0bd657513d6dd0be21fb420ba8c69f226d390d6385bd7825bb9197",
+      "bytes": 2528490
+    },
+    {
+      "path": "spell/assets/redrawnFire.png",
+      "sha256": "b9b815432409321181f0f9746361ee1ca07963bdc9185d20e9102e8f3d180609",
+      "bytes": 2331469
+    },
+    {
+      "path": "spell/assets/redrawnIce.png",
+      "sha256": "9357f367e90ff0ac34c72d6901f78904b3413c861cf10c7055315b8e2a793f21",
+      "bytes": 2036278
+    },
+    {
+      "path": "spell/assets/reflectionDome.jpeg",
+      "sha256": "431b3ffe96226c9ff205e1dd9f00e79f7c3b7023b8c8ec23862c3b0a55f4431c",
+      "bytes": 163585
+    },
+    {
+      "path": "spell/assets/reflectionPurple.png",
+      "sha256": "945877fc540b82e54db7452ed5a64ed3d4e1fd73da1ff2f5fa0f5c322215b3a0",
+      "bytes": 1849467
+    },
+    {
+      "path": "spell/assets/rocks.png",
+      "sha256": "fd6aa92334b208574916d3685a009d7923a12660fd4c5e68085563d76c4ce6db",
+      "bytes": 1558614
+    },
+    {
+      "path": "spell/assets/shot1.png",
+      "sha256": "b9e2c363cae62c8bf33f46a127dc6fd5a7bcaf74601c7106d3f394cd0b3edf59",
+      "bytes": 2499402
+    },
+    {
+      "path": "spell/assets/shot2.png",
+      "sha256": "ea49fef1f4f8011155d8a9484dde2daf8dc7a402eac0d2a521b0b36e02578129",
+      "bytes": 2280251
+    },
+    {
+      "path": "spell/assets/shot3.png",
+      "sha256": "52b57427c2c4bbd4f05f17365de49db7564ab7d72a091d9acb5b78069ea15130",
+      "bytes": 2515507
+    },
+    {
+      "path": "spell/assets/shot4.png",
+      "sha256": "a9dc5760878c41d39b59ab6bf15ce71a3679fd73fb219f743cc4c02c8ded4f11",
+      "bytes": 2477658
+    },
+    {
+      "path": "spell/assets/skeleton.png",
+      "sha256": "ff70bd5a09fde114b3e1c4fa56af15c3009c81f9dc3495607056b185d8a70c28",
+      "bytes": 1371695
+    },
+    {
+      "path": "spell/assets/skill-cast.mp3",
+      "sha256": "ad998e6db42e0c6f6eda7c2ee5c7e8ddeb72f1e4baf50f15ddc9846709ef13af",
+      "bytes": 33853
+    },
+    {
+      "path": "spell/assets/skill-fire-impact.mp3",
+      "sha256": "c4f4f669702b7243e5fcb07d2d711aa04816f9b5cb5b75306d42b5cbd4297658",
+      "bytes": 38016
+    },
+    {
+      "path": "spell/assets/skill-ice-impact.mp3",
+      "sha256": "e8d31b03f3dce824de6c7bb40be6a573d39c19d610ba10dd46d474e538874c12",
+      "bytes": 59328
+    },
+    {
+      "path": "spell/assets/sky.png",
+      "sha256": "cd87fae215c56d008e26d7bd53de148c0b61dbcf8264f5aaabfdcdeef79656e6",
+      "bytes": 2816049
+    },
+    {
+      "path": "spell/assets/slime.png",
+      "sha256": "0ab0488d684824d49ffdcd92511eba63d9e18f5649bf49adc1f82297870b7a4f",
+      "bytes": 1492867
+    },
+    {
+      "path": "spell/assets/spell-reflect-v2.mp3",
+      "sha256": "0b2cfbd8e2fe4ced634e12fa60ec29eb60e97d269c2bffa3c77d5164831f7fc8",
+      "bytes": 21315
+    },
+    {
+      "path": "spell/assets/spell-reflect.mp3",
+      "sha256": "0148e7dba448a8d0b72c4060cfff615265ed9a2a84562eb7d5c8a85436f05d92",
+      "bytes": 28211
+    },
+    {
+      "path": "spell/assets/statusParalysis.png",
+      "sha256": "e646f03cdc6a63c00e91e6599d53a11da0aed8bda1e78c8f3b7c4c68e65c337a",
+      "bytes": 410131
+    },
+    {
+      "path": "spell/assets/ultimate-cast.mp3",
+      "sha256": "065674eec84ed16bfb3de64f5f0cdc990f3dd22870a109b969a8b05c8eaeef11",
+      "bytes": 86976
+    },
+    {
+      "path": "spell/assets/ultimateDarkFire.png",
+      "sha256": "9517b3749fd654a40fb159c865a0bef52a18911d4718e429d18b5e64564fc702",
+      "bytes": 2707886
+    },
+    {
+      "path": "spell/assets/ultimateDiamondDust.jpeg",
+      "sha256": "fee4baf2715f32c66ae1a51141b737843911bcd01f517505ff867d7067139d10",
+      "bytes": 285589
+    },
+    {
+      "path": "spell/assets/ultimateImpactIce.jpeg",
+      "sha256": "da05615cd7d7d9ed09edd34cef3abf6bbd2cb51fc258ee34a8934491780822aa",
+      "bytes": 347246
+    },
+    {
+      "path": "spell/assets/vfxFire.png",
+      "sha256": "e4ce6c4adea6858687d651e7c48952c9598362f333ef39c71fa9391632bfaa50",
+      "bytes": 2489276
+    },
+    {
+      "path": "spell/assets/vfxIce.png",
+      "sha256": "09b1653ba1f8821b71415a891330e6eacc9de469c04763914971d7ce1cdeecaf",
+      "bytes": 2459096
+    },
+    {
+      "path": "spell/assets/video-effects.json",
+      "sha256": "94cd722443790974ca85053cb44de8413e0f431397f6a5306e9624d77fe37c35",
+      "bytes": 1061
+    },
+    {
+      "path": "spell/assets/video-ice-rise.json",
+      "sha256": "c89d0fac2ac89a24f0690febebcf0f7d5585eb8f3b35ffe5efcd81622f64e613",
+      "bytes": 162
+    },
+    {
+      "path": "spell/assets/videoFireCast.png",
+      "sha256": "14fd3fe40aa6511c04bd913d4331be0d78bb96bae57061f70d1facbc77b68570",
+      "bytes": 289017
+    },
+    {
+      "path": "spell/assets/videoFireFlight.png",
+      "sha256": "ebdffd7ae66632af31132efee1a7d10ce574c7cb68af9b7bc145dbe1c35a5096",
+      "bytes": 1658232
+    },
+    {
+      "path": "spell/assets/videoFireImpact.png",
+      "sha256": "991eeecce2a2f96e0d703c43dfb76713feb6064d4a33e0e6ab3de90fb160c53a",
+      "bytes": 611764
+    },
+    {
+      "path": "spell/assets/videoIceCast.png",
+      "sha256": "7c4cb9773e57e99c0d36940c692e03739ef731d3ad137da775c1bcd95a42b036",
+      "bytes": 567561
+    },
+    {
+      "path": "spell/assets/videoIceFlight.png",
+      "sha256": "e5964232663ca732db9255aeb9fb957cb0375d83974bf480f41dc15b37d3725e",
+      "bytes": 355704
+    },
+    {
+      "path": "spell/assets/videoIceImpact.png",
+      "sha256": "0d5de266811d0db7275e2e14eb9dca5ed8c2a19ab9937a70bdcf2984e35a5c2a",
+      "bytes": 1265718
+    },
+    {
+      "path": "spell/assets/videoIceRise.png",
+      "sha256": "3d8503a96145ed0031a1163850d920467eb2bfd11122f9d1b5eae56180b75b66",
+      "bytes": 1310989
+    },
+    {
+      "path": "spell/bgm.js",
+      "sha256": "b6d77adb65142148b05d024869d03cc629dd720e1ec9dc6c229aab09c19eb7b3",
+      "bytes": 1447
+    },
+    {
+      "path": "spell/game.js",
+      "sha256": "e4e80c0239f71d42a7ddb2262fc5c79edd683301330dcced6e4714056a839f17",
+      "bytes": 111069
+    },
+    {
+      "path": "spell/index.html",
+      "sha256": "65f1cc2e506847d9a2d6e691e4c53bb1e5863025883e6b581e91a98499ce2ff4",
+      "bytes": 33892
+    },
+    {
+      "path": "spell/sfx.js",
+      "sha256": "01b85ef7ebd6eccab5f3aa02db4d742e690184454723dc8a0e2f7c85409813dd",
+      "bytes": 2585
     },
     {
       "path": "sword/assets/battle-start-syakiin-v8.mp3",
