@@ -14,6 +14,7 @@ const tests = [
   'shared-ranking.cjs',
   'swipe-movement.cjs',
   'title-menu.cjs',
+  'total-ranking.cjs',
   'ultimate-audio.cjs',
 ];
 

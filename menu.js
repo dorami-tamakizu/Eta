@@ -33,7 +33,7 @@
  }
  document.querySelectorAll('[data-ranking]').forEach(button=>button.onclick=()=>openRanking(button.dataset.ranking));
 
- const totalStages=[['sword','rankings'],['spear','rankings_spear'],['ex','rankings_sword_ex']];
+ const totalStages=[['sword','rankings'],['spear','rankings_spear'],['spell','rankings_spell'],['ex','rankings_sword_ex']];
  function combineStageRecords(groups){
   const players=new Map();
   groups.forEach((records,index)=>{const stage=totalStages[index][0];for(const record of records){
