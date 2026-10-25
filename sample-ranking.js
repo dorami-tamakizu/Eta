@@ -1,8 +1,8 @@
 // Public client key. Database RLS permits only public reads and new submissions.
 (()=>{
   const STAGE=window.GAME_STAGE;
-  const TABLE={sword:'rankings',spear:'rankings_spear',ex:'rankings_sword_ex'}[STAGE];
-  if(!TABLE&&STAGE!=='spell')throw new Error('Unsupported ranking stage');
+  const TABLE={sword:'rankings',spear:'rankings_spear',ex:'rankings_sword_ex',spell:'rankings_spell'}[STAGE];
+  if(!TABLE)throw new Error('Unsupported ranking stage');
   const API='https://vowuqobawshmobylzxas.supabase.co/rest/v1/'+TABLE;
   const KEY='sb_publishable_ToJdN1C3qeyYphxZj0ESMA_owNBV9kg';
   const $=s=>document.querySelector(s),esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -19,11 +19,9 @@
     if(Number.isFinite(next))newExpiryTimer=setTimeout(()=>expireNewBadges(body),next);
   }
   async function request(query,body){
-    if(body)throw new Error('試作版から公開ランキングへの登録はできません');
-    if(STAGE==='spell')return [];
     const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),15000);
     try{
-      const response=await fetch(API+query,{method:'GET',headers:{apikey:KEY},signal:controller.signal});
+      const response=await fetch(API+query,{method:body?'POST':'GET',headers:{apikey:KEY,...(body?{'Content-Type':'application/json',Prefer:'return=representation'}:{})},body:body?JSON.stringify(body):undefined,signal:controller.signal});
       if(!response.ok){
         // Old database schemas reject this field before inserting anything.
         if(response.status===400&&body&&Object.prototype.hasOwnProperty.call(body,'road_time')){
@@ -36,7 +34,7 @@
   }
   function setResult(ok,data){
     result={data:{...data},state:'ready',message:''};
-    $('#registerScore').hidden=true;
+    $('#registerScore').hidden=false;
     $('#registerScore').textContent='名前を入力してランキング登録';
     $('#registerScore').disabled=false;
     $('#scoreEntry').classList.add('hide');
